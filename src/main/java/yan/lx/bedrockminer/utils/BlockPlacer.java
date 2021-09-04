@@ -48,7 +48,7 @@ public class BlockPlacer {
                         break;
                 }
 
-                minecraftClient.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(player.getYaw(1.0f), pitch, player.isOnGround()));
+                minecraftClient.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.LookOnly(player.getYaw(1.0f), pitch, player.isOnGround()));
                 break;
         }
 

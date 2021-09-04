@@ -24,7 +24,7 @@ import net.minecraft.tag.FluidTags;
 public class InventoryManager {
     public static boolean switchToItem(ItemConvertible item) {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
-        PlayerInventory playerInventory = minecraftClient.player.inventory;
+        PlayerInventory playerInventory = minecraftClient.player.getInventory();
 
         int i = playerInventory.getSlotWithStack(new ItemStack(item));
 
@@ -55,7 +55,7 @@ public class InventoryManager {
 
     public static boolean canInstantlyMinePiston() {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
-        PlayerInventory playerInventory = minecraftClient.player.inventory;
+        PlayerInventory playerInventory = minecraftClient.player.getInventory();
 
         for (int i = 0; i < playerInventory.size(); i++) {
             if (getBlockBreakingSpeed(Blocks.PISTON.getDefaultState(), i) > 45f) {
@@ -68,12 +68,12 @@ public class InventoryManager {
     private static float getBlockBreakingSpeed(BlockState block, int slot) {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         PlayerEntity player = minecraftClient.player;
-        ItemStack stack = player.inventory.getStack(slot);
+        ItemStack stack = player.getInventory().getStack(slot);
 
         float f = stack.getMiningSpeedMultiplier(block);
         if (f > 1.0F) {
             int i = EnchantmentHelper.getLevel(Enchantments.EFFICIENCY, stack);
-            ItemStack itemStack = player.inventory.getStack(slot);
+            ItemStack itemStack = player.getInventory().getStack(slot);
             if (i > 0 && !itemStack.isEmpty()) {
                 f += (float) (i * i + 1);
             }
@@ -116,7 +116,7 @@ public class InventoryManager {
 
     public static int getInventoryItemCount(ItemConvertible item) {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
-        PlayerInventory playerInventory = minecraftClient.player.inventory;
+        PlayerInventory playerInventory = minecraftClient.player.getInventory();
         int counter = 0;
 
         for (int i = 0; i < playerInventory.size(); i++) {

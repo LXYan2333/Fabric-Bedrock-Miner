@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "bedrockminer",
+  "version": "1.0.0",
+
+  "name": "Bedrock Miner",
+  "description": "Client mod to mine bedrock!",
+  "authors": [
+    "LXYan"
+  ],
+  "contact": {
+    "homepage": "",
+    "sources": ""
+  },
+
+  "license": "",
+  "icon": "assets/bedrockminer/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+    ]
+  },
+  "mixins": [
+    "bedrock-miner.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.11.3",
+    "minecraft": "1.16.x",
+    "java": ">=8"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}

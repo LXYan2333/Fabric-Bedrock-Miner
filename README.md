@@ -11,7 +11,9 @@ A fabric cliend mod to 'mine' bedrock!
 4. 黏液块若干
 
 **空手**右键基岩启动 mod（注意要空手）
+
 启动后，左键基岩，mod 会自动破除基岩。
+
 再次空手右键基岩关闭 mod。
 
 ------
@@ -23,6 +25,7 @@ Prepare things listed below:
 4. Some slime block
 
 Right click bedrock **with empty hands** to switch on/off.
+
 While the mod is on, left click bedrock to 'mine' it.
 
 # Compile

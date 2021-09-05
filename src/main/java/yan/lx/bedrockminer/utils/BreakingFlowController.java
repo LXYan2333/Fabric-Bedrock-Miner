@@ -24,9 +24,6 @@ public class BreakingFlowController {
 
     private static boolean working = false;
 
-    static {
-
-    }
 
     public static void addBlockPosToList(BlockPos pos) {
         ClientWorld world = MinecraftClient.getInstance().world;
@@ -109,18 +106,18 @@ public class BreakingFlowController {
             working = false;
         } else {
             Messager.chat("");
-            Messager.chat("╔════════════════════════════════╗");
-            Messager.chat("║ Bedrock Miner已启动！左键基岩即可自动破除基岩。                 ║");
-            Messager.chat("║                                                                        ║");
-            Messager.chat("║ Bedrock Miner started! Left click bedrock to break it.    ║");
-            Messager.chat("╚════════  Author: LXYan  作者：LXYan  ════════╝");
+            Messager.chat("§7╔════════════════════════════════╗§r");
+            Messager.chat("§7║§r Bedrock Miner已启动！左键基岩即可自动破除基岩。                 §7║§r");
+            Messager.chat("§7║§r                                                                        §7║§r");
+            Messager.chat("§7║§r Bedrock Miner started! Left click bedrock to break it.    §7║§r");
+            Messager.chat("§7╚════════  Author: LXYan  作者：LXYan  ════════╝§r");
             Messager.chat("");
             MinecraftClient minecraftClient = MinecraftClient.getInstance();
             if (!minecraftClient.isInSingleplayer()){
-                Messager.chat("看起来你好像是在服务器使用Bedrock Miner？");
-                Messager.chat("在使用本mod前请先征询其他玩家的意见。");
-                Messager.chat("It seems that you are playing on a server? ");
-                Messager.chat("Please ask other players' opinions first.");
+                Messager.chat("§7看起来你好像是在服务器使用Bedrock Miner？§r");
+                Messager.chat("§7在使用本mod前请先征询其他玩家的意见。§r");
+                Messager.chat("§7It seems that you are playing on a server? §r");
+                Messager.chat("§7Please ask other players' opinions first.§r");
             }
             working = true;
         }

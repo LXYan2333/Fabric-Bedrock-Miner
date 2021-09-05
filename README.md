@@ -3,6 +3,10 @@
 
 A fabric cliend mod to 'mine' bedrock!
 
+# 视频 Video
+
+https://www.bilibili.com/video/BV1KA411F7b9/
+
 # 使用 Usage
 准备好如下物品：
 1. 效率 Ⅴ 钻石镐（下界合金也行） 

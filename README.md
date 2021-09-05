@@ -1,6 +1,7 @@
 # Fabric-Bedrock-Miner
 帮你“挖掘”基岩的客户端 Fabric mod！
-A fabric cliend mod to mine bedrock!
+
+A fabric cliend mod to 'mine' bedrock!
 
 # 使用 Usage
 准备好如下物品：

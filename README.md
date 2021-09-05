@@ -5,6 +5,8 @@ A fabric cliend mod to 'mine' bedrock!
 
 # 视频 Video
 
+https://www.youtube.com/watch?v=b8Y86yxjr_Y
+
 https://www.bilibili.com/video/BV1KA411F7b9/
 
 # 使用 Usage

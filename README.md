@@ -16,6 +16,8 @@ A fabric cliend mod to 'mine' bedrock!
 
 再次空手右键基岩关闭 mod。
 
+如果本 mod 帮你节省了大量时间的话，给个 Star 呗qwq。
+
 ------
 
 Prepare things listed below:
@@ -27,6 +29,8 @@ Prepare things listed below:
 Right click bedrock **with empty hands** to switch on/off.
 
 While the mod is on, left click bedrock to 'mine' it.
+
+If my mod saves you tons of time, please considering leave me a Star.
 
 # Compile
 checkout to the corresponding minecraft version and compile (follow the fabric wiki).

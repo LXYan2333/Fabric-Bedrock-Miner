@@ -6,6 +6,8 @@ import net.minecraft.network.MessageType;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
+import java.util.UUID;
+
 public class Messager {
     public static void actionBar(String message){
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
@@ -16,7 +18,7 @@ public class Messager {
     public static void chat(String message){
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         Text text = new LiteralText(message);
-        minecraftClient.inGameHud.addChatMessage(MessageType.SYSTEM,text,minecraftClient.player.getUuid());
+        minecraftClient.inGameHud.addChatMessage(MessageType.SYSTEM,text, UUID.randomUUID());
     }
 }
 

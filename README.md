@@ -7,7 +7,7 @@ A fabric cliend mod to 'mine' bedrock!
 
 https://www.youtube.com/watch?v=b8Y86yxjr_Y
 
-https://www.bilibili.com/video/BV1KA411F7b9/
+https://www.bilibili.com/video/BV1Fv411P7Vc
 
 # 使用 Usage
 准备好如下物品：

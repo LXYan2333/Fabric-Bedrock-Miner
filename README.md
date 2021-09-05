@@ -17,7 +17,7 @@ A fabric cliend mod to 'mine' bedrock!
 
 再次空手右键基岩关闭 mod。
 
-如果本 mod 帮你节省了大量时间的话，给个 Star 呗qwq。
+如果本 mod 帮你节省了大量时间的话，给个 Star 呗 qwq。
 
 ------
 

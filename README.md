@@ -22,7 +22,7 @@ A fabric cliend mod to 'mine' bedrock!
 ------
 
 Prepare things listed below:
-1. Effeciency Ⅴ diamond pickaxe(Netherite is ok, too)
+1. Efficiency Ⅴ diamond pickaxe(Netherite is ok, too)
 2. Haste Ⅱ beacon
 3. Some pistons
 4. Some redstone torches

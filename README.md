@@ -1,3 +1,5 @@
+**English** | [中文](https://github.com/FLXYan2333/Fabric-Bedrock-Miner/blob/master/README_中文.md)
+
 # Fabric-Bedrock-Miner
 A Fabric client mod to "mine" bedrock!
 

@@ -1,4 +1,4 @@
-[English](https://github.com/FLXYan2333/Fabric-Bedrock-Miner/blob/master/README.md) | **中文**
+[English](https://github.com/FLXYan2333/Fabric-Bedrock-Miner/blob/main/README.md) | **中文**
 
 # Fabric-Bedrock-Miner
 帮你“挖掘”基岩的客户端 Fabric mod！

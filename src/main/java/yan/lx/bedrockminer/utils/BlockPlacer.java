@@ -30,7 +30,7 @@ public class BlockPlacer {
         double x = pos.getX();
 
         switch (BreakingFlowController.getWorkingMode()) {
-            case CARPET_EXTRA://carpet accurateBlockPlacemnet支持
+            case CARPET_EXTRA://carpet accurateBlockPlacement支持
                 x = x + 2 + direction.getId() * 2;
                 break;
             case VANILLA://直接发包，改变服务端玩家实体视角

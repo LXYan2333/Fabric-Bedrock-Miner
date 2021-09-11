@@ -6,18 +6,15 @@ package yan.lx.bedrockminer.utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.effect.StatusEffectUtil;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.tag.FluidTags;
 
@@ -29,7 +26,7 @@ public class InventoryManager {
         int i = playerInventory.getSlotWithStack(new ItemStack(item));
 
         if ("diamond_pickaxe".equals(item.toString())) {
-            i = getEffecintTool(playerInventory);
+            i = getEfficientTool(playerInventory);
         }
 
         if (i != -1) {
@@ -44,7 +41,7 @@ public class InventoryManager {
         return false;
     }
 
-    private static int getEffecintTool(PlayerInventory playerInventory) {
+    private static int getEfficientTool(PlayerInventory playerInventory) {
         for (int i = 0; i < playerInventory.main.size(); ++i) {
             if (getBlockBreakingSpeed(Blocks.PISTON.getDefaultState(), i) > 45f) {
                 return i;
@@ -117,14 +114,7 @@ public class InventoryManager {
     public static int getInventoryItemCount(ItemConvertible item) {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         PlayerInventory playerInventory = minecraftClient.player.getInventory();
-        int counter = 0;
-
-        for (int i = 0; i < playerInventory.size(); i++) {
-            if (playerInventory.getStack(i).getItem() == new ItemStack(item).getItem()) {
-                counter = counter + playerInventory.getStack(i).getCount();
-            }
-        }
-        return counter;
+        return playerInventory.count((Item) item);
     }
 
     public static String warningMessage() {

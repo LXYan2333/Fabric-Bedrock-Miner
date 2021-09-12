@@ -1,7 +1,5 @@
 package yan.lx.bedrockminer.utils;
 
-//import net.fabricmc.fabric.api.event.client.player.ClientPickBlockCallback;
-//import net.minecraft.client.MinecraftClient;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -130,23 +128,23 @@ public class InventoryManager {
     public static String warningMessage() {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         if (!"survival".equals(minecraftClient.interactionManager.getCurrentGameMode().getName())) {
-            return "仅限生存模式！Survival Only!";
+            return "Survival Only!";
         }
 
         if (InventoryManager.getInventoryItemCount(Blocks.PISTON) < 2) {
-            return "活塞不够啦！ Needs more piston!";
+            return "Need more pistons!";
         }
 
         if (InventoryManager.getInventoryItemCount(Blocks.REDSTONE_TORCH) < 1) {
-            return "红石火把不够啦！ Needs more redstone torch!";
+            return "Need more redstone torches!";
         }
 
         if (InventoryManager.getInventoryItemCount(Blocks.SLIME_BLOCK)<1){
-            return "黏液块不够啦！ Needs more slime block!";
+            return "Need more slime blocks!";
         }
 
         if (!InventoryManager.canInstantlyMinePiston()) {
-            return "无法秒破活塞！请确保效率Ⅴ+急迫Ⅱ Can't instantly mine piston! EfficiencyⅤ+HasteⅡ required!";
+            return "Can't instantly mine piston! Efficiency V + Haste II required!";
         }
         return null;
     }

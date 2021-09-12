@@ -1,19 +1,14 @@
 package yan.lx.bedrockminer.utils;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.block.FacingBlock;
 import net.minecraft.block.PistonBlock;
 import net.minecraft.client.world.ClientWorld;
-//import net.minecraft.item.ItemStack;
-import net.minecraft.datafixer.fix.ChunkPalettedStorageFix;
-import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 import java.util.ArrayList;
 
-import static net.minecraft.block.Block.sideCoversSmallSquare;
-//import net.minecraft.world.World;
+
 
 public class TargetBlock {
     private BlockPos blockPos;
@@ -106,7 +101,7 @@ public class TargetBlock {
         NEEDS_WAITING,
         RETRACTING,
         RETRACTED,
-        STUCK;
+        STUCK
     }
 
     public BlockPos getBlockPos() {
@@ -134,7 +129,7 @@ public class TargetBlock {
                 redstoneTorchBlockPos = slimeBlockPos.up();
             } else {
                 this.status = Status.FAILED;
-                Messager.actionBar("无法放置红石火把！ Failed to place redstone torch!");
+                Messager.actionBar("Failed to place redstone torch!");
             }
         } else if (!this.world.getBlockState(this.blockPos).isOf(Blocks.BEDROCK) && this.world.getBlockState(this.pistonBlockPos).isOf(Blocks.PISTON)) {
             this.status = Status.RETRACTED;
@@ -157,7 +152,7 @@ public class TargetBlock {
             this.status = Status.UNINITIALIZED;
         } else if (!CheckingEnvironment.has2BlocksOfPlaceToPlacePiston(world, this.blockPos)) {
             this.status = Status.FAILED;
-            Messager.actionBar("无法放置活塞！ Failed to place piston!");
+            Messager.actionBar("Failed to place piston!");
         } else {
             this.status = Status.FAILED;
         }

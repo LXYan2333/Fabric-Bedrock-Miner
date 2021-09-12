@@ -21,7 +21,6 @@ public class BlockPlacer {
 
         InventoryManager.switchToItem(item);
         BlockHitResult hitResult = new BlockHitResult(new Vec3d(pos.getX(), pos.getY(), pos.getZ()), Direction.UP, pos, false);
-//        minecraftClient.interactionManager.interactBlock(minecraftClient.player, minecraftClient.world, Hand.MAIN_HAND, hitResult);
         placeBlockWithoutInteractingBlock(minecraftClient, hitResult);
     }
 
@@ -30,10 +29,10 @@ public class BlockPlacer {
         double x = pos.getX();
 
         switch (BreakingFlowController.getWorkingMode()) {
-            case CARPET_EXTRA://carpet accurateBlockPlacemnet支持
+            case CARPET_EXTRA:
                 x = x + 2 + direction.getId() * 2;
                 break;
-            case VANILLA://直接发包，改变服务端玩家实体视角
+            case VANILLA:
                 PlayerEntity player = minecraftClient.player;
                 float pitch;
                 switch (direction) {
@@ -56,7 +55,6 @@ public class BlockPlacer {
 
         InventoryManager.switchToItem(Blocks.PISTON);
         BlockHitResult hitResult = new BlockHitResult(vec3d, Direction.UP, pos, false);
-//        minecraftClient.interactionManager.interactBlock(minecraftClient.player, minecraftClient.world, Hand.MAIN_HAND, hitResult);
         placeBlockWithoutInteractingBlock(minecraftClient, hitResult);
     }
 

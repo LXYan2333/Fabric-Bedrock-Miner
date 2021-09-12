@@ -13,7 +13,6 @@ import net.minecraft.client.world.ClientWorld;
 //import net.minecraft.util.math.Vec3i;
 
 import java.util.ArrayList;
-//import java.util.List;
 
 public class BreakingFlowController {
     private static ArrayList<TargetBlock> cachedTargetBlockList = new ArrayList<>();
@@ -39,10 +38,10 @@ public class BreakingFlowController {
             if (shouldAddNewTargetBlock(pos)){
                 TargetBlock targetBlock = new TargetBlock(pos, world);
                 cachedTargetBlockList.add(targetBlock);
-                System.out.println("新任务");
+                System.out.println("Task Added");
             }
         } else {
-            Messager.actionBar("请确保敲击的方块还是基岩！");
+            Messager.actionBar("Make sure the block is bedrock！");
         }
     }
 
@@ -60,7 +59,6 @@ public class BreakingFlowController {
         for (int i = 0; i < cachedTargetBlockList.size(); i++) {
             TargetBlock selectedBlock = cachedTargetBlockList.get(i);
 
-            //玩家切换世界，或离目标方块太远时，删除所有缓存的任务
             if (selectedBlock.getWorld() != MinecraftClient.getInstance().world ) {
                 cachedTargetBlockList = new ArrayList<TargetBlock>();
                 break;
@@ -100,35 +98,27 @@ public class BreakingFlowController {
     public static void switchOnOff(){
         if (working){
             Messager.chat("");
-            Messager.chat("Bedrock Miner已关闭。");
-            Messager.chat("Bedrock Miner stoped.");
+            Messager.chat("Bedrock Miner stopped.");
             Messager.chat("");
             working = false;
         } else {
             Messager.chat("");
             Messager.chat("§7╔════════════════════════════════╗§r");
-            Messager.chat("§7║§r Bedrock Miner已启动！左键基岩即可自动破除基岩。                 §7║§r");
-            Messager.chat("§7║§r                                                                        §7║§r");
             Messager.chat("§7║§r Bedrock Miner started! Left click bedrock to break it.    §7║§r");
-            Messager.chat("§7╚════════  Author: LXYan  作者：LXYan  ════════╝§r");
+            Messager.chat("§7╚════════  Author: LXYan  ════════╝§r");
             Messager.chat("");
             MinecraftClient minecraftClient = MinecraftClient.getInstance();
             if (!minecraftClient.isInSingleplayer()){
-                Messager.chat("§7看起来你好像是在服务器使用Bedrock Miner？§r");
-                Messager.chat("§7在使用本mod前请先征询其他玩家的意见。§r");
                 Messager.chat("§7It seems that you are playing on a server? §r");
-                Messager.chat("§7Please ask other players' opinions first.§r");
+                Messager.chat("§7Please ask other players opinions before using.§r");
             }
             working = true;
         }
     }
 
-
-    //测试用的。使用原版模式已经足以满足大多数需求。
-    //just for test. The VANILLA mode is powerful enough.
     enum WorkingMode {
         CARPET_EXTRA,
         VANILLA,
-        MANUALLY;
+        MANUALLY
     }
 }

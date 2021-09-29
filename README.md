@@ -9,13 +9,13 @@ https://www.bilibili.com/video/BV1Fv411P7Vc
 
 # Usage
 Have the following items ready:
-1. Efficiency V diamond (or netherrite) pickaxe
+1. Efficiency V diamond (or netherite) pickaxe
 2. Haste II beacon
 3. Pistons
 4. Redstone torches
 5. Slime blocks
 
-Right click bedrock **with empty hands** to switch on/off.
+Right click bedrock **with an empty hand** to switch on/off.
 
 While the mod is enabled, left click bedrock to "mine" it.
 

@@ -2,18 +2,11 @@ package yan.lx.bedrockminer.utils;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-//import net.minecraft.client.network.ClientPlayerEntity;
-//import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-//import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.client.world.ClientWorld;
-//import net.minecraft.util.math.Position;
-//import net.minecraft.util.math.Vec3d;
-//import net.minecraft.util.math.Vec3i;
 
 import java.util.ArrayList;
-//import java.util.List;
 
 public class BreakingFlowController {
     private static ArrayList<TargetBlock> cachedTargetBlockList = new ArrayList<>();
@@ -24,14 +17,9 @@ public class BreakingFlowController {
 
     private static boolean working = false;
 
-    static {
-
-    }
-
     public static void addBlockPosToList(BlockPos pos) {
         ClientWorld world = MinecraftClient.getInstance().world;
         if (world.getBlockState(pos).isOf(Blocks.BEDROCK)) {
-            MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
             String haveEnoughItems = InventoryManager.warningMessage();
             if (haveEnoughItems != null) {
@@ -94,8 +82,8 @@ public class BreakingFlowController {
     }
 
     private static boolean shouldAddNewTargetBlock(BlockPos pos){
-        for (int i = 0; i < cachedTargetBlockList.size(); i++) {
-            if (cachedTargetBlockList.get(i).getBlockPos().getSquaredDistance(pos.getX(),pos.getY(),pos.getZ(),false) == 0){
+        for (TargetBlock targetBlock : cachedTargetBlockList) {
+            if (targetBlock.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), false) == 0) {
                 return false;
             }
         }
@@ -108,12 +96,20 @@ public class BreakingFlowController {
 
             working = false;
         } else {
+
             Messager.chat("bedrockminer.toggle.on");
+
+
+
+
+
+
 
             MinecraftClient minecraftClient = MinecraftClient.getInstance();
             if (!minecraftClient.isInSingleplayer()){
 
                 Messager.chat("bedrockminer.warn.multiplayer");
+
             }
             working = true;
         }

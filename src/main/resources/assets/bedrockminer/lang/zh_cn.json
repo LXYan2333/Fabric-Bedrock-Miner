@@ -1,0 +1,14 @@
+{
+  "bedrockminer": "",
+  "bedrockminer.toggle.on": "\"\\n§7╔════════════════════════════════╗§r\\n§7║§r                                                                        §7║§r\\n§7║§r Bedrock Miner已启动！左键基岩即可自动破除基岩。                 §7║§r\\n§7║§r                                                                        §7║§r\\n§7╚════════  Author: LXYan  作者：LXYan  ════════╝§r\\n\"",
+  "bedrockminer.toggle.off": "Bedrock Miner已关闭。",
+  "bedrockminer.warn.multiplayer": "§7看起来你好像是在服务器使用Bedrock Miner？§r\n§7在使用本mod前请先征询其他玩家的意见。§r",
+  "bedrockminer.fail.place.piston": "无法放置活塞！",
+  "bedrockminer.fail.place.redstonetorch": "无法放置红石火把！",
+  "bedrockminer.fail.missing.survival": "仅限生存模式！",
+  "bedrockminer.fail.missing.piston": "活塞不够啦！",
+  "bedrockminer.fail.missing.redstonetorch": "红石火把不够啦！",
+  "bedrockminer.fail.missing.slime": "黏液块不够啦！",
+  "bedrockminer.fail.missing.instantmine": "无法秒破活塞！请确保效率Ⅴ+急迫Ⅱ"
+
+}

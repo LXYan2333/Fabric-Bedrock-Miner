@@ -6,27 +6,30 @@ package yan.lx.bedrockminer.utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.effect.StatusEffectUtil;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.tag.FluidTags;
 
 public class InventoryManager {
     public static boolean switchToItem(ItemConvertible item) {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
-        PlayerInventory playerInventory = minecraftClient.player.getInventory();
+        PlayerInventory playerInventory = minecraftClient.player.inventory;
 
         int i = playerInventory.getSlotWithStack(new ItemStack(item));
 
         if ("diamond_pickaxe".equals(item.toString())) {
-            i = getEfficientTool(playerInventory);
+            i = getEffecintTool(playerInventory);
         }
 
         if (i != -1) {
@@ -41,7 +44,7 @@ public class InventoryManager {
         return false;
     }
 
-    private static int getEfficientTool(PlayerInventory playerInventory) {
+    private static int getEffecintTool(PlayerInventory playerInventory) {
         for (int i = 0; i < playerInventory.main.size(); ++i) {
             if (getBlockBreakingSpeed(Blocks.PISTON.getDefaultState(), i) > 45f) {
                 return i;
@@ -52,7 +55,7 @@ public class InventoryManager {
 
     public static boolean canInstantlyMinePiston() {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
-        PlayerInventory playerInventory = minecraftClient.player.getInventory();
+        PlayerInventory playerInventory = minecraftClient.player.inventory;
 
         for (int i = 0; i < playerInventory.size(); i++) {
             if (getBlockBreakingSpeed(Blocks.PISTON.getDefaultState(), i) > 45f) {
@@ -65,12 +68,12 @@ public class InventoryManager {
     private static float getBlockBreakingSpeed(BlockState block, int slot) {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         PlayerEntity player = minecraftClient.player;
-        ItemStack stack = player.getInventory().getStack(slot);
+        ItemStack stack = player.inventory.getStack(slot);
 
         float f = stack.getMiningSpeedMultiplier(block);
         if (f > 1.0F) {
             int i = EnchantmentHelper.getLevel(Enchantments.EFFICIENCY, stack);
-            ItemStack itemStack = player.getInventory().getStack(slot);
+            ItemStack itemStack = player.inventory.getStack(slot);
             if (i > 0 && !itemStack.isEmpty()) {
                 f += (float) (i * i + 1);
             }
@@ -113,8 +116,15 @@ public class InventoryManager {
 
     public static int getInventoryItemCount(ItemConvertible item) {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
-        PlayerInventory playerInventory = minecraftClient.player.getInventory();
-        return playerInventory.count((Item) item);
+        PlayerInventory playerInventory = minecraftClient.player.inventory;
+        int counter = 0;
+
+        for (int i = 0; i < playerInventory.size(); i++) {
+            if (playerInventory.getStack(i).getItem() == new ItemStack(item).getItem()) {
+                counter = counter + playerInventory.getStack(i).getCount();
+            }
+        }
+        return counter;
     }
 
     public static String warningMessage() {

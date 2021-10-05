@@ -128,14 +128,8 @@ public class TargetBlock {
         }
         this.redstoneTorchBlockPos = CheckingEnvironment.findNearbyFlatBlockToPlaceRedstoneTorch(this.world, this.blockPos);
         if (this.redstoneTorchBlockPos == null) {
-            this.slimeBlockPos = CheckingEnvironment.findPossibleSlimeBlockPos(world, blockPos);
-            if (slimeBlockPos != null) {
-                BlockPlacer.simpleBlockPlacement(slimeBlockPos, Blocks.SLIME_BLOCK);
-                redstoneTorchBlockPos = slimeBlockPos.up();
-            } else {
-                this.status = Status.FAILED;
-                Messager.actionBar("bedrockminer.fail.place.redstonetorch");
-            }
+            this.status = Status.FAILED;
+            Messager.actionBar("bedrockminer.fail.place.redstonetorch");
         } else if (!this.world.getBlockState(this.blockPos).isOf(Blocks.BEDROCK) && this.world.getBlockState(this.pistonBlockPos).isOf(Blocks.PISTON)) {
             this.status = Status.RETRACTED;
         } else if (this.world.getBlockState(this.pistonBlockPos).isOf(Blocks.PISTON) && this.world.getBlockState(this.pistonBlockPos).get(PistonBlock.EXTENDED)) {

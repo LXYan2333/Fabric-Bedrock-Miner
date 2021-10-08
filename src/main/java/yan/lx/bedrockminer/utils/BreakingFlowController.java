@@ -42,10 +42,12 @@ public class BreakingFlowController {
             if (shouldAddNewTargetBlock(pos)){
                 TargetBlock targetBlock = new TargetBlock(pos, world);
                 cachedTargetBlockList.add(targetBlock);
+                //Suggest also an english version, for debug reasons.
                 System.out.println("新任务");
             }
         } else {
-            Messager.actionBar("请确保敲击的方块还是基岩！");
+            //Does not Have an english version, Left out of lang for now. (raw To prevent Errors)
+            Messager.rawactionBar("请确保敲击的方块还是基岩！");
         }
     }
 
@@ -102,25 +104,16 @@ public class BreakingFlowController {
 
     public static void switchOnOff(){
         if (working){
-            Messager.chat("");
-            Messager.chat("Bedrock Miner已关闭。");
-            Messager.chat("Bedrock Miner stoped.");
-            Messager.chat("");
+            Messager.chat("bedrockminer.toggle.off");
+
             working = false;
         } else {
-            Messager.chat("");
-            Messager.chat("╔════════════════════════════════╗");
-            Messager.chat("║ Bedrock Miner已启动！左键基岩即可自动破除基岩。                 ║");
-            Messager.chat("║                                                                        ║");
-            Messager.chat("║ Bedrock Miner started! Left click bedrock to break it.    ║");
-            Messager.chat("╚════════  Author: LXYan  作者：LXYan  ════════╝");
-            Messager.chat("");
+            Messager.chat("bedrockminer.toggle.on");
+
             MinecraftClient minecraftClient = MinecraftClient.getInstance();
             if (!minecraftClient.isInSingleplayer()){
-                Messager.chat("看起来你好像是在服务器使用Bedrock Miner？");
-                Messager.chat("在使用本mod前请先征询其他玩家的意见。");
-                Messager.chat("It seems that you are playing on a server? ");
-                Messager.chat("Please ask other players' opinions first.");
+
+                Messager.chat("bedrockminer.warn.multiplayer");
             }
             working = true;
         }

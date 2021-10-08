@@ -1,0 +1,13 @@
+{
+  "bedrockminer": "",
+  "bedrockminer.toggle.on": "\n§7╔════════════════════════════════╗§r\n§7║§r                                                                        §7║§r\n§7║§r Bedrock Miner started! Left click bedrock to break it.    §7║§r\n§7║§r                                                                        §7║§r\n§7╚════════  Author: LXYan  作者：LXYan  ════════╝§r\n",
+  "bedrockminer.toggle.off": "Bedrock Miner stopped.",
+  "bedrockminer.warn.multiplayer": "§7It seems that you are playing on a server? §r\n§7Please ask other players' opinions first.§r",
+  "bedrockminer.fail.place.piston": "Failed to place piston!",
+  "bedrockminer.fail.place.redstonetorch": "Failed to place redstone torch!",
+  "bedrockminer.fail.missing.survival": "Survival Only!",
+  "bedrockminer.fail.missing.piston": "Needs more piston!",
+  "bedrockminer.fail.missing.redstonetorch": "Needs more redstone torch!",
+  "bedrockminer.fail.missing.slime": "Needs more slime block!",
+  "bedrockminer.fail.missing.instantmine": "Can't instantly mine piston! EfficiencyⅤ+HasteⅡ required!"
+}

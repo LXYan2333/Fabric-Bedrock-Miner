@@ -134,15 +134,15 @@ public class InventoryManager {
         }
 
         if (InventoryManager.getInventoryItemCount(Blocks.PISTON) < 2) {
-            return "活塞不够啦！ Needs more piston!";
+            return "活塞不够啦！ Needs more pistons!";
         }
 
         if (InventoryManager.getInventoryItemCount(Blocks.REDSTONE_TORCH) < 1) {
-            return "红石火把不够啦！ Needs more redstone torch!";
+            return "红石火把不够啦！ Needs more redstone torches!";
         }
 
         if (InventoryManager.getInventoryItemCount(Blocks.SLIME_BLOCK)<1){
-            return "黏液块不够啦！ Needs more slime block!";
+            return "黏液块不够啦！ Needs more slime blocks!";
         }
 
         if (!InventoryManager.canInstantlyMinePiston()) {

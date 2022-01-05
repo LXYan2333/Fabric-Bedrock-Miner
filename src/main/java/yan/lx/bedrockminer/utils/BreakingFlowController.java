@@ -27,7 +27,6 @@ public class BreakingFlowController {
 
     public static void addBlockPosToList(BlockPos pos) {
         ClientWorld world = MinecraftClient.getInstance().world;
-        if (world.getBlockState(pos).isOf(Blocks.BEDROCK)) {
             MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
             String haveEnoughItems = InventoryManager.warningMessage();
@@ -41,9 +40,6 @@ public class BreakingFlowController {
                 cachedTargetBlockList.add(targetBlock);
                 System.out.println("新任务");
             }
-        } else {
-            Messager.actionBar("请确保敲击的方块还是基岩！");
-        }
     }
 
     public static void tick() {
@@ -101,23 +97,23 @@ public class BreakingFlowController {
         if (working){
             Messager.chat("");
             Messager.chat("Bedrock Miner已关闭。");
-            Messager.chat("Bedrock Miner stoped.");
+            Messager.chat("Bedrock Miner stopped.");
             Messager.chat("");
             working = false;
         } else {
             Messager.chat("");
             Messager.chat("§7╔════════════════════════════════╗§r");
-            Messager.chat("§7║§r Bedrock Miner已启动！左键基岩即可自动破除基岩。                 §7║§r");
+            Messager.chat("§7║§r Bedrock Miner已启动！左键基岩即可自动破除基岩。               §7║§r");
             Messager.chat("§7║§r                                                                        §7║§r");
             Messager.chat("§7║§r Bedrock Miner started! Left click bedrock to break it.    §7║§r");
-            Messager.chat("§7╚════════  Author: LXYan  作者：LXYan  ════════╝§r");
+            Messager.chat("§7╚════════ Author: LXYan 作者: LXYan ═════════╝§r");
             Messager.chat("");
             MinecraftClient minecraftClient = MinecraftClient.getInstance();
             if (!minecraftClient.isInSingleplayer()){
                 Messager.chat("§7看起来你好像是在服务器使用Bedrock Miner？§r");
                 Messager.chat("§7在使用本mod前请先征询其他玩家的意见。§r");
-                Messager.chat("§7It seems that you are playing on a server? §r");
-                Messager.chat("§7Please ask other players' opinions first.§r");
+                Messager.chat("§7It seems that you are playing on a server. §r");
+                Messager.chat("§7Please ask other player's opinions first.§r");
             }
             working = true;
         }

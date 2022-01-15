@@ -1,10 +1,10 @@
 plugins {
-	id 'fabric-loom' version '0.9-SNAPSHOT'
+	id 'fabric-loom' version '0.10-SNAPSHOT'
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -32,10 +32,19 @@ repositories {
 // }
 
 dependencies {
-    minecraft "com.mojang:minecraft:1.17.1"
-    mappings "net.fabricmc:yarn:1.17.1+build.52:v2"
-    modImplementation "net.fabricmc:fabric-loader:0.11.6"
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
+	// Make a collection of all api modules we wish to use
+	Set<String> apiModules = [
+			"fabric-resource-loader-v0"
+	]
+
+	// Add each module as a dependency
+	apiModules.forEach {
+		include(modImplementation(fabricApi.module(it, "${project.fabric_version}")))
+	}
 }
 
 processResources {
@@ -54,7 +63,7 @@ tasks.withType(JavaCompile).configureEach {
 	it.options.encoding = "UTF-8"
 
 	// Minecraft 1.17 (21w19a) upwards uses Java 16.
-	it.options.release = 8
+	it.options.release = 17
 }
 
 java {

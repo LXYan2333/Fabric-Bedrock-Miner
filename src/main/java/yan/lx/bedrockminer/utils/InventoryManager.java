@@ -114,7 +114,7 @@ public class InventoryManager {
     public static int getInventoryItemCount(ItemConvertible item) {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         PlayerInventory playerInventory = minecraftClient.player.getInventory();
-        return playerInventory.count((Item) item);
+        return playerInventory.count(item.asItem());
     }
 
     public static String warningMessage() {

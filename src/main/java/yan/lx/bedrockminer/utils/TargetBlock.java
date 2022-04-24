@@ -48,7 +48,6 @@ public class TargetBlock {
     public Status tick() {
         this.tickTimes++;
         updateStatus();
-        System.out.println(this.status);
         switch (this.status) {
             case UNINITIALIZED:
                 InventoryManager.switchToItem(Blocks.PISTON);

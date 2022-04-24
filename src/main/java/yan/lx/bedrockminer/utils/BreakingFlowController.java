@@ -42,8 +42,6 @@ public class BreakingFlowController {
             if (shouldAddNewTargetBlock(pos)){
                 TargetBlock targetBlock = new TargetBlock(pos, world);
                 cachedTargetBlockList.add(targetBlock);
-                //Suggest also an english version, for debug reasons.
-                System.out.println("新任务");
             }
         } else {
             //Does not Have an english version, Left out of lang for now. (raw To prevent Errors)

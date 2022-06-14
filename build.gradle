@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.10-SNAPSHOT'
+	id 'fabric-loom' version '0.12-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -30,6 +30,10 @@ repositories {
 // 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 // 	// You may need to force-disable transitiveness on them.
 // }
+
+loom {
+	accessWidenerPath = file("src/main/resources/bedrock-miner.accesswidener")
+}
 
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"

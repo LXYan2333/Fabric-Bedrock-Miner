@@ -3,10 +3,15 @@ package yan.lx.bedrockminer.utils;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.network.PendingUpdateManager;
+import net.minecraft.client.network.SequencedPacketCreator;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ServerPlayPacketListener;
 import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.Hand;
@@ -64,7 +69,7 @@ public class BlockPlacer {
         ClientPlayerEntity player = minecraftClient.player;
         ItemStack itemStack = player.getStackInHand(Hand.MAIN_HAND);
 
-        minecraftClient.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, hitResult));
+        minecraftClient.interactionManager.interactBlock(player, Hand.MAIN_HAND, hitResult);
 
         if (!itemStack.isEmpty() && !player.getItemCooldownManager().isCoolingDown(itemStack.getItem())) {
             ItemUsageContext itemUsageContext = new ItemUsageContext(player, Hand.MAIN_HAND, hitResult);
@@ -72,4 +77,6 @@ public class BlockPlacer {
 
         }
     }
+
+
 }

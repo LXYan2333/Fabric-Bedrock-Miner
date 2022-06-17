@@ -33,5 +33,6 @@
   },
   "suggests": {
     "another-mod": "*"
-  }
+  },
+  "accessWidener" : "bedrock-miner.accesswidener"
 }

@@ -29,8 +29,8 @@ public class BreakingFlowController {
     }
 
     public static void addBlockPosToList(BlockPos pos) {
-        ClientWorld world = MinecraftClient.getInstance().world;
-        if (world.getBlockState(pos).isOf(Blocks.BEDROCK)) {
+        ClientWorld world = MinecraftClient.getInstance().world;   
+        if (world.getBlockState(pos).isOf(Blocks.BEDROCK) || world.getBlockState(pos).isOf(Blocks.OBSIDIAN)) {
             MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
             String haveEnoughItems = InventoryManager.warningMessage();
@@ -39,7 +39,7 @@ public class BreakingFlowController {
                 return;
             }
 
-            if (shouldAddNewTargetBlock(pos)){
+            if (shouldAddNewTargetBlock(pos)) {
                 TargetBlock targetBlock = new TargetBlock(pos, world);
                 cachedTargetBlockList.add(targetBlock);
             }
@@ -64,7 +64,7 @@ public class BreakingFlowController {
             TargetBlock selectedBlock = cachedTargetBlockList.get(i);
 
             //玩家切换世界，或离目标方块太远时，删除所有缓存的任务
-            if (selectedBlock.getWorld() != MinecraftClient.getInstance().world ) {
+            if (selectedBlock.getWorld() != MinecraftClient.getInstance().world) {
                 cachedTargetBlockList = new ArrayList<TargetBlock>();
                 break;
             }
@@ -91,17 +91,17 @@ public class BreakingFlowController {
         return WorkingMode.VANILLA;
     }
 
-    private static boolean shouldAddNewTargetBlock(BlockPos pos){
+    private static boolean shouldAddNewTargetBlock(BlockPos pos) {
         for (int i = 0; i < cachedTargetBlockList.size(); i++) {
-            if (cachedTargetBlockList.get(i).getBlockPos().getManhattanDistance(pos) == 0){
+            if (cachedTargetBlockList.get(i).getBlockPos().getManhattanDistance(pos) == 0) {
                 return false;
             }
         }
         return true;
     }
 
-    public static void switchOnOff(){
-        if (working){
+    public static void switchOnOff() {
+        if (working) {
             Messager.chat("bedrockminer.toggle.off");
 
             working = false;
@@ -109,7 +109,7 @@ public class BreakingFlowController {
             Messager.chat("bedrockminer.toggle.on");
 
             MinecraftClient minecraftClient = MinecraftClient.getInstance();
-            if (!minecraftClient.isInSingleplayer()){
+            if (!minecraftClient.isInSingleplayer()) {
 
                 Messager.chat("bedrockminer.warn.multiplayer");
             }

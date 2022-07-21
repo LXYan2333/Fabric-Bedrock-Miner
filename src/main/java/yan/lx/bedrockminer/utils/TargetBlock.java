@@ -6,6 +6,7 @@ import net.minecraft.block.PistonBlock;
 import net.minecraft.client.world.ClientWorld;
 //import net.minecraft.item.ItemStack;
 import net.minecraft.datafixer.fix.ChunkPalettedStorageFix;
+import net.minecraft.entity.ai.brain.task.Task;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -45,7 +46,7 @@ public class TargetBlock {
         }
     }
 
-    public Status tick() throws InterruptedException {
+    public Status tick() {
         this.tickTimes++;
         updateStatus();
         switch (this.status) {
@@ -83,20 +84,31 @@ public class TargetBlock {
                 BlockPlacer.simpleBlockPlacement(this.redstoneTorchBlockPos, Blocks.REDSTONE_TORCH);
                 break;
             case FAILED:
-                Thread.sleep(1000);
-                BlockBreaker.breakBlock(world, pistonBlockPos);
-                BlockBreaker.breakBlock(world, pistonBlockPos.up());
+                breakBlock(world, pistonBlockPos);
                 return Status.FAILED;
             case STUCK:
-                Thread.sleep(1000);
-                BlockBreaker.breakBlock(world, pistonBlockPos);
-                BlockBreaker.breakBlock(world, pistonBlockPos.up());
+                breakBlock(world, pistonBlockPos);
                 break;
             case NEEDS_WAITING:
                 break;
         }
         return null;
     }
+
+
+    private static void breakBlock(ClientWorld world, BlockPos blockPos) {
+        Thread thread = new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+                BlockBreaker.breakBlock(world, blockPos);
+                BlockBreaker.breakBlock(world, blockPos.up());
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        thread.start();
+    }
+
 
     enum Status {
         FAILED,

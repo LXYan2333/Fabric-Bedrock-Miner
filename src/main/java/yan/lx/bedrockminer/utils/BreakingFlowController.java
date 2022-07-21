@@ -49,7 +49,7 @@ public class BreakingFlowController {
         }
     }
 
-    public static void tick() {
+    public static void tick() throws InterruptedException {
         if (InventoryManager.warningMessage() != null) {
             return;
         }

@@ -45,7 +45,7 @@ public class TargetBlock {
         }
     }
 
-    public Status tick() {
+    public Status tick() throws InterruptedException {
         this.tickTimes++;
         updateStatus();
         switch (this.status) {
@@ -83,15 +83,16 @@ public class TargetBlock {
                 BlockPlacer.simpleBlockPlacement(this.redstoneTorchBlockPos, Blocks.REDSTONE_TORCH);
                 break;
             case FAILED:
+                Thread.sleep(1000);
                 BlockBreaker.breakBlock(world, pistonBlockPos);
                 BlockBreaker.breakBlock(world, pistonBlockPos.up());
-                BlockBreaker.breakBlock(world, pistonBlockPos.up().up());
                 return Status.FAILED;
             case STUCK:
-            case NEEDS_WAITING:
+                Thread.sleep(1000);
                 BlockBreaker.breakBlock(world, pistonBlockPos);
                 BlockBreaker.breakBlock(world, pistonBlockPos.up());
-                BlockBreaker.breakBlock(world, pistonBlockPos.up().up());
+                break;
+            case NEEDS_WAITING:
                 break;
         }
         return null;

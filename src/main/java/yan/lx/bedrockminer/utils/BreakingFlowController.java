@@ -1,13 +1,18 @@
 package yan.lx.bedrockminer.utils;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 //import net.minecraft.client.network.ClientPlayerEntity;
 //import net.minecraft.entity.Entity;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 //import net.minecraft.item.Items;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.client.world.ClientWorld;
+import org.jetbrains.annotations.Nullable;
 //import net.minecraft.util.math.Position;
 //import net.minecraft.util.math.Vec3d;
 //import net.minecraft.util.math.Vec3i;
@@ -17,6 +22,7 @@ import java.util.ArrayList;
 
 public class BreakingFlowController {
     private static ArrayList<TargetBlock> cachedTargetBlockList = new ArrayList<>();
+    public static ArrayList<Block> allowBreakBlockList = new ArrayList<>();
 
     public static boolean isWorking() {
         return working;
@@ -25,38 +31,64 @@ public class BreakingFlowController {
     private static boolean working = false;
 
     static {
-
+        allowBreakBlockList.add(Blocks.BEDROCK);            // 基岩
+        allowBreakBlockList.add(Blocks.OBSIDIAN);           // 黑曜石
+        allowBreakBlockList.add(Blocks.END_PORTAL_FRAME);   // 末地传送门
     }
 
-    public static void addBlockPosToList(BlockPos pos) {
-        ClientWorld world = MinecraftClient.getInstance().world;   
-        if (world.getBlockState(pos).isOf(Blocks.BEDROCK) || world.getBlockState(pos).isOf(Blocks.OBSIDIAN)) {
-            MinecraftClient minecraftClient = MinecraftClient.getInstance();
-
-            String haveEnoughItems = InventoryManager.warningMessage();
-            if (haveEnoughItems != null) {
-                Messager.actionBar(haveEnoughItems);
-                return;
+    public static void onInitComplete(ClientWorld world, HitResult crosshairTarget, @Nullable ClientPlayerEntity player) {
+        BlockHitResult blockHitResult = (BlockHitResult) crosshairTarget;
+        for (Block block : allowBreakBlockList) {
+            if (world.getBlockState(blockHitResult.getBlockPos()).isOf(block) && player.getMainHandStack().isEmpty()) {
+                BreakingFlowController.switchOnOff();
+                break;
             }
-
-            if (shouldAddNewTargetBlock(pos)) {
-                TargetBlock targetBlock = new TargetBlock(pos, world);
-                cachedTargetBlockList.add(targetBlock);
-            }
-        } else {
-            //Does not Have an english version, Left out of lang for now. (raw To prevent Errors)
-            Messager.rawactionBar("请确保敲击的方块还是基岩！");
         }
     }
 
-    public static void tick()  {
+    public static void onHandleBlockBreaking(ClientWorld world, BlockPos blockPos) {
+        for (Block block : allowBreakBlockList) {
+            if (world.getBlockState(blockPos).isOf(block) && BreakingFlowController.isWorking()) {
+                BreakingFlowController.addBlockPosToList(blockPos);
+                break;
+            }
+        }
+    }
+
+    public static void addBlockPosToList(BlockPos pos) {
+        ClientWorld world = MinecraftClient.getInstance().world;
+        Block block = null;
+        for (Block block1 : allowBreakBlockList) {
+            if (world.getBlockState(pos).isOf(block1)) {
+                block = block1;
+                break;
+            }
+        }
+        if (block == null) {
+            Messager.rawactionBar("请确保敲击的方块是(基岩|黑曜石|末地传送门)其中一个！");
+        }
+
+        String haveEnoughItems = InventoryManager.warningMessage();
+        if (haveEnoughItems != null) {
+            Messager.actionBar(haveEnoughItems);
+            return;
+        }
+        if (shouldAddNewTargetBlock(pos)) {
+            TargetBlock targetBlock = new TargetBlock(pos, world);
+            cachedTargetBlockList.add(targetBlock);
+        }
+
+    }
+
+
+    public static void tick() {
         if (InventoryManager.warningMessage() != null) {
             return;
         }
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         PlayerEntity player = minecraftClient.player;
 
-        if (!"survival".equals(minecraftClient.interactionManager.getCurrentGameMode().getName())) {
+        if (!minecraftClient.interactionManager.getCurrentGameMode().getName().equals("survival")) {
             return;
         }
 
@@ -71,6 +103,8 @@ public class BreakingFlowController {
 
             if (blockInPlayerRange(selectedBlock.getBlockPos(), player, 3.4f)) {
                 TargetBlock.Status status = cachedTargetBlockList.get(i).tick();
+                if (status == null) break;
+
                 if (status == TargetBlock.Status.RETRACTING) {
                     continue;
                 } else if (status == TargetBlock.Status.FAILED || status == TargetBlock.Status.RETRACTED) {
@@ -91,7 +125,7 @@ public class BreakingFlowController {
         return WorkingMode.VANILLA;
     }
 
-    private static boolean shouldAddNewTargetBlock (BlockPos pos) {
+    private static boolean shouldAddNewTargetBlock(BlockPos pos) {
         for (int i = 0; i < cachedTargetBlockList.size(); i++) {
             if (cachedTargetBlockList.get(i).getBlockPos().getManhattanDistance(pos) == 0) {
                 return false;
@@ -119,7 +153,7 @@ public class BreakingFlowController {
 
 
     //测试用的。使用原版模式已经足以满足大多数需求。
-    //just for test. The VANILLA mode is powerful enough.
+//just for test. The VANILLA mode is powerful enough.
     enum WorkingMode {
         CARPET_EXTRA,
         VANILLA,

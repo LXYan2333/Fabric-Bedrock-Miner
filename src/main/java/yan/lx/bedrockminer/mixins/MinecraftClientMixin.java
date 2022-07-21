@@ -44,23 +44,15 @@ public class MinecraftClientMixin {
 
     @Inject(method = "doItemUse", at = @At(value = "HEAD"))
     private void onInitComplete(CallbackInfo ci) {
-        if (this.crosshairTarget.getType() == HitResult.Type.BLOCK) {
-            BlockHitResult blockHitResult = (BlockHitResult) this.crosshairTarget;
-            if ((world.getBlockState(blockHitResult.getBlockPos()).isOf(Blocks.BEDROCK) || world.getBlockState(blockHitResult.getBlockPos()).isOf(Blocks.OBSIDIAN)) && player.getMainHandStack().isEmpty()) {
-                BreakingFlowController.switchOnOff();
-            }
+        if (crosshairTarget.getType() == HitResult.Type.BLOCK) {
+            BreakingFlowController.onInitComplete(world, crosshairTarget, player);
         }
-
     }
 
 
-    @Inject(method = "handleBlockBreaking",  at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;swingHand(Lnet/minecraft/util/Hand;)V"), locals = LocalCapture.CAPTURE_FAILSOFT)
+    @Inject(method = "handleBlockBreaking", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;swingHand(Lnet/minecraft/util/Hand;)V"), locals = LocalCapture.CAPTURE_FAILSOFT)
     private void inject(boolean bl, CallbackInfo ci, BlockHitResult blockHitResult, BlockPos blockPos, Direction direction) {
-        if ((world.getBlockState(blockPos).isOf(Blocks.BEDROCK) || world.getBlockState(blockPos).isOf(Blocks.OBSIDIAN)) && BreakingFlowController.isWorking()) {
-            BreakingFlowController.addBlockPosToList(blockPos);
-        }
-
-
+        BreakingFlowController.onHandleBlockBreaking(world, blockPos);
     }
 }
 

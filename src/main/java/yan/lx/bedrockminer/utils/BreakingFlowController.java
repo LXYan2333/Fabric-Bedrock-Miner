@@ -91,7 +91,7 @@ public class BreakingFlowController {
         return WorkingMode.VANILLA;
     }
 
-    private static boolean shouldAddNewTargetBlock(BlockPos pos) {
+    private static boolean shouldAddNewTargetBlock (BlockPos pos) {
         for (int i = 0; i < cachedTargetBlockList.size(); i++) {
             if (cachedTargetBlockList.get(i).getBlockPos().getManhattanDistance(pos) == 0) {
                 return false;

@@ -90,6 +90,10 @@ public class TargetBlock {
             case STUCK:
                 BlockBreaker.breakBlock(world, blockPos);
                 BlockBreaker.breakBlock(world, blockPos.up());
+                if (!world.getBlockState(blockPos).isOf(Blocks.AIR)){
+                    BlockBreaker.breakBlock(world, blockPos);
+                    BlockBreaker.breakBlock(world, blockPos.up());
+                }
                 break;
             case NEEDS_WAITING:
                 break;

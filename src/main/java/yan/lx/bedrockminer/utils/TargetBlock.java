@@ -84,10 +84,12 @@ public class TargetBlock {
                 BlockPlacer.simpleBlockPlacement(this.redstoneTorchBlockPos, Blocks.REDSTONE_TORCH);
                 break;
             case FAILED:
-                breakBlock(world, pistonBlockPos);
+                BlockBreaker.breakBlock(world, blockPos);
+                BlockBreaker.breakBlock(world, blockPos.up());
                 return Status.FAILED;
             case STUCK:
-                breakBlock(world, pistonBlockPos);
+                BlockBreaker.breakBlock(world, blockPos);
+                BlockBreaker.breakBlock(world, blockPos.up());
                 break;
             case NEEDS_WAITING:
                 break;
@@ -96,18 +98,6 @@ public class TargetBlock {
     }
 
 
-    private static void breakBlock(ClientWorld world, BlockPos blockPos) {
-        Thread thread = new Thread(() -> {
-            try {
-                Thread.sleep(1000);
-                BlockBreaker.breakBlock(world, blockPos);
-                BlockBreaker.breakBlock(world, blockPos.up());
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        thread.start();
-    }
 
 
     enum Status {

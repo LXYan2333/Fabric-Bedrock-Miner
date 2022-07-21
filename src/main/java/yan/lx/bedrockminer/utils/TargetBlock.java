@@ -169,8 +169,6 @@ public class TargetBlock {
             if (this.world.getBlockState(this.pistonBlockPos).isOf(Blocks.MOVING_PISTON)) {
                 return;
             }
-
-            this.status = Status.RETRACTING;
             // 活塞存在,但是朝向向下(说明已执行过),未充能,附近有红石火把,目标方块还在
             if (this.world.getBlockState(this.pistonBlockPos).isOf(Blocks.PISTON) && this.world.getBlockState(this.pistonBlockPos).get(PistonBlock.FACING) == Direction.DOWN) {
                 this.status = Status.Finish;

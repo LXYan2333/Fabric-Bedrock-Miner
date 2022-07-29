@@ -67,6 +67,7 @@ public class BlockPlacer {
         ClientPlayerEntity player = minecraftClient.player;
         ItemStack itemStack = player.getStackInHand(Hand.MAIN_HAND);
 
+        assert minecraftClient.interactionManager != null;
         minecraftClient.interactionManager.sendSequencedPacket(minecraftClient.world, sequence -> new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, hitResult, sequence));
 
         if (!itemStack.isEmpty() && !player.getItemCooldownManager().isCoolingDown(itemStack.getItem())) {

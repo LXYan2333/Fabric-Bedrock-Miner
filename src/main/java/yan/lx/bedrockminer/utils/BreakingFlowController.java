@@ -30,7 +30,7 @@ public class BreakingFlowController {
 
     public static void addBlockPosToList(BlockPos pos) {
         ClientWorld world = MinecraftClient.getInstance().world;
-        if (BlockBreaker.blocksOfInterest.contains(world.getBlockState(pos).getBlock())) {
+        if (world.getBlockState(pos).isOf(Blocks.BEDROCK)) {
             MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
             String haveEnoughItems = InventoryManager.warningMessage();

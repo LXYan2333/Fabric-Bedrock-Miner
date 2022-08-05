@@ -2,7 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "yan.lx.bedrockminer.mixins",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_8",
   "mixins": [
   ],
   "client": [

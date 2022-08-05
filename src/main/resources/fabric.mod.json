@@ -4,7 +4,7 @@
   "version": "1.0.0",
 
   "name": "Bedrock Miner",
-  "description": "tweaked version of a Client mod to mine bedrock!",
+  "description": "Client mod to mine bedrock!",
   "authors": [
     "LXYan"
   ],
@@ -16,11 +16,8 @@
   "license": "",
   "icon": "assets/bedrockminer/icon.png",
 
-  "environment": "client",
+  "environment": "*",
   "entrypoints": {
-    "client": [
-      "yan.lx.bedrockminer.BedrockMinerClient"
-    ],
     "main": [
     ]
   },
@@ -29,7 +26,7 @@
   ],
 
   "depends": {
-    "fabricloader": ">=0.14.8",
+    "fabricloader": ">=0.14.7",
     "minecraft": "1.19.x",
     "java": ">=17"
   },

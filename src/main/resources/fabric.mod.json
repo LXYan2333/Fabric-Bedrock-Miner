@@ -6,7 +6,8 @@
   "name": "Bedrock Miner",
   "description": "Client mod to mine bedrock!",
   "authors": [
-    "LXYan"
+    "LXYan",
+    "rockerle"
   ],
   "contact": {
     "homepage": "https://github.com/LXYan2333/Fabric-Bedrock-Miner",
@@ -18,7 +19,8 @@
 
   "environment": "*",
   "entrypoints": {
-    "main": [
+    "client": [
+      "yan.lx.bedrockminer.TweakedFBMClient"
     ]
   },
   "mixins": [
@@ -26,8 +28,8 @@
   ],
 
   "depends": {
-    "fabricloader": ">=0.14.7",
-    "minecraft": "1.19.x",
+    "fabricloader": ">=0.14.8",
+    "minecraft": "1.19.1",
     "java": ">=17"
   },
   "suggests": {

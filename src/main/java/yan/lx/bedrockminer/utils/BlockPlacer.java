@@ -15,7 +15,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
-
 public class BlockPlacer {
     public static void simpleBlockPlacement(BlockPos pos, ItemConvertible item) {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
@@ -66,7 +65,7 @@ public class BlockPlacer {
         ItemStack itemStack = player.getStackInHand(Hand.MAIN_HAND);
 
         minecraftClient.interactionManager.sendSequencedPacket(minecraftClient.world, sequence ->
-                new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, hitResult, sequence));
+            new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, hitResult, sequence));
 
         if (!itemStack.isEmpty() && !player.getItemCooldownManager().isCoolingDown(itemStack.getItem())) {
             ItemUsageContext itemUsageContext = new ItemUsageContext(player, Hand.MAIN_HAND, hitResult);

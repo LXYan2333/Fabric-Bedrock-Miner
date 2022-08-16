@@ -3,71 +3,54 @@ package yan.lx.bedrockminer.utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-//import net.minecraft.client.network.ClientPlayerEntity;
-//import net.minecraft.entity.Entity;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
-//import net.minecraft.item.Items;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
-//import net.minecraft.util.math.Position;
-//import net.minecraft.util.math.Vec3d;
-//import net.minecraft.util.math.Vec3i;
 
 import java.util.ArrayList;
 //import java.util.List;
 
 public class BreakingFlowController {
     private static ArrayList<TargetBlock> cachedTargetBlockList = new ArrayList<>();
-    public static ArrayList<Block> allowBreakBlockList = new ArrayList<>();
+    private static ArrayList<Block> allowBlockList = new ArrayList<>();
+    private static ArrayList<String> allowBlockNameList = new ArrayList<>();
 
     public static boolean isWorking() {
         return working;
     }
 
+    public static String getBlocksName() {
+        return String.join("|", allowBlockNameList);
+    }
+
     private static boolean working = false;
 
     static {
-        allowBreakBlockList.add(Blocks.BEDROCK);            // 基岩
-        allowBreakBlockList.add(Blocks.OBSIDIAN);           // 黑曜石
-        allowBreakBlockList.add(Blocks.END_PORTAL);         // 末地传送门
-        allowBreakBlockList.add(Blocks.END_PORTAL_FRAME);   // 末地传送门-框架
-        allowBreakBlockList.add(Blocks.END_GATEWAY);        // 末地折跃门
-    }
-
-    public static void onInitComplete(ClientWorld world, HitResult crosshairTarget, @Nullable ClientPlayerEntity player) {
-        BlockHitResult blockHitResult = (BlockHitResult) crosshairTarget;
-        for (Block block : allowBreakBlockList) {
-            if (world.getBlockState(blockHitResult.getBlockPos()).isOf(block) && player.getMainHandStack().isEmpty()) {
-                BreakingFlowController.switchOnOff();
-                break;
-            }
-        }
-    }
-
-    public static void onHandleBlockBreaking(ClientWorld world, BlockPos blockPos) {
-        for (Block block : allowBreakBlockList) {
-            if (world.getBlockState(blockPos).isOf(block) && BreakingFlowController.isWorking()) {
-                BreakingFlowController.addBlockPosToList(blockPos);
-                break;
-            }
+        allowBlockList.add(Blocks.BEDROCK);            // 基岩
+        allowBlockList.add(Blocks.OBSIDIAN);           // 黑曜石
+        allowBlockList.add(Blocks.END_PORTAL);         // 末地传送门
+        allowBlockList.add(Blocks.END_PORTAL_FRAME);   // 末地传送门-框架
+        allowBlockList.add(Blocks.END_GATEWAY);        // 末地折跃门
+        // 添加已支持方块名称(输出文本使用)
+        for (Block block : allowBlockList) {
+            allowBlockNameList.add(block.getName().getString());
         }
     }
 
     public static void addBlockPosToList(BlockPos pos) {
         ClientWorld world = MinecraftClient.getInstance().world;
         Block block = null;
-        for (Block block1 : allowBreakBlockList) {
-            if (world.getBlockState(pos).isOf(block1)) {
-                block = block1;
+        for (Block allowBlock : allowBlockList) {
+            if (world.getBlockState(pos).isOf(allowBlock)) {
+                block = allowBlock;
                 break;
             }
         }
         if (block == null) {
-            Messager.rawactionBar("请确保敲击的方块是(基岩|黑曜石|末地传送门)其中一个！");
+            Messager.rawactionBar("请确保敲击的方块还是" + getBlocksName() + "！");
         }
 
         String haveEnoughItems = InventoryManager.warningMessage();
@@ -75,13 +58,12 @@ public class BreakingFlowController {
             Messager.actionBar(haveEnoughItems);
             return;
         }
+
         if (shouldAddNewTargetBlock(pos)) {
-            TargetBlock targetBlock = new TargetBlock(pos, world);
+            TargetBlock targetBlock = new TargetBlock(block, pos, world);
             cachedTargetBlockList.add(targetBlock);
         }
-
     }
-
 
     public static void tick() {
         if (InventoryManager.warningMessage() != null) {
@@ -90,24 +72,25 @@ public class BreakingFlowController {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         PlayerEntity player = minecraftClient.player;
 
-        if (!minecraftClient.interactionManager.getCurrentGameMode().isSurvivalLike()) {
+        if (!"survival".equals(minecraftClient.interactionManager.getCurrentGameMode().getName())) {
             return;
         }
 
         for (int i = 0; i < cachedTargetBlockList.size(); i++) {
             TargetBlock selectedBlock = cachedTargetBlockList.get(i);
 
-            // 玩家切换世界
+            //玩家切换世界，或离目标方块太远时，删除所有缓存的任务
             if (selectedBlock.getWorld() != MinecraftClient.getInstance().world) {
-                cachedTargetBlockList.clear();  // 清空所有缓存的任务
+                cachedTargetBlockList = new ArrayList<TargetBlock>();
                 break;
             }
 
             if (blockInPlayerRange(selectedBlock.getBlockPos(), player, 3.4f)) {
                 TargetBlock.Status status = cachedTargetBlockList.get(i).tick();
-                // 判断任务是否执行完毕
-                if (status == TargetBlock.Status.Finish) {
-                    cachedTargetBlockList.remove(i); // 删除当前任务
+                if (status == TargetBlock.Status.RETRACTING) {
+                    continue;
+                } else if (status == TargetBlock.Status.FAILED || status == TargetBlock.Status.RETRACTED) {
+                    cachedTargetBlockList.remove(i);
                 } else {
                     break;
                 }
@@ -133,17 +116,27 @@ public class BreakingFlowController {
         return true;
     }
 
-    public static void switchOnOff() {
+    public static void switchOnOff(@Nullable ClientWorld world, BlockHitResult blockHitResult, @Nullable ClientPlayerEntity player) {
+        Block block = null;
+        for (Block allowBlock : allowBlockList) {
+            if (world.getBlockState(blockHitResult.getBlockPos()).isOf(allowBlock)) {
+                block = allowBlock;
+                break;
+            }
+        }
+        if (block == null) {
+            return;
+        }
+
         if (working) {
             Messager.chat("bedrockminer.toggle.off");
 
             working = false;
         } else {
             Messager.chat("bedrockminer.toggle.on");
-
+            Messager.rawchat(getBlocksName());
             MinecraftClient minecraftClient = MinecraftClient.getInstance();
             if (!minecraftClient.isInSingleplayer()) {
-
                 Messager.chat("bedrockminer.warn.multiplayer");
             }
             working = true;
@@ -152,7 +145,7 @@ public class BreakingFlowController {
 
 
     //测试用的。使用原版模式已经足以满足大多数需求。
-//just for test. The VANILLA mode is powerful enough.
+    //just for test. The VANILLA mode is powerful enough.
     enum WorkingMode {
         CARPET_EXTRA,
         VANILLA,

@@ -35,6 +35,7 @@ public class BreakingFlowController {
         allowBreakBlockList.add(Blocks.OBSIDIAN);           // 黑曜石
         allowBreakBlockList.add(Blocks.END_PORTAL);         // 末地传送门
         allowBreakBlockList.add(Blocks.END_PORTAL_FRAME);   // 末地传送门-框架
+        allowBreakBlockList.add(Blocks.END_GATEWAY);        // 末地折跃门
     }
 
     public static void onInitComplete(ClientWorld world, HitResult crosshairTarget, @Nullable ClientPlayerEntity player) {

@@ -4,8 +4,6 @@ package yan.lx.bedrockminer.utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
-import java.util.UUID;
-
 public class Messager {
     public static void actionBar(String message){
         MinecraftClient minecraftClient = MinecraftClient.getInstance();

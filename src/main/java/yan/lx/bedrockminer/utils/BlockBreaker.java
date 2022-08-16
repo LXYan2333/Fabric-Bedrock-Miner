@@ -17,6 +17,4 @@ public class BlockBreaker {
         InventoryManager.switchToItem(Items.DIAMOND_PICKAXE);
         MinecraftClient.getInstance().interactionManager.attackBlock(pos, Direction.UP);
     }
-
-
 }

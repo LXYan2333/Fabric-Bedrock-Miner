@@ -33,7 +33,8 @@ public class BreakingFlowController {
     static {
         allowBreakBlockList.add(Blocks.BEDROCK);            // 基岩
         allowBreakBlockList.add(Blocks.OBSIDIAN);           // 黑曜石
-        allowBreakBlockList.add(Blocks.END_PORTAL_FRAME);   // 末地传送门
+        allowBreakBlockList.add(Blocks.END_PORTAL);         // 末地传送门
+        allowBreakBlockList.add(Blocks.END_PORTAL_FRAME);   // 末地传送门-框架
     }
 
     public static void onInitComplete(ClientWorld world, HitResult crosshairTarget, @Nullable ClientPlayerEntity player) {
@@ -88,27 +89,24 @@ public class BreakingFlowController {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         PlayerEntity player = minecraftClient.player;
 
-        if (!minecraftClient.interactionManager.getCurrentGameMode().getName().equals("survival")) {
+        if (!minecraftClient.interactionManager.getCurrentGameMode().isSurvivalLike()) {
             return;
         }
 
         for (int i = 0; i < cachedTargetBlockList.size(); i++) {
             TargetBlock selectedBlock = cachedTargetBlockList.get(i);
 
-            //玩家切换世界，或离目标方块太远时，删除所有缓存的任务
+            // 玩家切换世界
             if (selectedBlock.getWorld() != MinecraftClient.getInstance().world) {
-                cachedTargetBlockList = new ArrayList<TargetBlock>();
+                cachedTargetBlockList.clear();  // 清空所有缓存的任务
                 break;
             }
 
             if (blockInPlayerRange(selectedBlock.getBlockPos(), player, 3.4f)) {
                 TargetBlock.Status status = cachedTargetBlockList.get(i).tick();
-                if (status == null) break;
-
-                if (status == TargetBlock.Status.RETRACTING) {
-                    continue;
-                } else if (status == TargetBlock.Status.FAILED || status == TargetBlock.Status.RETRACTED) {
-                    cachedTargetBlockList.remove(i);
+                // 判断任务是否执行完毕
+                if (status == TargetBlock.Status.Finish) {
+                    cachedTargetBlockList.remove(i); // 删除当前任务
                 } else {
                     break;
                 }

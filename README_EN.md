@@ -6,7 +6,7 @@ A Fabric client mod to "mine" bedrock!
 # illustrate
 This project fork modified from "LXYan2333/Fabric-Bedrock-Miner"<br>
 Original project address: https://github.com/LXYan2333/Fabric-Bedrock-Miner
-1. Now supports bedrock, obsidian, end portal, end portal-framework
+1. Now supports bedrock, obsidian, end portal, end portal-framework, End Gateway Portal
 2. Optimize item recovery, delay the destruction of the piston after 1Tick, to prevent the failure of item destruction due to too fast destruction
 
 # Showcase

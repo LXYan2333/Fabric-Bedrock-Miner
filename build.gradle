@@ -1,7 +1,7 @@
 plugins {
 	id 'fabric-loom' version '0.12-SNAPSHOT'
 	id 'maven-publish'
-	id 'com.github.johnrengelman.shadow' version '7.0.0'
+	//id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -13,6 +13,7 @@ group = project.maven_group
 
 repositories {
 	//ClientArguments
+	mavenCentral()
 	maven{
 		url 'https://maven.xpple.dev/maven2'
 	}
@@ -28,8 +29,9 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	//ClientArguments
-
-	shadow(modImplementation("dev.xpple:clientarguments:1.4.1"))
+	modImplementation(include("dev.xpple:clientarguments:1.4.1"))
+	//include 'dev.xpple:clientarguments:1.4.1'
+	//shadow(modImplementation("dev.xpple:clientarguments:1.4.1"))
 	// Fabric-API
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 }
@@ -65,16 +67,16 @@ jar {
 		rename { "${it}_${project.archivesBaseName}"}
 	}
 }
-shadowJar {
-	configurations = [project.configurations.shadow]
-	archiveClassifier.set("dev")
-	relocate "net.objecthunter", "de.siphalor.spiceoffabric.shadow.net.objecthunter"
-}
+//shadowJar {
+//	configurations = [project.configurations.shadow]
+//	archiveClassifier.set("dev")
+//	relocate "net.objecthunter", "de.siphalor.spiceoffabric.shadow.net.objecthunter"
+//}
 
-remapJar {
-	dependsOn(shadowJar)
-	inputFile = tasks.shadowJar.archiveFile
-}
+//remapJar {
+//	dependsOn(shadowJar)
+//	inputFile = tasks.shadowJar.archiveFile
+//}
 // configure the maven publication
 publishing {
 	publications {

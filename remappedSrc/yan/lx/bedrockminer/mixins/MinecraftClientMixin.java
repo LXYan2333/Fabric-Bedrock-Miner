@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import yan.lx.bedrockminer.utils.BlockBreaker;
 import yan.lx.bedrockminer.utils.BreakingFlowController;
 
 
@@ -46,7 +47,7 @@ public class MinecraftClientMixin {
     private void onInitComplete(CallbackInfo ci) {
         if (this.crosshairTarget.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHitResult = (BlockHitResult) this.crosshairTarget;
-            if (world.getBlockState(blockHitResult.getBlockPos()).isOf(Blocks.BEDROCK) && player.getMainHandStack().isEmpty()) {
+            if (BlockBreaker.blocksOfInterest.contains(world.getBlockState(blockHitResult.getBlockPos()).getBlock()) && player.getMainHandStack().isEmpty()) {
                 BreakingFlowController.switchOnOff();
             }
         }
@@ -56,7 +57,7 @@ public class MinecraftClientMixin {
 
     @Inject(method = "handleBlockBreaking", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;swingHand(Lnet/minecraft/util/Hand;)V"), locals = LocalCapture.CAPTURE_FAILSOFT)
     private void inject(boolean bl, CallbackInfo ci, BlockHitResult blockHitResult, BlockPos blockPos, Direction direction) {
-        if (world.getBlockState(blockPos).isOf(Blocks.BEDROCK) && BreakingFlowController.isWorking()) {
+        if (BlockBreaker.blocksOfInterest.contains(world.getBlockState(blockPos).getBlock()) && BreakingFlowController.isWorking()) {
             BreakingFlowController.addBlockPosToList(blockPos);
         }
 

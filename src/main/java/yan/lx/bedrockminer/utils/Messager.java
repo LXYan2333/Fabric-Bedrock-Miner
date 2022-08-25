@@ -22,4 +22,3 @@ public class Messager {
         MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.literal(message));
     }
 }
-

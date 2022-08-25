@@ -57,7 +57,7 @@ public class BreakingFlowController {
         }
         for (Block block : allowBlockList) {
             if (world.getBlockState(blockPos).isOf(block)) {
-                BreakingFlowController.addBlockPosToList(blockPos);
+                addBlockPosToList(blockPos);
                 return;
             }
         }
@@ -92,11 +92,6 @@ public class BreakingFlowController {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         ClientWorld world = minecraftClient.world;
         if (world == null) return;
-
-        // 判断敲击方块类别
-        if (!world.getBlockState(pos).isOf(Blocks.BEDROCK)) {
-            Messager.rawactionBar("请确保敲击的方块还是基岩！");
-        }
 
         // 判断部分开启条件
         String haveEnoughItems = InventoryManager.warningMessage();

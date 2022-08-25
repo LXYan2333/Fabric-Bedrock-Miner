@@ -17,15 +17,21 @@ import net.minecraft.util.math.Vec3d;
 
 public class BlockPlacer {
     public static void simpleBlockPlacement(BlockPos pos, ItemConvertible item) {
-        MinecraftClient minecraftClient = MinecraftClient.getInstance();
+//        MinecraftClient minecraftClient = MinecraftClient.getInstance();
+//
+//        InventoryManager.switchToItem(item);
+//        BlockHitResult hitResult = new BlockHitResult(new Vec3d(pos.getX(), pos.getY(), pos.getZ()), Direction.UP, pos, false);
+////        minecraftClient.interactionManager.interactBlock(minecraftClient.player, minecraftClient.world, Hand.MAIN_HAND, hitResult);
+//        placeBlockWithoutInteractingBlock(minecraftClient, hitResult);
 
-        InventoryManager.switchToItem(item);
-        BlockHitResult hitResult = new BlockHitResult(new Vec3d(pos.getX(), pos.getY(), pos.getZ()), Direction.UP, pos, false);
-//        minecraftClient.interactionManager.interactBlock(minecraftClient.player, minecraftClient.world, Hand.MAIN_HAND, hitResult);
-        placeBlockWithoutInteractingBlock(minecraftClient, hitResult);
+        placement(pos, item, Direction.UP);
     }
 
     public static void pistonPlacement(BlockPos pos, Direction direction) {
+        placement(pos, Blocks.PISTON, direction);
+    }
+
+    public static void placement(BlockPos pos, ItemConvertible itemConvertible, Direction direction) {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         double x = pos.getX();
 
@@ -54,7 +60,7 @@ public class BlockPlacer {
 
         Vec3d vec3d = new Vec3d(x, pos.getY(), pos.getZ());
 
-        InventoryManager.switchToItem(Blocks.PISTON);
+        InventoryManager.switchToItem(itemConvertible);
         BlockHitResult hitResult = new BlockHitResult(vec3d, Direction.UP, pos, false);
 //        minecraftClient.interactionManager.interactBlock(minecraftClient.player, minecraftClient.world, Hand.MAIN_HAND, hitResult);
         placeBlockWithoutInteractingBlock(minecraftClient, hitResult);
@@ -65,7 +71,7 @@ public class BlockPlacer {
         ItemStack itemStack = player.getStackInHand(Hand.MAIN_HAND);
 
         minecraftClient.interactionManager.sendSequencedPacket(minecraftClient.world, sequence ->
-            new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, hitResult, sequence));
+                new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, hitResult, sequence));
 
         if (!itemStack.isEmpty() && !player.getItemCooldownManager().isCoolingDown(itemStack.getItem())) {
             ItemUsageContext itemUsageContext = new ItemUsageContext(player, Hand.MAIN_HAND, hitResult);

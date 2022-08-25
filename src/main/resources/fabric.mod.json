@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "bedrockminer",
-  "version": "1.19.2",
+  "version": "1.0.0",
 
   "name": "Bedrock Miner",
   "description": "Client mod to mine bedrock!",
@@ -27,12 +27,11 @@
 
   "depends": {
     "fabricloader": ">=0.14.9",
-    "fabric": "*",
-    "minecraft": "1.19.2",
+    "minecraft": "1.19.x",
     "java": ">=17"
   },
   "suggests": {
     "another-mod": "*"
   },
-  "accessWidener": "bedrock-miner.accesswidener"
+  "accessWidener" : "bedrock-miner.accesswidener"
 }

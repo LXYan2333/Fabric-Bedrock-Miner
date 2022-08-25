@@ -9,10 +9,10 @@ import yan.lx.bedrockminer.utils.BreakingFlowController;
 
 @Mixin(ClientPlayerInteractionManager.class)
 public class ClientPlayerInteractionManagerMixin {
+
+    /*** 交互更新 ***/
     @Inject(at = @At("HEAD"), method = "tick")
     private void init(CallbackInfo info) {
-        if (BreakingFlowController.isWorking()) {
-            BreakingFlowController.tick();
-        }
+        BreakingFlowController.tick();
     }
 }

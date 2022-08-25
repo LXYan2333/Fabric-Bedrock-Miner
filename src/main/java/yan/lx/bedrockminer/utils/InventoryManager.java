@@ -61,9 +61,13 @@ public class InventoryManager {
         return false;
     }
 
+    /*** 获取方块破坏速度 ***/
     private static float getBlockBreakingSpeed(BlockState block, int slot) {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         PlayerEntity player = minecraftClient.player;
+
+        if (player == null) return 0;
+
         ItemStack stack = player.getInventory().getStack(slot);
 
         float f = stack.getMiningSpeedMultiplier(block);
@@ -110,8 +114,10 @@ public class InventoryManager {
         return f;
     }
 
+    /*** 获取物品数量 ***/
     public static int getInventoryItemCount(ItemConvertible item) {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
+        if (minecraftClient.player == null) return 0;
         PlayerInventory playerInventory = minecraftClient.player.getInventory();
         return playerInventory.count(item.asItem());
     }
@@ -130,7 +136,7 @@ public class InventoryManager {
             return "bedrockminer.fail.missing.redstonetorch";
         }
 
-        if (InventoryManager.getInventoryItemCount(Blocks.SLIME_BLOCK)<1){
+        if (InventoryManager.getInventoryItemCount(Blocks.SLIME_BLOCK) < 1) {
             return "bedrockminer.fail.missing.slime";
         }
 

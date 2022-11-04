@@ -1,8 +1,5 @@
 package yan.lx.bedrockminer.utils;
 
-//import net.fabricmc.fabric.api.event.client.player.ClientPickBlockCallback;
-//import net.minecraft.client.MinecraftClient;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -130,7 +127,7 @@ public class InventoryManager {
             return "bedrockminer.fail.missing.redstonetorch";
         }
 
-        if (InventoryManager.getInventoryItemCount(Blocks.SLIME_BLOCK)<1){
+        if (InventoryManager.getInventoryItemCount(Blocks.SLIME_BLOCK) < 1) {
             return "bedrockminer.fail.missing.slime";
         }
 

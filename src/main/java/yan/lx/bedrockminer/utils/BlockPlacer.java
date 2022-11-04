@@ -65,7 +65,7 @@ public class BlockPlacer {
         ItemStack itemStack = player.getStackInHand(Hand.MAIN_HAND);
 
         minecraftClient.interactionManager.sendSequencedPacket(minecraftClient.world, sequence ->
-            new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, hitResult, sequence));
+                new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, hitResult, sequence));
 
         if (!itemStack.isEmpty() && !player.getItemCooldownManager().isCoolingDown(itemStack.getItem())) {
             ItemUsageContext itemUsageContext = new ItemUsageContext(player, Hand.MAIN_HAND, hitResult);

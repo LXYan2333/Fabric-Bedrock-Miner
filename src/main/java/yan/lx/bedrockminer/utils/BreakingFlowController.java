@@ -30,22 +30,17 @@ public class BreakingFlowController {
 
     public static void addBlockPosToList(BlockPos pos) {
         ClientWorld world = MinecraftClient.getInstance().world;
-        if (world.getBlockState(pos).isOf(Blocks.BEDROCK)) {
-            MinecraftClient minecraftClient = MinecraftClient.getInstance();
+        MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
-            String haveEnoughItems = InventoryManager.warningMessage();
-            if (haveEnoughItems != null) {
-                Messager.actionBar(haveEnoughItems);
-                return;
-            }
+        String haveEnoughItems = InventoryManager.warningMessage();
+        if (haveEnoughItems != null) {
+            Messager.actionBar(haveEnoughItems);
+            return;
+        }
 
-            if (shouldAddNewTargetBlock(pos)){
-                TargetBlock targetBlock = new TargetBlock(pos, world);
-                cachedTargetBlockList.add(targetBlock);
-            }
-        } else {
-            //Does not Have an english version, Left out of lang for now. (raw To prevent Errors)
-            Messager.rawactionBar("请确保敲击的方块还是基岩！");
+        if (shouldAddNewTargetBlock(pos)) {
+            TargetBlock targetBlock = new TargetBlock(pos, world);
+            cachedTargetBlockList.add(targetBlock);
         }
     }
 

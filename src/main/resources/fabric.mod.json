@@ -19,6 +19,9 @@
   "environment": "client",
   "entrypoints": {
     "main": [
+    ],
+    "client": [
+      "yan.lx.bedrockminer.ClientModMain"
     ]
   },
   "mixins": [

@@ -1,6 +1,6 @@
 {
   "bedrockminer": "",
-  "bedrockminer.toggle.on": "\n§7╔════════════════════════════════╗§r\n§7║§r                                                                        §7║§r\n§7║§r Bedrock Miner started! Left click bedrock to break it.    §7║§r\n§7║§r                                                                        §7║§r\n§7╚════════  Author: LXYan  作者：LXYan  ════════╝§r\n",
+  "bedrockminer.toggle.on": "Bedrock Miner started! Left click bedrock to break it.",
   "bedrockminer.toggle.off": "Bedrock Miner stopped.",
   "bedrockminer.warn.multiplayer": "§7It seems that you are playing on a server? §r\n§7Please ask other players' opinions first.§r",
   "bedrockminer.fail.place.piston": "Failed to place piston!",

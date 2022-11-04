@@ -16,9 +16,12 @@
   "license": "",
   "icon": "assets/bedrockminer/icon.png",
 
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
     "main": [
+    ],
+    "client": [
+      "yan.lx.bedrockminer.ClientModMain"
     ]
   },
   "mixins": [

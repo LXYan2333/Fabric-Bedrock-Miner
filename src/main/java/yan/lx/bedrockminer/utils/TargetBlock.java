@@ -1,25 +1,18 @@
 package yan.lx.bedrockminer.utils;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.block.FacingBlock;
 import net.minecraft.block.PistonBlock;
 import net.minecraft.client.world.ClientWorld;
-//import net.minecraft.item.ItemStack;
-import net.minecraft.datafixer.fix.ChunkPalettedStorageFix;
-import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 import java.util.ArrayList;
 
-import static net.minecraft.block.Block.sideCoversSmallSquare;
-//import net.minecraft.world.World;
-
 public class TargetBlock {
-    private BlockPos blockPos;
+    private final BlockPos blockPos;
     private BlockPos redstoneTorchBlockPos;
-    private BlockPos pistonBlockPos;
-    private ClientWorld world;
+    private final BlockPos pistonBlockPos;
+    private final ClientWorld world;
     private Status status;
     private BlockPos slimeBlockPos;
     private int tickTimes;
@@ -105,7 +98,7 @@ public class TargetBlock {
         NEEDS_WAITING,
         RETRACTING,
         RETRACTED,
-        STUCK;
+        STUCK
     }
 
     public BlockPos getBlockPos() {
@@ -141,7 +134,7 @@ public class TargetBlock {
             this.status = Status.EXTENDED;
         } else if (this.world.getBlockState(this.pistonBlockPos).isOf(Blocks.MOVING_PISTON)) {
             this.status = Status.RETRACTING;
-        }  else if (this.world.getBlockState(this.pistonBlockPos).isOf(Blocks.PISTON) && !this.world.getBlockState(this.pistonBlockPos).get(PistonBlock.EXTENDED) && CheckingEnvironment.findNearbyRedstoneTorch(this.world, this.pistonBlockPos).size() != 0 && this.world.getBlockState(this.blockPos).isOf(Blocks.BEDROCK)) {
+        } else if (this.world.getBlockState(this.pistonBlockPos).isOf(Blocks.PISTON) && !this.world.getBlockState(this.pistonBlockPos).get(PistonBlock.EXTENDED) && CheckingEnvironment.findNearbyRedstoneTorch(this.world, this.pistonBlockPos).size() != 0 && this.world.getBlockState(this.blockPos).isOf(Blocks.BEDROCK)) {
             this.status = Status.UNEXTENDED_WITH_POWER_SOURCE;
         } else if (this.hasTried && this.world.getBlockState(this.pistonBlockPos).isOf(Blocks.PISTON) && this.stuckTicksCounter < 15) {
             this.status = Status.NEEDS_WAITING;
@@ -150,7 +143,7 @@ public class TargetBlock {
             this.status = Status.STUCK;
             this.hasTried = false;
             this.stuckTicksCounter = 0;
-        }else if (this.world.getBlockState(this.pistonBlockPos).isOf(Blocks.PISTON) && !this.world.getBlockState(this.pistonBlockPos).get(PistonBlock.EXTENDED) && this.world.getBlockState(this.pistonBlockPos).get(PistonBlock.FACING) == Direction.UP && CheckingEnvironment.findNearbyRedstoneTorch(this.world, this.pistonBlockPos).size() == 0 && this.world.getBlockState(this.blockPos).isOf(Blocks.BEDROCK)) {
+        } else if (this.world.getBlockState(this.pistonBlockPos).isOf(Blocks.PISTON) && !this.world.getBlockState(this.pistonBlockPos).get(PistonBlock.EXTENDED) && this.world.getBlockState(this.pistonBlockPos).get(PistonBlock.FACING) == Direction.UP && CheckingEnvironment.findNearbyRedstoneTorch(this.world, this.pistonBlockPos).size() == 0 && this.world.getBlockState(this.blockPos).isOf(Blocks.BEDROCK)) {
             this.status = Status.UNEXTENDED_WITHOUT_POWER_SOURCE;
         } else if (CheckingEnvironment.has2BlocksOfPlaceToPlacePiston(world, this.blockPos)) {
             this.status = Status.UNINITIALIZED;

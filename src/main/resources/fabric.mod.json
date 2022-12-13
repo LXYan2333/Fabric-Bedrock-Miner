@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "bedrockminer",
-  "version": "1.0.0",
+  "version": "1.19.3",
 
   "name": "Bedrock Miner",
   "description": "Client mod to mine bedrock!",

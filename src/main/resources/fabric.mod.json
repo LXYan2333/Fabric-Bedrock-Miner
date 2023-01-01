@@ -1,36 +1,35 @@
 {
   "schemaVersion": 1,
   "id": "bedrockminer",
-  "version": "1.0.0",
-
+  "version": "${version}",
   "name": "Bedrock Miner",
   "description": "Client mod to mine bedrock!",
   "authors": [
+    "Bunny_i",
     "LXYan"
   ],
   "contact": {
     "homepage": "https://github.com/LXYan2333/Fabric-Bedrock-Miner",
     "sources": "https://github.com/LXYan2333/Fabric-Bedrock-Miner"
   },
-
   "license": "",
   "icon": "assets/bedrockminer/icon.png",
-
   "environment": "*",
   "entrypoints": {
     "main": [
+      "yan.lx.bedrockminer.BedrockMinerMod"
     ]
   },
   "mixins": [
     "bedrock-miner.json"
   ],
-
   "depends": {
-    "fabricloader": ">=0.11.3",
-    "minecraft": "1.18.x",
+    "fabricloader": ">=0.14.12",
+    "minecraft": "1.19.x",
     "java": ">=17"
   },
   "suggests": {
     "another-mod": "*"
-  }
+  },
+  "accessWidener" : "bedrock-miner.accesswidener"
 }

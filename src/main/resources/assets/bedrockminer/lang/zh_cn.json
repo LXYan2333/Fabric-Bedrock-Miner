@@ -1,7 +1,7 @@
 {
-  "bedrockminer": "",
-  "bedrockminer.toggle.on": "\n§7╔════════════════════════════════╗§r\n§7║§r                                                                        §7║§r\n§7║§r Bedrock Miner已启动！左键基岩即可自动破除基岩。                 §7║§r\n§7║§r                                                                        §7║§r\n§7╚════════  Author: LXYan  作者：LXYan  ════════╝§r\n",
-  "bedrockminer.toggle.off": "Bedrock Miner已关闭。",
+  "bedrockminer": "Bedrock Miner",
+  "bedrockminer.toggle.on": "§2Bedrock Miner 启动成功！作者：Bunny_i, 原作者：LXYan (当前项目已重构部分处理逻辑代码)",
+  "bedrockminer.toggle.off": "§7Bedrock Miner 关闭成功。",
   "bedrockminer.warn.multiplayer": "§7看起来你好像是在服务器使用Bedrock Miner？§r\n§7在使用本mod前请先征询其他玩家的意见。§r",
   "bedrockminer.fail.place.piston": "无法放置活塞！",
   "bedrockminer.fail.place.redstonetorch": "无法放置红石火把！",

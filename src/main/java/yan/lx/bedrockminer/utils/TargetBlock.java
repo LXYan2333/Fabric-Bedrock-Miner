@@ -108,7 +108,7 @@ public class TargetBlock {
                 Debug.info("[查找活塞位置]: 准备");
                 this.pistonBlockPos = blockPos.up();
                 // 检查活塞能否放置
-                if (CheckingEnvironment.has2BlocksOfPlaceToPlacePiston(world, pistonBlockPos)) {
+                if (CheckingEnvironment.has2BlocksOfPlaceToPlacePiston(world, blockPos)) {
                     Debug.info("[查找活塞位置]: 完成, " + pistonBlockPos);
                     this.status = Status.WAIT_GAME_UPDATE;  // 等待更新状态
                 } else {
@@ -143,7 +143,7 @@ public class TargetBlock {
             case PLACE_PISTON -> {
                 if (pistonBlockPos != null) {
                     Debug.info("[放置活塞]: 放置准备, " + pistonBlockPos);
-                    if (!CheckingEnvironment.has2BlocksOfPlaceToPlacePiston(world, this.blockPos)) {
+                    if (!CheckingEnvironment.has2BlocksOfPlaceToPlacePiston(world, blockPos)) {
                         Messager.actionBar("bedrockminer.fail.place.piston");   // 无法放置活塞
                         this.status = Status.FAILED;
                         Debug.info("[放置活塞]: 无法放置");

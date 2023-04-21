@@ -84,7 +84,7 @@ public class BreakingFlowController {
     }
 
     private static boolean blockInPlayerRange(BlockPos blockPos, PlayerEntity player, float range) {
-        return blockPos.isWithinDistance(player.getPos(), range);
+        return blockPos.isWithinDistance(player.getEyePos(), range);
     }
 
     public static WorkingMode getWorkingMode() {

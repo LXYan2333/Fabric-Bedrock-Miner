@@ -1,7 +1,11 @@
 package yan.lx.bedrockminer.utils;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
@@ -25,14 +29,15 @@ public class CheckingEnvironment {
     }
 
     public static BlockPos findPossibleSlimeBlockPos(ClientWorld world, BlockPos blockPos) {
-        if (world.getBlockState(blockPos.east()).getMaterial().isReplaceable() && (world.getBlockState(blockPos.east().up()).getMaterial().isReplaceable())) {
-            return blockPos.east();
-        } else if (world.getBlockState(blockPos.west()).getMaterial().isReplaceable() && (world.getBlockState(blockPos.west().up()).getMaterial().isReplaceable())) {
-            return blockPos.west();
-        } else if (world.getBlockState(blockPos.south()).getMaterial().isReplaceable() && (world.getBlockState(blockPos.south().up()).getMaterial().isReplaceable())) {
-            return blockPos.south();
-        } else if (world.getBlockState(blockPos.north()).getMaterial().isReplaceable() && (world.getBlockState(blockPos.north().up()).getMaterial().isReplaceable())) {
-            return blockPos.north();
+        for (Direction direction :Direction.Type.HORIZONTAL){
+            BlockPos newBlockPos = blockPos.offset(direction);
+            if (!world.getBlockState(newBlockPos).getMaterial().isReplaceable()){
+                continue;
+            }
+            if (CheckingEnvironment.isBlocked(newBlockPos)){
+                continue;
+            }
+            return newBlockPos;
         }
         return null;
     }
@@ -41,7 +46,10 @@ public class CheckingEnvironment {
         if (world.getBlockState(blockPos.up()).getHardness(world, blockPos.up()) == 0) {
             BlockBreaker.breakBlock(world, blockPos.up());
         }
-        return world.getBlockState(blockPos.up()).getMaterial().isReplaceable() && world.getBlockState(blockPos.up().up()).getMaterial().isReplaceable();
+        if (isBlocked(blockPos.up())) {
+            return false;
+        }
+        return world.getBlockState(blockPos.up().up()).getMaterial().isReplaceable();
     }
 
     public static ArrayList<BlockPos> findNearbyRedstoneTorch(ClientWorld world, BlockPos pistonBlockPos) {
@@ -59,5 +67,13 @@ public class CheckingEnvironment {
             list.add(pistonBlockPos.north());
         }
         return list;
+    }
+
+    public static boolean isBlocked(BlockPos blockPos){
+        ItemPlacementContext context = new ItemPlacementContext(MinecraftClient.getInstance().player,
+                Hand.MAIN_HAND,
+                Blocks.SLIME_BLOCK.asItem().getDefaultStack(),
+                new BlockHitResult(blockPos.toCenterPos(),Direction.UP,blockPos,false));
+        return !Blocks.SLIME_BLOCK.asItem().useOnBlock(context).isAccepted();
     }
 }

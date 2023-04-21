@@ -24,10 +24,6 @@ public class BreakingFlowController {
 
     private static boolean working = false;
 
-    static {
-
-    }
-
     public static void addBlockPosToList(BlockPos pos) {
         ClientWorld world = MinecraftClient.getInstance().world;
         if (world.getBlockState(pos).isOf(Blocks.BEDROCK)) {

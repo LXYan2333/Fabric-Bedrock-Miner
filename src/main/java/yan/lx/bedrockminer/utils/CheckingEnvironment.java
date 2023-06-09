@@ -16,13 +16,13 @@ import static net.minecraft.block.Block.sideCoversSmallSquare;
 public class CheckingEnvironment {
 
     public static BlockPos findNearbyFlatBlockToPlaceRedstoneTorch(ClientWorld world, BlockPos blockPos) {
-        if ((sideCoversSmallSquare(world, blockPos.east(), Direction.UP) && (world.getBlockState(blockPos.east().up()).getMaterial().isReplaceable()) || world.getBlockState(blockPos.east().up()).isOf(Blocks.REDSTONE_TORCH))) {
+        if ((sideCoversSmallSquare(world, blockPos.east(), Direction.UP) && (world.getBlockState(blockPos.east().up()).isReplaceable()) || world.getBlockState(blockPos.east().up()).isOf(Blocks.REDSTONE_TORCH))) {
             return blockPos.east();
-        } else if ((sideCoversSmallSquare(world, blockPos.west(), Direction.UP) && (world.getBlockState(blockPos.west().up()).getMaterial().isReplaceable()) || world.getBlockState(blockPos.west().up()).isOf(Blocks.REDSTONE_TORCH))) {
+        } else if ((sideCoversSmallSquare(world, blockPos.west(), Direction.UP) && (world.getBlockState(blockPos.west().up()).isReplaceable()) || world.getBlockState(blockPos.west().up()).isOf(Blocks.REDSTONE_TORCH))) {
             return blockPos.west();
-        } else if ((sideCoversSmallSquare(world, blockPos.north(), Direction.UP) && (world.getBlockState(blockPos.north().up()).getMaterial().isReplaceable()) || world.getBlockState(blockPos.north().up()).isOf(Blocks.REDSTONE_TORCH))) {
+        } else if ((sideCoversSmallSquare(world, blockPos.north(), Direction.UP) && (world.getBlockState(blockPos.north().up()).isReplaceable()) || world.getBlockState(blockPos.north().up()).isOf(Blocks.REDSTONE_TORCH))) {
             return blockPos.north();
-        } else if ((sideCoversSmallSquare(world, blockPos.south(), Direction.UP) && (world.getBlockState(blockPos.south().up()).getMaterial().isReplaceable()) || world.getBlockState(blockPos.south().up()).isOf(Blocks.REDSTONE_TORCH))) {
+        } else if ((sideCoversSmallSquare(world, blockPos.south(), Direction.UP) && (world.getBlockState(blockPos.south().up()).isReplaceable()) || world.getBlockState(blockPos.south().up()).isOf(Blocks.REDSTONE_TORCH))) {
             return blockPos.south();
         }
         return null;
@@ -31,7 +31,7 @@ public class CheckingEnvironment {
     public static BlockPos findPossibleSlimeBlockPos(ClientWorld world, BlockPos blockPos) {
         for (Direction direction :Direction.Type.HORIZONTAL){
             BlockPos newBlockPos = blockPos.offset(direction);
-            if (!world.getBlockState(newBlockPos).getMaterial().isReplaceable()){
+            if (!world.getBlockState(newBlockPos).isReplaceable()){
                 continue;
             }
             if (CheckingEnvironment.isBlocked(newBlockPos)){
@@ -49,7 +49,7 @@ public class CheckingEnvironment {
         if (isBlocked(blockPos.up())) {
             return false;
         }
-        return world.getBlockState(blockPos.up().up()).getMaterial().isReplaceable();
+        return world.getBlockState(blockPos.up().up()).isReplaceable();
     }
 
     public static ArrayList<BlockPos> findNearbyRedstoneTorch(ClientWorld world, BlockPos pistonBlockPos) {

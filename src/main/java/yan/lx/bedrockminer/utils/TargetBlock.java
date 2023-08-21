@@ -68,7 +68,6 @@ public class TargetBlock {
                 this.hasTried = true;
                 break;
             case RETRACTED:
-                ClientPlayNetworkHandler networkHandler = MinecraftClient.getInstance().getNetworkHandler();
                 if (world.getBlockState(pistonBlockPos).getBlock() instanceof PistonBlock) {
                     BlockBreaker.breakBlock(world, pistonBlockPos);
                     return Status.RETRACTED;
@@ -93,12 +92,40 @@ public class TargetBlock {
                 BlockPlacer.simpleBlockPlacement(this.redstoneTorchBlockPos, Blocks.REDSTONE_TORCH);
                 break;
             case FAILED:
-                BlockBreaker.breakBlock(world, pistonBlockPos);
-                BlockBreaker.breakBlock(world, pistonBlockPos.up());
-                return Status.FAILED;
+                if (world.getBlockState(pistonBlockPos).getBlock() instanceof PistonBlock) {
+                    BlockBreaker.breakBlock(world, pistonBlockPos);
+                    return Status.FAILED;
+                }
+                if (world.getBlockState(pistonBlockPos.up()).getBlock() instanceof PistonBlock) {
+                    BlockBreaker.breakBlock(world, pistonBlockPos.up());
+                    return Status.FAILED;
+                }
+                if (world.getBlockState(pistonBlockPos.up().up()).getBlock() instanceof PistonBlock) {
+                    BlockBreaker.breakBlock(world, pistonBlockPos.up().up());
+                    return Status.FAILED;
+                }
+                if (this.slimeBlockPos != null && world.getBlockState(slimeBlockPos).isOf(Blocks.SLIME_BLOCK)) {
+                    BlockBreaker.breakBlock(world, slimeBlockPos);
+                    return Status.RETRACTED;
+                }
+                return Status.COMPLETE;
             case STUCK:
-                BlockBreaker.breakBlock(world, pistonBlockPos);
-                BlockBreaker.breakBlock(world, pistonBlockPos.up());
+                if (world.getBlockState(pistonBlockPos).getBlock() instanceof PistonBlock) {
+                    BlockBreaker.breakBlock(world, pistonBlockPos);
+                    return Status.STUCK;
+                }
+                if (world.getBlockState(pistonBlockPos.up()).getBlock() instanceof PistonBlock) {
+                    BlockBreaker.breakBlock(world, pistonBlockPos.up());
+                    return Status.STUCK;
+                }
+                if (world.getBlockState(pistonBlockPos.up().up()).getBlock() instanceof PistonBlock) {
+                    BlockBreaker.breakBlock(world, pistonBlockPos.up().up());
+                    return Status.STUCK;
+                }
+                if (this.slimeBlockPos != null && world.getBlockState(slimeBlockPos).isOf(Blocks.SLIME_BLOCK)) {
+                    BlockBreaker.breakBlock(world, slimeBlockPos);
+                    return Status.RETRACTED;
+                }
                 break;
             case NEEDS_WAITING:
                 break;

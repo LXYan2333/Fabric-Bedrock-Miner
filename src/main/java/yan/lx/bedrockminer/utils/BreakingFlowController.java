@@ -72,7 +72,7 @@ public class BreakingFlowController {
                 if (status == TargetBlock.Status.RETRACTING) {
                     continue;
                 }
-                if (status == TargetBlock.Status.FAILED || status == TargetBlock.Status.COMPLETE) {
+                if (status == TargetBlock.Status.COMPLETE) {
                     cachedTargetBlockList.remove(i);
                     networkHandler.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK,selectedBlock.getBlockPos(), Direction.UP));
                 } else {

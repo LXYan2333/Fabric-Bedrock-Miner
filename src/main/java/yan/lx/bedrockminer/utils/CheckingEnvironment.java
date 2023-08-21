@@ -16,25 +16,29 @@ import static net.minecraft.block.Block.sideCoversSmallSquare;
 public class CheckingEnvironment {
 
     public static BlockPos findNearbyFlatBlockToPlaceRedstoneTorch(ClientWorld world, BlockPos blockPos) {
-        if ((sideCoversSmallSquare(world, blockPos.east(), Direction.UP) && (world.getBlockState(blockPos.east().up()).isReplaceable()) || world.getBlockState(blockPos.east().up()).isOf(Blocks.REDSTONE_TORCH))) {
-            return blockPos.east();
-        } else if ((sideCoversSmallSquare(world, blockPos.west(), Direction.UP) && (world.getBlockState(blockPos.west().up()).isReplaceable()) || world.getBlockState(blockPos.west().up()).isOf(Blocks.REDSTONE_TORCH))) {
-            return blockPos.west();
-        } else if ((sideCoversSmallSquare(world, blockPos.north(), Direction.UP) && (world.getBlockState(blockPos.north().up()).isReplaceable()) || world.getBlockState(blockPos.north().up()).isOf(Blocks.REDSTONE_TORCH))) {
-            return blockPos.north();
-        } else if ((sideCoversSmallSquare(world, blockPos.south(), Direction.UP) && (world.getBlockState(blockPos.south().up()).isReplaceable()) || world.getBlockState(blockPos.south().up()).isOf(Blocks.REDSTONE_TORCH))) {
-            return blockPos.south();
+        for (Direction direction : Direction.Type.HORIZONTAL) {
+            Direction redstoneTorchFacing = Direction.UP;           // 红石火把的朝向
+            BlockPos baseBlockPos = blockPos.offset(direction);     // 底座位置
+            BlockPos redstoneTorchPos = baseBlockPos.offset(redstoneTorchFacing);   // 红石火把位置
+            // 红石火把可以被放置情况下
+            if (sideCoversSmallSquare(world, baseBlockPos, redstoneTorchFacing) && world.getBlockState(redstoneTorchPos).isReplaceable()) {
+                return baseBlockPos;
+            } else if (world.getBlockState(redstoneTorchPos).isOf(Blocks.REDSTONE_TORCH)) { // 红石火把已放置情况下
+                return baseBlockPos;
+            }
         }
         return null;
     }
 
     public static BlockPos findPossibleSlimeBlockPos(ClientWorld world, BlockPos blockPos) {
-        for (Direction direction :Direction.Type.HORIZONTAL){
+        for (Direction direction : Direction.Type.HORIZONTAL) {
             BlockPos newBlockPos = blockPos.offset(direction);
-            if (!world.getBlockState(newBlockPos).isReplaceable()){
+            // 粘液块无法被替换情况下
+            if (!world.getBlockState(newBlockPos).isReplaceable()) {
                 continue;
             }
-            if (CheckingEnvironment.isBlocked(newBlockPos)){
+            // 粘液块放置是否会被阻止
+            if (CheckingEnvironment.isBlocked(newBlockPos)) {
                 continue;
             }
             return newBlockPos;
@@ -69,11 +73,11 @@ public class CheckingEnvironment {
         return list;
     }
 
-    public static boolean isBlocked(BlockPos blockPos){
+    public static boolean isBlocked(BlockPos blockPos) {
         ItemPlacementContext context = new ItemPlacementContext(MinecraftClient.getInstance().player,
                 Hand.MAIN_HAND,
                 Blocks.SLIME_BLOCK.asItem().getDefaultStack(),
-                new BlockHitResult(blockPos.toCenterPos(),Direction.UP,blockPos,false));
+                new BlockHitResult(blockPos.toCenterPos(), Direction.UP, blockPos, false));
         return !Blocks.SLIME_BLOCK.asItem().useOnBlock(context).isAccepted();
     }
 }

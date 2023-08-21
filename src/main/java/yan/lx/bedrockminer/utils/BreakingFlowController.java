@@ -4,10 +4,13 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 //import net.minecraft.client.network.ClientPlayerEntity;
 //import net.minecraft.entity.Entity;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.player.PlayerEntity;
 //import net.minecraft.item.Items;
+import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.math.Direction;
 //import net.minecraft.util.math.Position;
 //import net.minecraft.util.math.Vec3d;
 //import net.minecraft.util.math.Vec3i;
@@ -51,6 +54,7 @@ public class BreakingFlowController {
         }
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         PlayerEntity player = minecraftClient.player;
+        ClientPlayNetworkHandler networkHandler = minecraftClient.getNetworkHandler();
 
         if (!"survival".equals(minecraftClient.interactionManager.getCurrentGameMode().getName())) {
             return;
@@ -58,23 +62,22 @@ public class BreakingFlowController {
 
         for (int i = 0; i < cachedTargetBlockList.size(); i++) {
             TargetBlock selectedBlock = cachedTargetBlockList.get(i);
-
             //玩家切换世界，或离目标方块太远时，删除所有缓存的任务
             if (selectedBlock.getWorld() != MinecraftClient.getInstance().world ) {
-                cachedTargetBlockList = new ArrayList<TargetBlock>();
+                cachedTargetBlockList.clear();
                 break;
             }
-
             if (blockInPlayerRange(selectedBlock.getBlockPos(), player, 3.4f)) {
                 TargetBlock.Status status = cachedTargetBlockList.get(i).tick();
                 if (status == TargetBlock.Status.RETRACTING) {
                     continue;
-                } else if (status == TargetBlock.Status.FAILED || status == TargetBlock.Status.RETRACTED) {
+                }
+                if (status == TargetBlock.Status.FAILED || status == TargetBlock.Status.COMPLETE) {
                     cachedTargetBlockList.remove(i);
+                    networkHandler.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK,selectedBlock.getBlockPos(), Direction.UP));
                 } else {
                     break;
                 }
-
             }
         }
     }

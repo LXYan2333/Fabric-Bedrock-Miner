@@ -1,4 +1,7 @@
-# Updated to be used again
+**English** | [中文](https://github.com/LXYan2333/Fabric-Bedrock-Miner/blob/main/README_中文.md)
+
+# Fabric-Bedrock-Miner
+A Fabric client mod to "mine" bedrock!
 
 # Showcase
 https://www.youtube.com/watch?v=b8Y86yxjr_Y  

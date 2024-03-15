@@ -1,4 +1,4 @@
-# Updated to be used for 1.20.2 and 1.20.3 as you can barely find these versions of the mod!
+# Updated to be used again
 
 # Showcase
 https://www.youtube.com/watch?v=b8Y86yxjr_Y  

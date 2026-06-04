@@ -1,9 +1,9 @@
 {
 	"required": true,
-	"package": "com.github.lxyan2333.bedrockminer.mixin",
+	"package": "com.github.lxyan2333.bedrockminer.client.mixin",
 	"compatibilityLevel": "JAVA_25",
-	"mixins": [
-		"ExampleMixin"
+	"client": [
+		"ExampleClientMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

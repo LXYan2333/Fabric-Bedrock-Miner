@@ -1,33 +1,45 @@
 {
-  "schemaVersion": 1,
-  "id": "bedrockminer",
-  "version": "${version}",
-  "name": "Bedrock Miner",
-  "description": "Client mod to mine bedrock!",
-  "authors": [
-    "LXYan"
-  ],
-  "contact": {
-    "homepage": "https://github.com/LXYan2333/Fabric-Bedrock-Miner",
-    "sources": "https://github.com/LXYan2333/Fabric-Bedrock-Miner"
-  },
-  "license": "",
-  "icon": "assets/bedrockminer/icon.png",
-  "environment": "*",
-  "entrypoints": {
-    "main": [
-    ]
-  },
-  "mixins": [
-    "bedrock-miner.mixins.json"
-  ],
-  "depends": {
-    "fabricloader": ">=${loader_version}",
-    "minecraft": ">=${minecraft_version}",
-    "java": ">=17"
-  },
-  "suggests": {
-    "another-mod": "*"
-  },
-  "accessWidener" : "bedrock-miner.accesswidener"
+	"schemaVersion": 1,
+	"id": "bedrock-miner",
+	"version": "${version}",
+	"name": "Bedrock-Miner",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/bedrock-miner/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			{
+				"value": "com.github.lxyan2333.bedrockminer.BedrockMiner",
+				"adapter": "kotlin"
+			}
+		],
+		"client": [
+			{
+				"value": "com.github.lxyan2333.bedrockminer.client.BedrockMinerClient",
+				"adapter": "kotlin"
+			}
+		]
+	},
+	"mixins": [
+		"bedrock-miner.mixins.json",
+		{
+			"config": "bedrock-miner.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~26.1.2",
+		"java": ">=25",
+		"fabric-api": "*",
+		"fabric-language-kotlin": "*"
+	}
 }

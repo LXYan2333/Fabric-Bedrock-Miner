@@ -3,13 +3,13 @@
 	"id": "bedrock-miner",
 	"version": "${version}",
 	"name": "Bedrock-Miner",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Automatically break bedrock blocks using piston/redstone-torch mechanics",
 	"authors": [
-		"Me!"
+		"LXYan2333"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/LXYan2333/Fabric-Bedrock-Miner",
+		"sources": "https://github.com/LXYan2333/Fabric-Bedrock-Miner"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/bedrock-miner/icon.png",

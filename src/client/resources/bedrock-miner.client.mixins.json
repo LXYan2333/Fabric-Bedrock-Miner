@@ -3,7 +3,7 @@
 	"package": "com.github.lxyan2333.bedrockminer.client.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
-		"ExampleClientMixin"
+//		"MinecraftClientMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

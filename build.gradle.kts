@@ -20,6 +20,8 @@ repositories {
 loom {
 	splitEnvironmentSourceSets()
 
+	accessWidenerPath = file("src/client/resources/bedrock-miner.accesswidener")
+
 	mods {
 		register("bedrock-miner") {
 			sourceSet(sourceSets.main.get())
@@ -31,7 +33,7 @@ loom {
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft("com.mojang:minecraft:${providers.gradleProperty("minecraft_version").get()}")
-	
+
 	implementation("net.fabricmc:fabric-loader:${providers.gradleProperty("loader_version").get()}")
 
 	// Fabric API. This is technically optional, but you probably want it anyway.

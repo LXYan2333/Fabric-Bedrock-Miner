@@ -13,7 +13,8 @@ class VanillaFastApproach internal constructor(
     slimePos: BlockPos? = null,
 ) : ApproachBase(bedrockPos, pistonPos, extendDir, torchPos, slimePos) {
 
-    override fun placePiston(direction: Direction) {
+    override suspend fun placePistonAfter(direction: Direction, pre: suspend () -> Unit) {
+        pre()
         BlockPlacer.vanillaPistonPlacement(pistonPos, direction)
     }
 

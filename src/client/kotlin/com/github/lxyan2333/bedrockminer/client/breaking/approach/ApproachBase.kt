@@ -36,14 +36,15 @@ open abstract class ApproachBase internal constructor(
 
     val extendPos: BlockPos get() = pistonPos.relative(extendDir)
 
-    fun occupies(pos: BlockPos): Boolean =
-        pos == pistonPos || pos == torchPos || pos == slimePos || pos == extendPos
+    fun occupies(pos: BlockPos): Boolean = pos == pistonPos || pos == torchPos || pos == slimePos || pos == extendPos
 
     // -- placement method --
 
-    open suspend fun prePlacePiston(direction: Direction) {}
+    suspend fun placePiston(direction: Direction) {
+        placePistonAfter(direction, {})
+    }
 
-    abstract fun placePiston(direction: Direction)
+    abstract suspend fun placePistonAfter(direction: Direction, pre: suspend () -> Unit)
 
     // -- validation --
 

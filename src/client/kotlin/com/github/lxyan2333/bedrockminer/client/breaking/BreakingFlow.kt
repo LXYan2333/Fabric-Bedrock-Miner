@@ -51,9 +51,10 @@ class BreakingFlow(val targetPos: BlockPos) {
 
                 // Step 3: one-tick — break torch, break piston, place piston facing bedrock
 //            TickScheduler.awaitTicks(2)
-                BlockBreaker.breakBlock(approach.torchPos)
-                BlockBreaker.breakBlock(approach.pistonPos)
-                approach.placePiston(approach.pushDir)
+                approach.placePistonAfter(approach.pushDir) {
+                    BlockBreaker.breakBlock(approach.torchPos)
+                    BlockBreaker.breakBlock(approach.pistonPos)
+                }
 
                 // Step 4: wait for piston to fully retract
 //                waitFor(40) {

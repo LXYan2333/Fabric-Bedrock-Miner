@@ -50,7 +50,7 @@ object ClientEventHandlers {
         }
 
         ClientPlayConnectionEvents.JOIN.register { _, _, _ ->
-            if (Configs.BEDROCK_MINER_ENABLED.booleanValue) {
+            if (Configs.Generic.BEDROCK_MINER_ENABLED.booleanValue) {
                 BreakingFlowController.enable()
             }
         }

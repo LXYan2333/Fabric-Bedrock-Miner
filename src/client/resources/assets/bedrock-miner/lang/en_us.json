@@ -1,0 +1,8 @@
+{
+  "bedrockminer.gui.title.configs": "Bedrock Miner Configs",
+  "bedrockminer.gui.button.config_gui.generic": "Generic",
+  "bedrockminer.gui.button.config_gui.client": "Client",
+  "bedrockminer.gui.button.config_gui.server": "Server",
+  "bedrockminer.config.toggle_enabled.comment": "Toggle the bedrock miner on/off",
+  "bedrockminer.config.approach.comment": "Bedrock Breaking mode"
+}

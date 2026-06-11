@@ -1,0 +1,8 @@
+{
+  "bedrockminer.gui.title.configs": "基岩挖掘器配置",
+  "bedrockminer.gui.button.config_gui.generic": "通用",
+  "bedrockminer.gui.button.config_gui.client": "客户端",
+  "bedrockminer.gui.button.config_gui.server": "服务端",
+  "bedrockminer.config.toggle_enabled.comment": "开关基岩矿机",
+  "bedrockminer.config.approach.comment": "基岩破坏模式"
+}

@@ -93,7 +93,7 @@ open abstract class ApproachBase internal constructor(
 
     companion object {
         fun findBest(level: Level, bedrockPos: BlockPos): ApproachBase? {
-            return when (ApproachMode.valueOf(Configs.APPROACH_MODE.stringValue)) {
+            return when (ApproachMode.valueOf(Configs.Generic.APPROACH_MODE.stringValue)) {
                 ApproachMode.VANILLA_FAST -> VanillaFastApproach.findBest(level, bedrockPos)
                 ApproachMode.CARPET_ACCURATE -> CarpetApproach.findBest(level, bedrockPos)
                 ApproachMode.VANILLA_ALL_DIRECTION -> VanillaAllDirectionApproach.findBest(level, bedrockPos)

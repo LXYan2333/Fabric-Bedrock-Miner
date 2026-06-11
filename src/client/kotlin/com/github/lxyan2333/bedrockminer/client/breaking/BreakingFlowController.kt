@@ -9,22 +9,31 @@ import net.minecraft.core.BlockPos
 import com.github.lxyan2333.bedrockminer.client.message.Messager
 
 object BreakingFlowController {
-    @Volatile
-    private var enabled = true
+    var enabled = false
+        get() = field
+        set(value) {
+            field = value
+        }
 
     private var scope: CoroutineScope? = null
+    val activeFlows = mutableSetOf<BreakingFlow>()
+    var isInternalBreak = false
+        set(value) {
+            field = value
+        }
 
-    fun isEnabled(): Boolean = enabled
+    fun isPositionProtected(pos: BlockPos): Boolean =
+        activeFlows.any { it.currentApproach?.occupies(pos) == true }
 
     fun toggle() {
         if (enabled) disable() else enable()
     }
 
     fun enable() {
+        if (scope == null) startConsumer()
         if (enabled) return
         enabled = true
         Messager.actionBar("Bedrock Miner started!")
-        startConsumer()
     }
 
     fun disable() {
@@ -33,17 +42,33 @@ object BreakingFlowController {
         Messager.actionBar("Bedrock Miner stopped.")
         scope?.cancel()
         scope = null
+        activeFlows.clear()
     }
 
-    fun enqueueBlock(pos: BlockPos) {
+    fun tryEnqueueBlock(pos: BlockPos) {
         if (!enabled) return
+        if (isPositionProtected(pos)) return
+        if (activeFlows.any { it.targetPos == pos }) return
+        val flow = BreakingFlow(pos)
+        activeFlows.add(flow)
         scope?.launch {
-            BreakingFlow(pos).execute()
+            try {
+                flow.execute()
+            } finally {
+                activeFlows.remove(flow)
+            }
         }
     }
 
+    fun cancelAllFlows() {
+        scope?.cancel()
+        scope = null
+        activeFlows.clear()
+        if (enabled) startConsumer()
+    }
+
     fun onDisconnect() {
-        disable()
+        cancelAllFlows()
     }
 
     fun startConsumer() {

@@ -1,45 +1,58 @@
 {
-	"schemaVersion": 1,
-	"id": "bedrock-miner",
-	"version": "${version}",
-	"name": "Bedrock-Miner",
-	"description": "Automatically break bedrock blocks using piston/redstone-torch mechanics",
-	"authors": [
-		"LXYan2333"
-	],
-	"contact": {
-		"homepage": "https://github.com/LXYan2333/Fabric-Bedrock-Miner",
-		"sources": "https://github.com/LXYan2333/Fabric-Bedrock-Miner"
-	},
-	"license": "CC0-1.0",
-	"icon": "assets/bedrock-miner/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			{
-				"value": "com.github.lxyan2333.bedrockminer.BedrockMiner",
-				"adapter": "kotlin"
-			}
-		],
-		"client": [
-			{
-				"value": "com.github.lxyan2333.bedrockminer.client.BedrockMinerClient",
-				"adapter": "kotlin"
-			}
-		]
-	},
-	"mixins": [
-		"bedrock-miner.mixins.json",
-		{
-			"config": "bedrock-miner.client.mixins.json",
-			"environment": "client"
-		}
-	],
-	"depends": {
-		"fabricloader": ">=0.19.3",
-		"minecraft": "~26.1.2",
-		"java": ">=25",
-		"fabric-api": "*",
-		"fabric-language-kotlin": "*"
-	}
+  "schemaVersion": 1,
+  "id": "bedrock-miner",
+  "version": "${version}",
+  "name": "Bedrock-Miner",
+  "description": "Break bedrock and other blocks using piston retract mechanics",
+  "authors": [
+    "LXYan2333"
+  ],
+  "contact": {
+    "homepage": "https://github.com/LXYan2333/Fabric-Bedrock-Miner",
+    "sources": "https://github.com/LXYan2333/Fabric-Bedrock-Miner"
+  },
+  "license": "GPL-2.0-or-later",
+  "icon": "assets/bedrock-miner/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "server": [
+      {
+        "value": "com.github.lxyan2333.bedrockminer.BedrockMinerServer",
+        "adapter": "kotlin"
+      }
+    ],
+    "client": [
+      {
+        "value": "com.github.lxyan2333.bedrockminer.client.BedrockMinerClient",
+        "adapter": "kotlin"
+      }
+    ],
+    "modmenu": [
+      "com.github.lxyan2333.bedrockminer.client.compat.modmenu.ModMenuImpl"
+    ]
+  },
+  "mixins": [
+    "bedrock-miner.mixins.json",
+    {
+      "config": "bedrock-miner.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.3",
+    "minecraft": "~26.1.2",
+    "java": ">=25",
+    "fabric-api": "*",
+    "fabric-language-kotlin": "*",
+    "malilib": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.github_releases": "https://github.com/LXYan2333/Fabric-Bedrock-Miner/releases",
+        "modmenu.youtube": "https://www.youtube.com/watch?v=b8Y86yxjr_Y"
+      },
+      "update_checker": false
+    }
+  }
 }

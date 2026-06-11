@@ -38,8 +38,17 @@ The Core logic of this mod is a state machine in old/src/main/java/yan/lx/bedroc
 - better bedrock breaking flow control
   - allow breaking block from all directions
   - take care of piston's quasi-connectivity
+  - support [Carpet Extra](https://github.com/gnembon/fabric-carpet) accurate block placement protocol
+    - when server has Carpet Extra: can place piston facing any direction without tick delay
+    - on vanilla server: by default only support placing piston facing UP/DOWN (pitch takes effect immediately via `xRot`; horizontal facing requires `yHeadRot` which lags by one tick — see `doc/related minecraft quirk.md`)
 - [Mod Menu](https://github.com/TerraformersMC/ModMenu) integration
 - English and Simplified Chinese i18n support
+
+## Known Minecraft Quirks
+
+See `doc/related minecraft quirk.md` for detailed write-ups. Key quirk affecting design:
+
+- **yHeadRot update delay**: `Direction.orderedByNearest` uses `getViewYRot()` which reads `yHeadRot`, updated only in `LivingEntity#aiStep`. When sending `ServerboundMovePlayerPacket.Rot` to fake player look direction for piston placement, the yaw change does NOT take effect until the player entity ticks once on the server. Pitch changes (via `xRot`) are immediate. This limits vanilla-server piston placement to UP/DOWN only, unless a one-tick delay or Carpet Extra protocol is used.
 
 ## Build & Development
 

@@ -3,3 +3,5 @@ accessWidener v2 official
 accessible method net/minecraft/world/level/block/BaseTorchBlock canSurvive (Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/LevelReader;Lnet/minecraft/core/BlockPos;)Z
 accessible method net/minecraft/world/level/block/RedstoneWallTorchBlock canSurvive (Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/LevelReader;Lnet/minecraft/core/BlockPos;)Z
 accessible method net/minecraft/world/item/BlockItem canPlace (Lnet/minecraft/world/item/context/BlockPlaceContext;Lnet/minecraft/world/level/block/state/BlockState;)Z
+accessible method net/minecraft/client/multiplayer/ClientCommonPacketListenerImpl sendDeferredPackets ()V
+accessible method net/minecraft/world/level/block/piston/PistonBaseBlock checkIfExtend (Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V

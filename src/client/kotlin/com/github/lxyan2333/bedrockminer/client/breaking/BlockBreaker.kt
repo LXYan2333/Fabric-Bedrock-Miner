@@ -4,12 +4,17 @@ import net.minecraft.client.Minecraft
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.world.item.Items
-import net.minecraft.world.level.block.Blocks
-import net.minecraft.world.level.block.piston.PistonBaseBlock
 
 object BlockBreaker {
     fun breakBlock(pos: BlockPos) {
         InventoryManager.switchToItem(Items.DIAMOND_PICKAXE)
-        Minecraft.getInstance().gameMode?.startDestroyBlock(pos, Direction.UP)
+        val gameMode = Minecraft.getInstance().gameMode ?: return
+        BreakingFlowController.isInternalBreak = true
+        try {
+            gameMode.startDestroyBlock(pos, Direction.UP)
+            gameMode.stopDestroyBlock()
+        } finally {
+            BreakingFlowController.isInternalBreak = false
+        }
     }
 }

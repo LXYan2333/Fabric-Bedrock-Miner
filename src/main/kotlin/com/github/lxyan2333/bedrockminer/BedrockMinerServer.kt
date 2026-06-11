@@ -1,12 +1,12 @@
 package com.github.lxyan2333.bedrockminer
 
-import net.fabricmc.api.ModInitializer
+import net.fabricmc.api.DedicatedServerModInitializer
 import org.slf4j.LoggerFactory
 
-object BedrockMiner : ModInitializer {
+object BedrockMinerServer : DedicatedServerModInitializer {
     private val logger = LoggerFactory.getLogger("bedrock-miner")
 
-    override fun onInitialize() {
+    override fun onInitializeServer() {
         logger.info("Bedrock Miner initialized")
     }
 }

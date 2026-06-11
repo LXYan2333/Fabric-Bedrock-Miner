@@ -5,8 +5,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import net.minecraft.client.Minecraft
 import net.minecraft.core.BlockPos
 import com.github.lxyan2333.bedrockminer.client.message.Messager
+import net.minecraft.world.level.block.state.BlockState
+import fi.dy.masa.malilib.util.StringUtils
 
 object BreakingFlowController {
     var enabled = false
@@ -34,13 +37,13 @@ object BreakingFlowController {
         if (scope == null) startConsumer()
         if (enabled) return
         enabled = true
-        Messager.actionBar("Bedrock Miner started!")
+        Messager.actionBar(StringUtils.translate("bedrockminer.message.started"))
     }
 
     fun disable() {
         if (!enabled) return
         enabled = false
-        Messager.actionBar("Bedrock Miner stopped.")
+        Messager.actionBar(StringUtils.translate("bedrockminer.message.stopped"))
         scope?.cancel()
         scope = null
         activeFlows.clear()
@@ -50,7 +53,9 @@ object BreakingFlowController {
         if (!enabled) return
         if (isPositionProtected(pos)) return
         if (activeFlows.any { it.targetPos == pos }) return
-        val flow = BreakingFlow(pos)
+        val level = Minecraft.getInstance().level ?: return
+        val blockState = level.getBlockState(pos)
+        val flow = BreakingFlow(pos, blockState)
         activeFlows.add(flow)
         scope?.launch {
             try {

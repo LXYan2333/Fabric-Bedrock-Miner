@@ -9,12 +9,12 @@ import net.minecraft.core.Direction
 import net.minecraft.world.level.Level
 
 class VanillaAllDirectionApproach internal constructor(
-    bedrockPos: BlockPos,
+    targetPos: BlockPos,
     pistonPos: BlockPos,
     extendDir: Direction,
     torchPos: BlockPos,
     slimePos: BlockPos? = null,
-) : ApproachBase(bedrockPos, pistonPos, extendDir, torchPos, slimePos) {
+) : ApproachBase(targetPos, pistonPos, extendDir, torchPos, slimePos) {
     private val mutex = Mutex()
 
     override suspend fun placePistonAfter(direction: Direction, pre: () -> Unit) {
@@ -27,8 +27,8 @@ class VanillaAllDirectionApproach internal constructor(
     }
 
     companion object {
-        fun findBest(level: Level, bedrockPos: BlockPos): VanillaAllDirectionApproach? {
-            return findBest(level, bedrockPos, Direction.entries, Direction.entries, ::VanillaAllDirectionApproach)
+        fun findBest(level: Level, targetPos: BlockPos): VanillaAllDirectionApproach? {
+            return findBest(level, targetPos, Direction.entries, Direction.entries, ::VanillaAllDirectionApproach)
         }
     }
 }

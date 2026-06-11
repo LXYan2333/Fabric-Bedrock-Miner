@@ -20,7 +20,7 @@ import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.Vec3
 
 open abstract class ApproachBase internal constructor(
-    val bedrockPos: BlockPos,
+    val targetPos: BlockPos,
     val pistonPos: BlockPos,
     val extendDir: Direction,
     val torchPos: BlockPos,
@@ -29,9 +29,9 @@ open abstract class ApproachBase internal constructor(
     val pushDir: Direction
         get() {
             for (face in Direction.entries) {
-                if (pistonPos.relative(face) == bedrockPos) return face
+                if (pistonPos.relative(face) == targetPos) return face
             }
-            error("pistonPos $pistonPos is not adjacent to bedrockPos $bedrockPos")
+            error("pistonPos $pistonPos is not adjacent to targetPos $targetPos")
         }
 
     val extendPos: BlockPos get() = pistonPos.relative(extendDir)
@@ -92,26 +92,27 @@ open abstract class ApproachBase internal constructor(
     }
 
     companion object {
-        fun findBest(level: Level, bedrockPos: BlockPos): ApproachBase? {
+        fun findBest(level: Level, targetPos: BlockPos): ApproachBase? {
             return when (ApproachMode.valueOf(Configs.Generic.APPROACH_MODE.stringValue)) {
-                ApproachMode.VANILLA_FAST -> VanillaFastApproach.findBest(level, bedrockPos)
-                ApproachMode.CARPET_ACCURATE -> CarpetApproach.findBest(level, bedrockPos)
-                ApproachMode.VANILLA_ALL_DIRECTION -> VanillaAllDirectionApproach.findBest(level, bedrockPos)
+                ApproachMode.VANILLA_FAST -> VanillaFastApproach.findBest(level, targetPos)
+                ApproachMode.CARPET_ACCURATE -> CarpetApproach.findBest(level, targetPos)
+                ApproachMode.VANILLA_ALL_DIRECTION -> VanillaAllDirectionApproach.findBest(level, targetPos)
             }
         }
 
         internal fun <T : ApproachBase> findBest(
-            level: Level, bedrockPos: BlockPos,
+            level: Level, targetPos: BlockPos,
             allowedFaces: List<Direction>, allowedExtendDirs: List<Direction>,
             factory: (BlockPos, BlockPos, Direction, BlockPos, BlockPos?) -> T,
         ): T? {
             val player = Minecraft.getInstance().player ?: return null
-            val playerPos = player.position()
-            val faces = allowedFaces.sortedBy { playerPos.distanceTo(bedrockPos.relative(it).center) }.take(3)
+            val playerEyePos = player.eyePosition
+            val faces = allowedFaces.sortedBy { playerEyePos.distanceTo(targetPos.relative(it).center) }.take(3)
+                .let { dirs -> dirs.drop(1) + dirs.first() }
 
             for (rejectOverlap in booleanArrayOf(true, false)) {
                 for (face in faces) {
-                    val pistonPos = bedrockPos.relative(face)
+                    val pistonPos = targetPos.relative(face)
                     if (!level.getBlockState(pistonPos).canBeReplaced()) continue
 
                     for (extendDir in allowedExtendDirs) {
@@ -119,17 +120,18 @@ open abstract class ApproachBase internal constructor(
                         if (!level.getBlockState(extendPos).canBeReplaced()) continue
 
                         val torchDirs =
-                            Direction.Plane.HORIZONTAL.sortedBy { playerPos.distanceTo(bedrockPos.relative(it).center) }
+                            Direction.Plane.HORIZONTAL.sortedBy { playerEyePos.distanceTo(targetPos.relative(it).center) }
+                                .let { dirs -> dirs.drop(1) + dirs.first() }
                         for (torchDir in torchDirs) {
                             val torchPos = pistonPos.relative(torchDir)
                             if (torchPos == extendPos) continue
                             if (!level.getBlockState(torchPos).canBeReplaced()) continue
 
-                            val a = factory(bedrockPos, pistonPos, extendDir, torchPos, null)
+                            val a = factory(targetPos, pistonPos, extendDir, torchPos, null)
                             if (a.isValid(level, rejectOverlap)) return a
 
                             val slimePos = torchPos.relative(Direction.DOWN)
-                            val b = factory(bedrockPos, pistonPos, extendDir, torchPos, slimePos)
+                            val b = factory(targetPos, pistonPos, extendDir, torchPos, slimePos)
                             if (b.isValid(level, rejectOverlap)) return b
                         }
                     }

@@ -12,12 +12,12 @@ import net.minecraft.world.level.Level
  * with `accurateBlockPlacement` enabled.
  */
 class CarpetApproach internal constructor(
-    bedrockPos: BlockPos,
+    targetPos: BlockPos,
     pistonPos: BlockPos,
     extendDir: Direction,
     torchPos: BlockPos,
     slimePos: BlockPos? = null,
-) : ApproachBase(bedrockPos, pistonPos, extendDir, torchPos, slimePos) {
+) : ApproachBase(targetPos, pistonPos, extendDir, torchPos, slimePos) {
 
     override suspend fun placePistonAfter(direction: Direction, pre: () -> Unit) {
         pre()
@@ -25,8 +25,8 @@ class CarpetApproach internal constructor(
     }
 
     companion object {
-        fun findBest(level: Level, bedrockPos: BlockPos): CarpetApproach? {
-            return findBest(level, bedrockPos, Direction.entries, Direction.entries, ::CarpetApproach)
+        fun findBest(level: Level, targetPos: BlockPos): CarpetApproach? {
+            return findBest(level, targetPos, Direction.entries, Direction.entries, ::CarpetApproach)
         }
     }
 }

@@ -7,14 +7,19 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Blocks
 import com.github.lxyan2333.bedrockminer.client.message.Messager
 import net.minecraft.world.level.block.piston.PistonBaseBlock
+import net.minecraft.world.level.block.state.BlockState
+import fi.dy.masa.malilib.util.StringUtils
 
-class BreakingFlow(val targetPos: BlockPos) {
+class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
     var currentApproach: ApproachBase? = null
         internal set
 
+    private val targetBlockName: String
+        get() = targetBlockState.block.name.string
+
     suspend fun execute() {
         val level = Minecraft.getInstance().level ?: return
-        if (!level.getBlockState(targetPos).`is`(Blocks.BEDROCK)) return
+        if (level.getBlockState(targetPos) != targetBlockState) return
 
 
         repeat(MAX_RETRIES) {
@@ -26,7 +31,7 @@ class BreakingFlow(val targetPos: BlockPos) {
             }
 
             val approach = ApproachBase.findBest(level, targetPos) ?: run {
-                Messager.actionBar("Cannot find a valid approach!")
+                Messager.actionBar(StringUtils.translate("bedrockminer.message.cannot_find_approach", targetBlockName))
                 return
             }
             currentApproach = approach
@@ -49,7 +54,7 @@ class BreakingFlow(val targetPos: BlockPos) {
                     }
                 }
 
-                // Step 3: one-tick — break torch, break piston, place piston facing bedrock
+                // Step 3: one-tick — break torch, break piston, place piston facing target
                 approach.placePistonAfter(approach.pushDir) {
                     BlockBreaker.breakBlock(approach.torchPos)
                     BlockBreaker.breakBlock(approach.pistonPos)
@@ -70,19 +75,19 @@ class BreakingFlow(val targetPos: BlockPos) {
                 }
 
                 // Step 5: verify
-                if (!level.getBlockState(targetPos).`is`(Blocks.BEDROCK)) {
-                    Messager.actionBar("Bedrock broken!")
+                if (level.getBlockState(targetPos) != targetBlockState) {
+                    Messager.actionBar(StringUtils.translate("bedrockminer.message.block_broken", targetBlockName))
                     return
                 }
             } catch (e: BlockInteractionRangeException) {
-                Messager.actionBar("Out of range, retrying...")
+                Messager.actionBar(StringUtils.translate("bedrockminer.message.out_of_range"))
             } finally {
                 currentApproach = null
                 cleanup(level, approach)
             }
         }
 
-        Messager.actionBar("Bedrock breaking failed!")
+        Messager.actionBar(StringUtils.translate("bedrockminer.message.breaking_failed", targetBlockName))
     }
 
     private suspend fun waitFor(maxTicks: Int, condition: () -> Boolean): Boolean {

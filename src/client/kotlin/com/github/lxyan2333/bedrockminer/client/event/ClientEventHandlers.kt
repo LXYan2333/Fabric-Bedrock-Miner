@@ -1,10 +1,8 @@
 package com.github.lxyan2333.bedrockminer.client.event
 
-import com.github.lxyan2333.bedrockminer.client.breaking.BlockBreaker
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback
 import net.fabricmc.fabric.api.event.player.UseBlockCallback
 import net.minecraft.world.InteractionResult
-import net.minecraft.world.level.block.Blocks
 
 import com.github.lxyan2333.bedrockminer.client.breaking.BreakingFlowController
 import com.github.lxyan2333.bedrockminer.client.breaking.TickScheduler
@@ -35,10 +33,10 @@ object ClientEventHandlers {
     }
 
     fun register() {
-        // Right-click bedrock with empty hand to toggle the mod on/off
+        // Right-click block with empty hand to toggle the mod on/off
         UseBlockCallback.EVENT.register { player, world, hand, hitResult ->
             val state = world.getBlockState(hitResult.blockPos)
-            if (state.`is`(Blocks.BEDROCK) && player.mainHandItem.isEmpty) {
+            if (isBlockAllowed(state) && player.mainHandItem.isEmpty) {
                 BreakingFlowController.toggle()
                 return@register InteractionResult.FAIL
             }

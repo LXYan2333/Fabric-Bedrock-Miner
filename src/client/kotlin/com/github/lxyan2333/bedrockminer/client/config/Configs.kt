@@ -46,11 +46,13 @@ object Configs : IConfigHandler, IKeybindProvider {
         val APPROACH_MODE: ConfigOptionList = ConfigOptionList(
             "approachMode",
             ApproachMode.VANILLA_FAST,
-        ).apply { setComment(StringUtils.translate("bedrockminer.config.approach.comment")) }
+            StringUtils.translate("bedrockminer.config.approach.comment"),
+        )
 
         val OPEN_CONFIG_GUI: ConfigHotkey = ConfigHotkey(
             "openConfigGui",
             "LEFT_ALT,B,C",
+            StringUtils.translate("bedrockminer.config.opengui.comment"),
         ).apply {
             keybind.setCallback { _, _ ->
                 GuiBase.openGui(GuiConfigs())
@@ -122,7 +124,11 @@ object Configs : IConfigHandler, IKeybindProvider {
     }
 
     override fun addHotkeys(manager: IKeybindManager?) {
-        manager?.addHotkeysForCategory("bedrock-miner", "bedrock-miner.hotkeys.generic", listOf(Generic.BEDROCK_MINER_ENABLED, Generic.OPEN_CONFIG_GUI))
+        manager?.addHotkeysForCategory(
+            "bedrock-miner",
+            "bedrock-miner.hotkeys.generic",
+            listOf(Generic.BEDROCK_MINER_ENABLED, Generic.OPEN_CONFIG_GUI)
+        )
     }
 
     override fun addKeysToMap(manager: IKeybindManager?) {

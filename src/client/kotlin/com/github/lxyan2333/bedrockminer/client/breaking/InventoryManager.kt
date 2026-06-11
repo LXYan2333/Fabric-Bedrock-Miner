@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket
 import net.minecraft.world.entity.ai.attributes.Attributes
 import net.minecraft.world.inventory.ContainerInput
+import fi.dy.masa.malilib.util.StringUtils
 
 object InventoryManager {
     private const val INSTANT_MINE_THRESHOLD = 45f
@@ -136,22 +137,22 @@ object InventoryManager {
 
     fun checkRequiredItems(): String? {
         val client = Minecraft.getInstance()
-        val gameMode = client.gameMode ?: return "Not in game"
+        val gameMode = client.gameMode ?: return StringUtils.translate("bedrockminer.message.not_in_game")
 
         if (!gameMode.playerMode.isSurvival) {
-            return "Survival mode only!"
+            return StringUtils.translate("bedrockminer.message.survival_only")
         }
         if (countItem(Blocks.PISTON.asItem()) < 2) {
-            return "Need more pistons (need 2)!"
+            return StringUtils.translate("bedrockminer.message.need_pistons")
         }
         if (countItem(Blocks.REDSTONE_TORCH.asItem()) < 1) {
-            return "Need more redstone torches!"
+            return StringUtils.translate("bedrockminer.message.need_torches")
         }
         if (countItem(Blocks.SLIME_BLOCK.asItem()) < 1) {
-            return "Need more slime blocks!"
+            return StringUtils.translate("bedrockminer.message.need_slime")
         }
         if (!canInstantlyMinePiston()) {
-            return "Cannot instantly mine piston! Need Efficiency V pickaxe + Haste II"
+            return StringUtils.translate("bedrockminer.message.need_efficiency")
         }
         return null
     }

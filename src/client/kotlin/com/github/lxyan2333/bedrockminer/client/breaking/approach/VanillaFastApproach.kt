@@ -13,7 +13,7 @@ class VanillaFastApproach internal constructor(
     slimePos: BlockPos? = null,
 ) : ApproachBase(bedrockPos, pistonPos, extendDir, torchPos, slimePos) {
 
-    override suspend fun placePistonAfter(direction: Direction, pre: suspend () -> Unit) {
+    override suspend fun placePistonAfter(direction: Direction, pre: () -> Unit) {
         pre()
         BlockPlacer.vanillaPistonPlacement(pistonPos, direction)
     }
@@ -22,8 +22,8 @@ class VanillaFastApproach internal constructor(
         private val FACES = listOf(Direction.UP, Direction.DOWN)
         private val EXTEND_DIRS = listOf(Direction.UP, Direction.DOWN)
 
-        fun findBest(level: Level, bedrockPos: BlockPos): VanillaAllDirectionApproach? {
-            return findBest(level, bedrockPos, FACES, EXTEND_DIRS, ::VanillaAllDirectionApproach)
+        fun findBest(level: Level, bedrockPos: BlockPos): VanillaFastApproach? {
+            return findBest(level, bedrockPos, FACES, EXTEND_DIRS, ::VanillaFastApproach)
         }
     }
 }

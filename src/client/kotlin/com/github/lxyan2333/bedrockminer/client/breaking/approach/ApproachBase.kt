@@ -44,7 +44,7 @@ open abstract class ApproachBase internal constructor(
         placePistonAfter(direction, {})
     }
 
-    abstract suspend fun placePistonAfter(direction: Direction, pre: suspend () -> Unit)
+    abstract suspend fun placePistonAfter(direction: Direction, pre: () -> Unit)
 
     // -- validation --
 
@@ -118,7 +118,9 @@ open abstract class ApproachBase internal constructor(
                         val extendPos = pistonPos.relative(extendDir)
                         if (!level.getBlockState(extendPos).canBeReplaced()) continue
 
-                        for (torchDir in Direction.Plane.HORIZONTAL) {
+                        val torchDirs =
+                            Direction.Plane.HORIZONTAL.sortedBy { playerPos.distanceTo(bedrockPos.relative(it).center) }
+                        for (torchDir in torchDirs) {
                             val torchPos = pistonPos.relative(torchDir)
                             if (torchPos == extendPos) continue
                             if (!level.getBlockState(torchPos).canBeReplaced()) continue

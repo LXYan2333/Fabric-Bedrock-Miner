@@ -38,28 +38,24 @@ class BreakingFlow(val targetPos: BlockPos) {
                 BlockPlacer.simpleBlockPlacement(approach.torchPos, Blocks.REDSTONE_TORCH.asItem())
                 approach.placePiston(approach.extendDir)
 
-
                 // Step 2: wait for piston to fully extend
-                if (!waitFor(40) {
-                        level.getBlockState(approach.extendPos).`is`(Blocks.PISTON_HEAD)
-                                &&
-                                level.getBlockState(approach.pistonPos).getValue(PistonBaseBlock.EXTENDED)
-                    }) {
-//                cleanup(level, approach)
-//                return@repeat
+                waitFor(40) {
+                    try {
+                        level.getBlockState(approach.extendPos)
+                            .`is`(Blocks.PISTON_HEAD) && level.getBlockState(approach.pistonPos)
+                            .getValue(PistonBaseBlock.EXTENDED)
+                    } catch (_: IllegalArgumentException) {
+                        false
+                    }
                 }
 
                 // Step 3: one-tick — break torch, break piston, place piston facing bedrock
-//            TickScheduler.awaitTicks(2)
                 approach.placePistonAfter(approach.pushDir) {
                     BlockBreaker.breakBlock(approach.torchPos)
                     BlockBreaker.breakBlock(approach.pistonPos)
                 }
 
                 // Step 4: wait for piston to fully retract
-//                waitFor(40) {
-//                    !level.getBlockState(approach.bedrockPos).`is`(Blocks.BEDROCK)
-//                }
                 waitFor(40) {
                     !level.getBlockState(approach.pistonPos).`is`(Blocks.MOVING_PISTON)
                 }
@@ -69,19 +65,20 @@ class BreakingFlow(val targetPos: BlockPos) {
                             .getValue(PistonBaseBlock.EXTENDED)) && (level.getBlockState(approach.pistonPos)
                             .getValue(PistonBaseBlock.FACING) == approach.extendDir)
                     } catch (_: IllegalArgumentException) {
-                        return@waitFor true
+                        return@waitFor false
                     }
                 }
-                TickScheduler.awaitTicks(1)
 
                 // Step 5: verify
-                cleanup(level, approach)
                 if (!level.getBlockState(targetPos).`is`(Blocks.BEDROCK)) {
                     Messager.actionBar("Bedrock broken!")
                     return
                 }
+            } catch (e: BlockInteractionRangeException) {
+                Messager.actionBar("Out of range, retrying...")
             } finally {
                 currentApproach = null
+                cleanup(level, approach)
             }
         }
 
@@ -104,19 +101,23 @@ class BreakingFlow(val targetPos: BlockPos) {
     }
 
     private suspend fun cleanup(level: Level, approach: ApproachBase) {
-        BlockBreaker.breakBlock(approach.pistonPos)
+        try {
+            BlockBreaker.breakBlock(approach.pistonPos)
 
-        BlockBreaker.breakBlock(approach.torchPos)
+            BlockBreaker.breakBlock(approach.torchPos)
 
-        approach.slimePos?.let {
-            BlockBreaker.breakBlock(it)
-        }
+            approach.slimePos?.let {
+                BlockBreaker.breakBlock(it)
+            }
 
-        waitFor(40) {
-            val ok = level.getBlockState(approach.pistonPos).canBeReplaced() && level.getBlockState(approach.torchPos)
-                .canBeReplaced()
+            waitFor(40) {
+                val ok =
+                    level.getBlockState(approach.pistonPos).canBeReplaced() && level.getBlockState(approach.torchPos)
+                        .canBeReplaced()
 
-            if (approach.slimePos == null) ok else level.getBlockState(approach.slimePos).canBeReplaced() && ok
+                if (approach.slimePos == null) ok else level.getBlockState(approach.slimePos).canBeReplaced() && ok
+            }
+        } catch (_: BlockInteractionRangeException) {
         }
     }
 

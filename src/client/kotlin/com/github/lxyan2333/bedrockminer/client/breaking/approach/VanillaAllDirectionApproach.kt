@@ -1,6 +1,7 @@
 package com.github.lxyan2333.bedrockminer.client.breaking.approach
 
 import com.github.lxyan2333.bedrockminer.client.breaking.BlockPlacer
+import com.github.lxyan2333.bedrockminer.client.breaking.TickScheduler
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import net.minecraft.core.BlockPos
@@ -16,9 +17,10 @@ class VanillaAllDirectionApproach internal constructor(
 ) : ApproachBase(bedrockPos, pistonPos, extendDir, torchPos, slimePos) {
     private val mutex = Mutex()
 
-    override suspend fun placePistonAfter(direction: Direction, pre: suspend () -> Unit) {
+    override suspend fun placePistonAfter(direction: Direction, pre: () -> Unit) {
         mutex.withLock {
             BlockPlacer.vanillaPistonPlacement1(direction)
+            TickScheduler.awaitTicks(2)
             pre()
             BlockPlacer.vanillaPistonPlacement2(pistonPos, direction)
         }

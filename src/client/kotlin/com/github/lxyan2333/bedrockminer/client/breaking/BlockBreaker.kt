@@ -7,12 +7,13 @@ import net.minecraft.world.item.Items
 
 object BlockBreaker {
     fun breakBlock(pos: BlockPos) {
+        InteractionRangeChecker.checkRange(pos)
         InventoryManager.switchToItem(Items.DIAMOND_PICKAXE)
         val gameMode = Minecraft.getInstance().gameMode ?: return
         BreakingFlowController.isInternalBreak = true
         try {
             gameMode.startDestroyBlock(pos, Direction.UP)
-            gameMode.stopDestroyBlock()
+//            gameMode.stopDestroyBlock()
         } finally {
             BreakingFlowController.isInternalBreak = false
         }

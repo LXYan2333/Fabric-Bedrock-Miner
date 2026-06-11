@@ -13,6 +13,7 @@ import net.minecraft.world.phys.Vec3
 object BlockPlacer {
 
     fun simpleBlockPlacement(pos: BlockPos, item: Item) {
+        InteractionRangeChecker.checkRange(pos)
         val client = Minecraft.getInstance()
         val player = client.player ?: return
         if (!InventoryManager.switchToItem(item)) return
@@ -20,14 +21,13 @@ object BlockPlacer {
         client.gameMode?.useItemOn(player, InteractionHand.MAIN_HAND, hitResult)
     }
 
-    fun vanillaPistonPlacement1(direction: Direction) {
-        val client = Minecraft.getInstance()
-        val player = client.player ?: return
+    fun getYawPitch(direction: Direction): Pair<Float, Float> {
+        val player = Minecraft.getInstance().player!!
 
         val pitch = when (direction) {
             Direction.UP -> 90f
             Direction.DOWN -> -90f
-            else -> player.xRot
+            else -> 0f
         }
 
         var yaw = when (direction) {
@@ -37,11 +37,20 @@ object BlockPlacer {
             Direction.WEST -> -90f
             else -> player.yRot
         }
+        return Pair(yaw, pitch)
+    }
+
+    fun vanillaPistonPlacement1(direction: Direction) {
+        val client = Minecraft.getInstance()
+        val player = client.player ?: return
+
+        val (yaw, pitch) = getYawPitch(direction)
 
         client.connection?.send(ServerboundMovePlayerPacket.Rot(yaw, pitch, player.onGround(), false))
     }
 
     fun vanillaPistonPlacement2(pos: BlockPos, direction: Direction) {
+        InteractionRangeChecker.checkRange(pos)
         val client = Minecraft.getInstance()
         val player = client.player ?: return
 
@@ -51,7 +60,21 @@ object BlockPlacer {
         val hitVec = Vec3.atCenterOf(hitPos).relative(direction, 0.5)
         val hitResult = BlockHitResult(hitVec, direction, pos, false)
 
-        client.gameMode?.useItemOn(player, InteractionHand.MAIN_HAND, hitResult)
+        // these two varialbe is the actually used value when determine the piston facing.
+        // we set them on client so the piston facing is correct on client.
+        val oldXRot = player.xRot
+        val oldYHeadRot = player.yHeadRot
+
+        val (yaw, pitch) = getYawPitch(direction)
+        try {
+            player.xRot = pitch
+            player.yHeadRot = yaw
+            client.connection?.send(ServerboundMovePlayerPacket.Rot(yaw, pitch, player.onGround(), false))
+            client.gameMode?.useItemOn(player, InteractionHand.MAIN_HAND, hitResult)
+        } finally {
+            player.xRot = oldXRot
+            player.yHeadRot = oldYHeadRot
+        }
     }
 
     fun vanillaPistonPlacement(pos: BlockPos, direction: Direction) {
@@ -65,6 +88,7 @@ object BlockPlacer {
      * The server-side Carpet Extra mixin decodes this to override facing.
      */
     fun carpetPistonPlacement(pos: BlockPos, direction: Direction) {
+        InteractionRangeChecker.checkRange(pos)
         val client = Minecraft.getInstance()
         val player = client.player ?: return
 

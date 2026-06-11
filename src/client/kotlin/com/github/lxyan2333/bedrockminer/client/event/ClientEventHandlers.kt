@@ -1,5 +1,6 @@
 package com.github.lxyan2333.bedrockminer.client.event
 
+import com.github.lxyan2333.bedrockminer.client.breaking.BlockBreaker
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback
 import net.fabricmc.fabric.api.event.player.UseBlockCallback
 import net.minecraft.world.InteractionResult
@@ -11,6 +12,7 @@ import com.github.lxyan2333.bedrockminer.client.config.Configs
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.minecraft.client.Minecraft
+import net.minecraft.core.Direction
 
 object ClientEventHandlers {
 
@@ -26,12 +28,14 @@ object ClientEventHandlers {
         }
 
         AttackBlockCallback.EVENT.register { player, world, hand, pos, direction ->
+            if (!world.isClientSide) return@register InteractionResult.PASS
             if (!BreakingFlowController.isInternalBreak &&
                 BreakingFlowController.isPositionProtected(pos)
             ) {
                 return@register InteractionResult.FAIL
             }
             if (world.getBlockState(pos).`is`(Blocks.BEDROCK) && BreakingFlowController.enabled) {
+//                BlockBreaker.breakBlock(pos.relative(Direction.UP))
                 BreakingFlowController.tryEnqueueBlock(pos)
                 return@register InteractionResult.FAIL
             }

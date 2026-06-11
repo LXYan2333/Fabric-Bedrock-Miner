@@ -4,5 +4,10 @@
   "bedrockminer.gui.button.config_gui.client": "Client",
   "bedrockminer.gui.button.config_gui.server": "Server",
   "bedrockminer.config.toggle_enabled.comment": "Toggle the bedrock miner on/off",
-  "bedrockminer.config.approach.comment": "Bedrock Breaking mode"
+  "bedrockminer.config.approach.comment": "Bedrock Breaking mode",
+  "bedrockminer.config.blockListMode.comment": "Mode for block list filtering: blocklist blocks specified, allowlist allows only specified",
+  "bedrockminer.config.blockListMode.blocklist": "Blocklist",
+  "bedrockminer.config.blockListMode.allowlist": "Allowlist",
+  "bedrockminer.config.blockList.comment": "List of blocks to block/allow based on mode (e.g. minecraft:stone)",
+  "bedrockminer.config.allowList.comment": "Additional blocks to always allow (appended to server list when on server)"
 }

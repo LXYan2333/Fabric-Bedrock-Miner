@@ -8,13 +8,31 @@ import net.minecraft.world.level.block.Blocks
 
 import com.github.lxyan2333.bedrockminer.client.breaking.BreakingFlowController
 import com.github.lxyan2333.bedrockminer.client.breaking.TickScheduler
+import com.github.lxyan2333.bedrockminer.client.config.BlockListMode
 import com.github.lxyan2333.bedrockminer.client.config.Configs
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.minecraft.client.Minecraft
-import net.minecraft.core.Direction
+import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.world.level.block.state.BlockState
 
 object ClientEventHandlers {
+
+    private fun isBlockAllowed(blockState: BlockState): Boolean {
+        val blockId = BuiltInRegistries.BLOCK.getKey(blockState.block).toString()
+
+        if (Configs.Client.ALLOW_LIST.strings.contains(blockId)) {
+            return true
+        }
+
+        val mode = Configs.Client.BLOCK_LIST_MODE.optionListValue as BlockListMode
+        val BlockListContains = Configs.Client.BLOCK_LIST.strings.contains(blockId)
+
+        return when (mode) {
+            BlockListMode.BLOCKLIST -> !BlockListContains
+            BlockListMode.ALLOWLIST -> BlockListContains
+        }
+    }
 
     fun register() {
         // Right-click bedrock with empty hand to toggle the mod on/off
@@ -28,18 +46,23 @@ object ClientEventHandlers {
         }
 
         AttackBlockCallback.EVENT.register { player, world, hand, pos, direction ->
-            if (!world.isClientSide) return@register InteractionResult.PASS
+            if (!world.isClientSide) {
+                return@register InteractionResult.PASS
+            }
+            if (!BreakingFlowController.enabled) {
+                return@register InteractionResult.PASS
+            }
             if (!BreakingFlowController.isInternalBreak &&
                 BreakingFlowController.isPositionProtected(pos)
             ) {
                 return@register InteractionResult.FAIL
             }
-            if (world.getBlockState(pos).`is`(Blocks.BEDROCK) && BreakingFlowController.enabled) {
-//                BlockBreaker.breakBlock(pos.relative(Direction.UP))
-                BreakingFlowController.tryEnqueueBlock(pos)
-                return@register InteractionResult.FAIL
+            val blockState = world.getBlockState(pos)
+            if (!isBlockAllowed(blockState)) {
+                return@register InteractionResult.PASS
             }
-            return@register InteractionResult.PASS
+            BreakingFlowController.tryEnqueueBlock(pos)
+            return@register InteractionResult.FAIL
         }
 
         ClientTickEvents.END_CLIENT_TICK.register { _ ->
@@ -58,18 +81,5 @@ object ClientEventHandlers {
         ClientPlayConnectionEvents.DISCONNECT.register { _, _ ->
             BreakingFlowController.onDisconnect()
         }
-//        ClientPreAttackCallback.EVENT.register { minecraft, player, i ->
-//            val camera = minecraft.cameraEntity ?: return@register false
-//            val hitResult = player.raycastHitResult(1.0F, camera)
-//            if (hitResult.type != HitResult.Type.BLOCK) return@register false
-//            val blockHitResult = hitResult as BlockHitResult
-//            val hitPos = blockHitResult.blockPos
-//            val hitState = minecraft.level?.getBlockState(hitPos) ?: return@register false
-//            if (hitState.`is`(Blocks.BEDROCK) && BreakingFlowController.enabled) {
-//                BreakingFlowController.enqueueBlock(hitPos)
-//                return@register true
-//            }
-//            return@register false
-//        }
     }
 }

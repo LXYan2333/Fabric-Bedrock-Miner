@@ -4,6 +4,7 @@ import com.github.lxyan2333.bedrockminer.client.breaking.BreakingFlowController
 import com.github.lxyan2333.bedrockminer.client.compat.modmenu.GuiConfigs
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.google.common.collect.ImmutableList
 import fi.dy.masa.malilib.MaLiLibReference
 import fi.dy.masa.malilib.config.ConfigUtils
 import fi.dy.masa.malilib.config.IConfigBase
@@ -11,6 +12,7 @@ import fi.dy.masa.malilib.config.IConfigHandler
 import fi.dy.masa.malilib.config.options.ConfigBooleanHotkeyed
 import fi.dy.masa.malilib.config.options.ConfigHotkey
 import fi.dy.masa.malilib.config.options.ConfigOptionList
+import fi.dy.masa.malilib.config.options.ConfigStringList
 import fi.dy.masa.malilib.event.InputEventHandler
 import fi.dy.masa.malilib.gui.GuiBase
 import fi.dy.masa.malilib.hotkeys.IKeybindManager
@@ -62,8 +64,22 @@ object Configs : IConfigHandler, IKeybindProvider {
     private val CLIENT_KEY = "bedrockminer.config.client"
 
     object Client {
-        // Placeholder for future client-side configs
-        val OPTIONS: List<IConfigBase> = listOf()
+        val BLOCK_LIST_MODE: ConfigOptionList = ConfigOptionList(
+            "blockListMode",
+            BlockListMode.BLOCKLIST,
+        ).apply { setComment("Mode for block list filtering: blocklist blocks specified, allowlist allows only specified") }
+
+        val BLOCK_LIST: ConfigStringList = ConfigStringList(
+            "blockList",
+            ImmutableList.of(),
+        ).apply { setComment("List of blocks to block/allow based on mode (e.g. minecraft:stone)") }
+
+        val ALLOW_LIST: ConfigStringList = ConfigStringList(
+            "allowList",
+            ImmutableList.of(),
+        ).apply { setComment("Additional blocks to always allow (appended to server list when on server)") }
+
+        val OPTIONS: List<IConfigBase> = listOf(BLOCK_LIST_MODE, BLOCK_LIST, ALLOW_LIST)
     }
 
     private val SERVER_KEY = "bedrockminer.config.server"

@@ -5,3 +5,5 @@ accessible method net/minecraft/world/level/block/RedstoneWallTorchBlock canSurv
 accessible method net/minecraft/world/item/BlockItem canPlace (Lnet/minecraft/world/item/context/BlockPlaceContext;Lnet/minecraft/world/level/block/state/BlockState;)Z
 accessible method net/minecraft/client/multiplayer/ClientCommonPacketListenerImpl sendDeferredPackets ()V
 accessible method net/minecraft/world/level/block/piston/PistonBaseBlock checkIfExtend (Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V
+accessible class net/minecraft/world/level/block/state/BlockBehaviour$BlockStateBase$Cache
+accessible field net/minecraft/world/level/block/state/BlockBehaviour$BlockStateBase cache Lnet/minecraft/world/level/block/state/BlockBehaviour$BlockStateBase$Cache;

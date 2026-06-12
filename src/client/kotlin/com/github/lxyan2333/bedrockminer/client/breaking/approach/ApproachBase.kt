@@ -24,7 +24,7 @@ open abstract class ApproachBase internal constructor(
     val pistonPos: BlockPos,
     val extendDir: Direction,
     val torchPos: BlockPos,
-    val slimePos: BlockPos? = null,
+    val supportBlockPos: BlockPos? = null,
 ) {
     val pushDir: Direction
         get() {
@@ -36,7 +36,7 @@ open abstract class ApproachBase internal constructor(
 
     val extendPos: BlockPos get() = pistonPos.relative(extendDir)
 
-    fun occupies(pos: BlockPos): Boolean = pos == pistonPos || pos == torchPos || pos == slimePos || pos == extendPos
+    fun occupies(pos: BlockPos): Boolean = pos == pistonPos || pos == torchPos || pos == supportBlockPos || pos == extendPos
 
     // -- placement method --
 
@@ -61,11 +61,11 @@ open abstract class ApproachBase internal constructor(
 
         if (!level.getBlockState(torchPos).canBeReplaced()) return false
 
-        if (slimePos == null && !torchCanSurvive(level, torchPos)) return false
+        if (supportBlockPos == null && !torchCanSurvive(level, torchPos)) return false
 
-        if (slimePos != null) {
-            if (!player.isWithinBlockInteractionRange(slimePos, 0.0)) return false
-            if (!canPlaceBlock(level, player, slimePos, Blocks.SLIME_BLOCK)) return false
+        if (supportBlockPos != null) {
+            if (!player.isWithinBlockInteractionRange(supportBlockPos, 0.0)) return false
+            if (!canPlaceBlock(level, player, supportBlockPos, supportBlock)) return false
         }
 
         return true
@@ -92,6 +92,9 @@ open abstract class ApproachBase internal constructor(
     }
 
     companion object {
+        val supportBlock: Block
+            get() = Configs.Generic.SUPPORT_BLOCK.blockStateValue.block
+
         fun findBest(level: Level, targetPos: BlockPos): ApproachBase? {
             return when (ApproachMode.valueOf(Configs.Generic.APPROACH_MODE.stringValue)) {
                 ApproachMode.VANILLA_FAST -> VanillaFastApproach.findBest(level, targetPos)

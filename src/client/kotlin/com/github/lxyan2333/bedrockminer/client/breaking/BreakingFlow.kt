@@ -4,6 +4,7 @@ import com.github.lxyan2333.bedrockminer.client.breaking.approach.ApproachBase
 import net.minecraft.client.Minecraft
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import com.github.lxyan2333.bedrockminer.client.config.Configs
 import com.github.lxyan2333.bedrockminer.client.message.Messager
@@ -17,6 +18,9 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
 
     private val targetBlockName: String
         get() = targetBlockState.block.name.string
+
+    private val supportBlock: Block
+        get() = Configs.Generic.SUPPORT_BLOCK.blockStateValue.block
 
     suspend fun execute() {
         val level = Minecraft.getInstance().level ?: return
@@ -38,8 +42,8 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
             currentApproach = approach
             try {
                 // Step 1: place piston and torch
-                if (approach.slimePos != null) {
-                    BlockPlacer.simpleBlockPlacement(approach.slimePos, Blocks.SLIME_BLOCK.asItem())
+                if (approach.supportBlockPos != null) {
+                    BlockPlacer.simpleBlockPlacement(approach.supportBlockPos, supportBlock.asItem())
                 }
                 BlockPlacer.simpleBlockPlacement(approach.torchPos, Blocks.REDSTONE_TORCH.asItem())
                 approach.placePiston(approach.extendDir)
@@ -112,7 +116,7 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
 
             BlockBreaker.breakBlock(approach.torchPos)
 
-            approach.slimePos?.let {
+            approach.supportBlockPos?.let {
                 BlockBreaker.breakBlock(it)
             }
 
@@ -121,7 +125,8 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
                     level.getBlockState(approach.pistonPos).canBeReplaced() && level.getBlockState(approach.torchPos)
                         .canBeReplaced()
 
-                if (approach.slimePos == null) ok else level.getBlockState(approach.slimePos).canBeReplaced() && ok
+                if (approach.supportBlockPos == null) ok else level.getBlockState(approach.supportBlockPos)
+                    .canBeReplaced() && ok
             }
         } catch (_: BlockInteractionRangeException) {
         }

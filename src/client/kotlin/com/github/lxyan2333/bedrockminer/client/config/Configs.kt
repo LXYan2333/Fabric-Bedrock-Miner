@@ -2,6 +2,7 @@ package com.github.lxyan2333.bedrockminer.client.config
 
 import com.github.lxyan2333.bedrockminer.client.breaking.BreakingFlowController
 import com.github.lxyan2333.bedrockminer.client.compat.modmenu.GuiConfigs
+import com.github.lxyan2333.bedrockminer.client.message.Messager
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.common.collect.ImmutableList
@@ -9,6 +10,7 @@ import fi.dy.masa.malilib.MaLiLibReference
 import fi.dy.masa.malilib.config.ConfigUtils
 import fi.dy.masa.malilib.config.IConfigBase
 import fi.dy.masa.malilib.config.IConfigHandler
+import fi.dy.masa.malilib.config.options.ConfigBlockState
 import fi.dy.masa.malilib.config.options.ConfigBooleanHotkeyed
 import fi.dy.masa.malilib.config.options.ConfigHotkey
 import fi.dy.masa.malilib.config.options.ConfigInteger
@@ -20,13 +22,14 @@ import fi.dy.masa.malilib.hotkeys.IKeybindManager
 import fi.dy.masa.malilib.hotkeys.IKeybindProvider
 import fi.dy.masa.malilib.util.StringUtils
 import fi.dy.masa.malilib.util.data.json.JsonUtils
+import net.minecraft.core.Direction
+import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.SupportType
 import java.nio.file.Files
 import kotlin.io.path.exists
 
 object Configs : IConfigHandler, IKeybindProvider {
     private val configFile = MaLiLibReference.CONFIG_DIR.resolve("bedrock-miner.json")
-
-    private val GENERIC_KEY = "bedrockminer.config.generic"
 
     object Generic {
         val BEDROCK_MINER_ENABLED: ConfigBooleanHotkeyed = ConfigBooleanHotkeyed(
@@ -67,10 +70,24 @@ object Configs : IConfigHandler, IKeybindProvider {
             StringUtils.translate("bedrockminer.config.max_retries.comment"),
         )
 
-        val OPTIONS: List<IConfigBase> = listOf(BEDROCK_MINER_ENABLED, APPROACH_MODE, OPEN_CONFIG_GUI, MAX_RETRIES)
-    }
+        val SUPPORT_BLOCK: ConfigBlockState = ConfigBlockState(
+            "supportBlock",
+            Blocks.SLIME_BLOCK.defaultBlockState(),
+            StringUtils.translate("bedrockminer.config.support_block.comment"),
+        ).apply {
+            setValueChangeCallback { config ->
+                config.blockStateValue.cache?.let {
+                    if (!it.isFaceSturdy(Direction.UP, SupportType.CENTER)) {
+                        config.setBlockStateValue(config.lastBlockStateValue)
+                        Messager.actionBar(StringUtils.translate("bedrockminer.message.invalid_support_block"))
+                    }
+                }
+            }
+        }
 
-    private val CLIENT_KEY = "bedrockminer.config.client"
+        val OPTIONS: List<IConfigBase> =
+            listOf(BEDROCK_MINER_ENABLED, APPROACH_MODE, OPEN_CONFIG_GUI, MAX_RETRIES, SUPPORT_BLOCK)
+    }
 
     object Client {
         val BLOCK_LIST: ConfigStringList = ConfigStringList(
@@ -93,8 +110,6 @@ object Configs : IConfigHandler, IKeybindProvider {
 
         val OPTIONS: List<IConfigBase> = listOf(BLOCK_LIST, ALLOW_LIST, AlloeOrBlockMode)
     }
-
-    private val SERVER_KEY = "bedrockminer.config.server"
 
     object Server {
         // Placeholder for future server-side configs

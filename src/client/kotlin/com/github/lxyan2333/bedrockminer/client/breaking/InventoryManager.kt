@@ -17,6 +17,7 @@ import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket
 import net.minecraft.world.entity.ai.attributes.Attributes
 import net.minecraft.world.inventory.ContainerInput
 import fi.dy.masa.malilib.util.StringUtils
+import com.github.lxyan2333.bedrockminer.client.config.Configs
 
 object InventoryManager {
     private const val INSTANT_MINE_THRESHOLD = 45f
@@ -148,8 +149,9 @@ object InventoryManager {
         if (countItem(Blocks.REDSTONE_TORCH.asItem()) < 1) {
             return StringUtils.translate("bedrockminer.message.need_torches")
         }
-        if (countItem(Blocks.SLIME_BLOCK.asItem()) < 1) {
-            return StringUtils.translate("bedrockminer.message.need_slime")
+        if (countItem(Configs.Generic.SUPPORT_BLOCK.blockStateValue.block.asItem()) < 1) {
+            val supportBlockName = Configs.Generic.SUPPORT_BLOCK.blockStateValue.block.name.string
+            return StringUtils.translate("bedrockminer.message.need_support", supportBlockName)
         }
         if (!canInstantlyMinePiston()) {
             return StringUtils.translate("bedrockminer.message.need_efficiency")

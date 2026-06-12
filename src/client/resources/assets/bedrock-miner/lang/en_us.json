@@ -10,6 +10,7 @@
   "bedrockminer.config.approach.vanilla_all_direction": "Vanilla All Direction",
   "bedrockminer.config.opengui.comment": "Hotkey to open the config GUI",
   "bedrockminer.config.max_retries.comment": "Maximum number of retries for block breaking",
+  "bedrockminer.config.support_block.comment": "Support block used to support redstone torch (e.g. slime block)",
   "bedrockminer.config.alloworblockmode.comment": "For blocks not in blocklist or allowlist, allow or block using Fabric Bedrock Miner on them",
   "bedrockminer.config.alloworblockmode.blocked": "Blocked",
   "bedrockminer.config.alloworblockmode.allowed": "Allowed",
@@ -26,5 +27,7 @@
   "bedrockminer.message.need_pistons": "Need more pistons (need 2)!",
   "bedrockminer.message.need_torches": "Need more redstone torches!",
   "bedrockminer.message.need_slime": "Need more slime blocks!",
+  "bedrockminer.message.need_support": "Need more %s!",
+  "bedrockminer.message.invalid_support_block": "Invalid support block! Must be sturdy on top face，so we can place redstone torch above it.",
   "bedrockminer.message.need_efficiency": "Cannot instantly mine piston! Need Efficiency V pickaxe + Haste II"
 }

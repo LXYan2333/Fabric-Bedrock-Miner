@@ -8,11 +8,13 @@
   "bedrockminer.config.approach.vanilla_fast": "原版快速",
   "bedrockminer.config.approach.carpet_accurate": "Carpet精确",
   "bedrockminer.config.approach.vanilla_all_direction": "原版全方向",
-  "bedrockminer.config.blockListMode.comment": "方块列表过滤模式：黑名单屏蔽指定方块，白名单只允许指定方块",
-  "bedrockminer.config.blockListMode.blocklist": "黑名单",
-  "bedrockminer.config.blockListMode.allowlist": "白名单",
-  "bedrockminer.config.blockList.comment": "根据模式屏蔽/允许的方块列表（例如 minecraft:stone）",
-  "bedrockminer.config.allowList.comment": "额外允许的方块（在服务器上附加到服务器列表）",
+  "bedrockminer.config.opengui.comment": "打开配置界面的快捷键",
+  "bedrockminer.config.max_retries.comment": "方块破坏的最大重试次数",
+  "bedrockminer.config.alloworblockmode.comment": "对于不在允许或阻止列表的方块，是否允许使用 Fabric Bedrock Miner 挖掘",
+  "bedrockminer.config.alloworblockmode.blocked": "阻止",
+  "bedrockminer.config.alloworblockmode.allowed": "允许",
+  "bedrockminer.config.blockList.comment": "阻止使用 Fabric Bedrock Miner 挖掘的方块列表",
+  "bedrockminer.config.allowList.comment": "允许使用 Fabric Bedrock Miner 挖掘的方块列表",
   "bedrockminer.message.started": "Fabric Bedrock Miner 已启动！",
   "bedrockminer.message.stopped": "Fabric Bedrock Miner 已停止。",
   "bedrockminer.message.cannot_find_approach": "找不到适用于 %s 模式的有效方法！",
@@ -24,6 +26,5 @@
   "bedrockminer.message.need_pistons": "需要更多活塞（需要2个）！",
   "bedrockminer.message.need_torches": "需要更多红石火把！",
   "bedrockminer.message.need_slime": "需要更多粘液块！",
-  "bedrockminer.message.need_efficiency": "无法瞬间破坏活塞！需要效率V镐子 + 急迫II",
-  "bedrockminer.config.opengui.comment": "打开配置界面的快捷键"
+  "bedrockminer.message.need_efficiency": "无法瞬间破坏活塞！需要效率V镐子 + 急迫II"
 }

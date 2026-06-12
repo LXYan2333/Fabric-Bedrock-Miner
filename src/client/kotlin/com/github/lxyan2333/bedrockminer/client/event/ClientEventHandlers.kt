@@ -5,11 +5,12 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback
 import net.minecraft.world.InteractionResult
 
 import com.github.lxyan2333.bedrockminer.client.breaking.BreakingFlowController
-import com.github.lxyan2333.bedrockminer.client.breaking.TickScheduler
-import com.github.lxyan2333.bedrockminer.client.config.BlockListMode
+import com.github.lxyan2333.bedrockminer.client.breaking.ClientTickScheduler
+import com.github.lxyan2333.bedrockminer.client.config.AllowOrBlockMode
 import com.github.lxyan2333.bedrockminer.client.config.Configs
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.minecraft.client.Minecraft
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.world.level.block.state.BlockState
@@ -23,12 +24,14 @@ object ClientEventHandlers {
             return true
         }
 
-        val mode = Configs.Client.BLOCK_LIST_MODE.optionListValue as BlockListMode
-        val BlockListContains = Configs.Client.BLOCK_LIST.strings.contains(blockId)
+        val mode = Configs.Client.AlloeOrBlockMode.optionListValue as AllowOrBlockMode
+        if (Configs.Client.BLOCK_LIST.strings.contains(blockId)) {
+            return false
+        }
 
         return when (mode) {
-            BlockListMode.BLOCKLIST -> !BlockListContains
-            BlockListMode.ALLOWLIST -> BlockListContains
+            AllowOrBlockMode.BLOCKED -> false
+            AllowOrBlockMode.ALLOWED -> true
         }
     }
 
@@ -50,9 +53,7 @@ object ClientEventHandlers {
             if (!BreakingFlowController.enabled) {
                 return@register InteractionResult.PASS
             }
-            if (!BreakingFlowController.isInternalBreak &&
-                BreakingFlowController.isPositionProtected(pos)
-            ) {
+            if (!BreakingFlowController.isInternalBreak && BreakingFlowController.isPositionProtected(pos)) {
                 return@register InteractionResult.FAIL
             }
             val blockState = world.getBlockState(pos)
@@ -67,8 +68,10 @@ object ClientEventHandlers {
             if (Minecraft.getInstance().screen != null) {
                 return@register
             }
-            TickScheduler.onTick()
+            ClientTickScheduler.onTick()
         }
+
+        ServerTickEvents.END_SERVER_TICK.register { }
 
         ClientPlayConnectionEvents.JOIN.register { _, _, _ ->
             if (Configs.Generic.BEDROCK_MINER_ENABLED.booleanValue) {

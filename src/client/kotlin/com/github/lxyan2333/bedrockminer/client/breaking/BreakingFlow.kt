@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Blocks
+import com.github.lxyan2333.bedrockminer.client.config.Configs
 import com.github.lxyan2333.bedrockminer.client.message.Messager
 import net.minecraft.world.level.block.piston.PistonBaseBlock
 import net.minecraft.world.level.block.state.BlockState
@@ -22,7 +23,7 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
         if (level.getBlockState(targetPos) != targetBlockState) return
 
 
-        repeat(MAX_RETRIES) {
+        repeat(Configs.Generic.MAX_RETRIES.integerValue) {
 
             val missing = InventoryManager.checkRequiredItems()
             if (missing != null) {
@@ -93,7 +94,7 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
     private suspend fun waitFor(maxTicks: Int, condition: () -> Boolean): Boolean {
         repeat(maxTicks) {
             if (condition()) return true
-            TickScheduler.awaitTicks(1)
+            ClientTickScheduler.awaitTicks(1)
         }
         return condition()
     }
@@ -124,9 +125,5 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
             }
         } catch (_: BlockInteractionRangeException) {
         }
-    }
-
-    companion object {
-        private const val MAX_RETRIES = 5
     }
 }

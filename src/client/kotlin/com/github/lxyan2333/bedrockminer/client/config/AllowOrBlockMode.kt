@@ -3,12 +3,10 @@ package com.github.lxyan2333.bedrockminer.client.config
 import fi.dy.masa.malilib.config.IConfigOptionListEntry
 import fi.dy.masa.malilib.util.StringUtils
 
-enum class BlockListMode(
+enum class AllowOrBlockMode(
     private val translationKey: String,
 ) : IConfigOptionListEntry {
-    BLOCKLIST("bedrockminer.config.blockListMode.blocklist"),
-    ALLOWLIST("bedrockminer.config.blockListMode.allowlist"),
-    ;
+    BLOCKED("bedrockminer.config.alloworblockmode.blocked"), ALLOWED("bedrockminer.config.alloworblockmode.allowed"), ;
 
     override fun getStringValue(): String = this.name
 
@@ -20,6 +18,5 @@ enum class BlockListMode(
         return values[next]
     }
 
-    override fun fromString(value: String): IConfigOptionListEntry =
-        entries.firstOrNull { it.name == value } ?: BLOCKLIST
+    override fun fromString(value: String): IConfigOptionListEntry = entries.firstOrNull { it.name == value } ?: BLOCKED
 }

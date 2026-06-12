@@ -4,7 +4,7 @@ import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
-object TickScheduler {
+object ClientTickScheduler {
     private val continuations = mutableListOf<CancellableContinuation<Unit>>()
 
     fun onTick() {

@@ -11,7 +11,6 @@ import com.github.lxyan2333.bedrockminer.client.message.Messager
 import net.minecraft.world.level.block.piston.PistonBaseBlock
 import net.minecraft.world.level.block.state.BlockState
 import fi.dy.masa.malilib.util.StringUtils
-import net.minecraft.client.renderer.chunk.RenderRegionCache
 
 class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
     var currentApproach: ApproachBase? = null
@@ -104,35 +103,14 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
         return condition()
     }
 
-    private fun forceRebuildSection(pos: BlockPos) {
-        val mc = Minecraft.getInstance()
-
-        mc.execute {
-            val renderer = mc.levelRenderer
-
-            val viewArea = renderer.viewArea ?: return@execute
-            val dispatcher = renderer.sectionRenderDispatcher ?: return@execute
-
-            val section = viewArea.getRenderSectionAt(pos) ?: return@execute
-            val cache = RenderRegionCache()
-
-            dispatcher.rebuildSectionSync(section, cache)
-            section.setNotDirty()
-        }
-    }
-
     private suspend fun cleanup(level: Level, approach: ApproachBase) {
         try {
             BlockBreaker.breakBlock(approach.pistonPos)
-            forceRebuildSection(approach.pistonPos)
 
             BlockBreaker.breakBlock(approach.torchPos)
-            forceRebuildSection(approach.torchPos)
 
             approach.supportBlockPos?.let {
                 BlockBreaker.breakBlock(it)
-                forceRebuildSection(approach.supportBlockPos)
-
             }
 
             waitFor(40) {
@@ -143,8 +121,6 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
                 if (approach.supportBlockPos == null) ok else level.getBlockState(approach.supportBlockPos)
                     .canBeReplaced() && ok
             }
-
-//            Minecraft.getInstance().levelRenderer.allChanged()
         } catch (_: BlockInteractionRangeException) {
         }
     }

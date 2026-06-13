@@ -1,9 +1,28 @@
-# Bedrock-Miner
+**English** | [中文](https://github.com/LXYan2333/Fabric-Bedrock-Miner/blob/main/README_中文.md)
 
-## Setup
+# Fabric-Bedrock-Miner
+A Fabric client mod to "mine" bedrock!
 
-For setup instructions, please see the [Fabric Documentation page](https://docs.fabricmc.net/develop/getting-started/creating-a-project#setting-up) related to the IDE that you are using.
+# Showcase
+https://www.youtube.com/watch?v=b8Y86yxjr_Y  
+https://www.bilibili.com/video/BV1Fv411P7Vc
 
-## License
+# Usage
+Have the following items ready:
+1. Efficiency V diamond (or netherite) pickaxe
+2. Haste II beacon
+3. Pistons
+4. Redstone torches
+5. Slime blocks
 
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+Open Config menu with default shotcut `LEFT_ALT+B+C` (can be configured)
+
+Toggle Enable/Disable this mod with default shotcut `LEFT_ALT+B+M` (can be configured)
+
+While the mod is enabled, left click bedrock to "mine" it.
+
+If my mod saves you tons of time, please considering leave me a star.
+
+# Compile
+
+Checkout to the corresponding Minecraft version and compile following the Fabric wiki.

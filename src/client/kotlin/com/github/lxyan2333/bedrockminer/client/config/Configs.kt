@@ -112,7 +112,7 @@ object Configs : IConfigHandler, IKeybindProvider {
 
         val ALLOW_LIST: ConfigStringList = ConfigStringList(
             "allowList",
-            ImmutableList.of(),
+            ImmutableList.of("minecraft:bedrock"),
             StringUtils.translate("bedrockminer.config.allowList.comment"),
         )
 

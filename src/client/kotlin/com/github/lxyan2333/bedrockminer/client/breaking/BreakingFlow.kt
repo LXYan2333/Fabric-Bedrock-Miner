@@ -36,7 +36,12 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
             }
 
             val approach = ApproachBase.findBest(level, targetPos) ?: run {
-                Messager.actionBar(StringUtils.translate("bedrockminer.message.cannot_find_approach", targetBlockName))
+                Messager.actionBar(
+                    StringUtils.translate(
+                        "bedrockminer.message.cannot_find_approach",
+                        Configs.Generic.APPROACH_MODE.optionListValue.displayName
+                    )
+                )
                 return
             }
             currentApproach = approach
@@ -112,16 +117,14 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
             approach.supportBlockPos?.let {
                 BlockBreaker.breakBlock(it)
             }
-
-            waitFor(40) {
-                val ok =
-                    level.getBlockState(approach.pistonPos).canBeReplaced() && level.getBlockState(approach.torchPos)
-                        .canBeReplaced()
-
-                if (approach.supportBlockPos == null) ok else level.getBlockState(approach.supportBlockPos)
-                    .canBeReplaced() && ok
-            }
         } catch (_: BlockInteractionRangeException) {
+        }
+
+        waitFor(40) {
+            val ok = level.getBlockState(approach.pistonPos).canBeReplaced() && level.getBlockState(approach.torchPos)
+                .canBeReplaced()
+
+            ok && approach.supportBlockPos?.let { level.getBlockState(it).canBeReplaced() } ?: true
         }
     }
 }

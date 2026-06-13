@@ -64,7 +64,7 @@ object ClientEventHandlers {
             return@register InteractionResult.FAIL
         }
 
-        ClientTickEvents.END_CLIENT_TICK.register { _ ->
+        ClientTickEvents.START_CLIENT_TICK.register { _ ->
             if (Minecraft.getInstance().screen != null) {
                 return@register
             }

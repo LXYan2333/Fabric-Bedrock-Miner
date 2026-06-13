@@ -10,6 +10,7 @@
   "bedrockminer.config.approach.vanilla_all_direction": "原版全方向",
   "bedrockminer.config.opengui.comment": "打开配置界面的快捷键",
   "bedrockminer.config.max_retries.comment": "方块破坏的最大重试次数",
+  "bedrockminer.config.remove_ghost_blocks.comment": "破坏方块后，强制重建渲染区块以移除幽灵方块",
   "bedrockminer.config.support_block.comment": "用于放置红石火把的支撑方块（例如粘液块）",
   "bedrockminer.config.alloworblockmode.comment": "对于不在允许或阻止列表的方块，是否允许使用 Fabric Bedrock Miner 挖掘",
   "bedrockminer.config.alloworblockmode.blocked": "阻止",

@@ -1,5 +1,6 @@
 package com.github.lxyan2333.bedrockminer.client.breaking
 
+import com.github.lxyan2333.bedrockminer.client.config.Configs
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.chunk.RenderRegionCache
 import net.minecraft.core.BlockPos
@@ -23,7 +24,9 @@ object BlockBreaker {
     }
 
     private fun markForUpdate(pos: BlockPos) {
-        pendingUpdates.add(pos)
+        if (Configs.Generic.REMOVE_GHOST_BLOCKS.booleanValue) {
+            pendingUpdates.add(pos)
+        }
     }
 
     fun removeAllGhostBlock() {

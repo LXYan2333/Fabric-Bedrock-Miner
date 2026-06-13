@@ -11,6 +11,7 @@ import fi.dy.masa.malilib.config.ConfigUtils
 import fi.dy.masa.malilib.config.IConfigBase
 import fi.dy.masa.malilib.config.IConfigHandler
 import fi.dy.masa.malilib.config.options.ConfigBlockState
+import fi.dy.masa.malilib.config.options.ConfigBoolean
 import fi.dy.masa.malilib.config.options.ConfigBooleanHotkeyed
 import fi.dy.masa.malilib.config.options.ConfigHotkey
 import fi.dy.masa.malilib.config.options.ConfigInteger
@@ -70,6 +71,12 @@ object Configs : IConfigHandler, IKeybindProvider {
             StringUtils.translate("bedrockminer.config.max_retries.comment"),
         )
 
+        val REMOVE_GHOST_BLOCKS: ConfigBoolean = ConfigBoolean(
+            "removeGhostBlocks",
+            true,
+            StringUtils.translate("bedrockminer.config.remove_ghost_blocks.comment"),
+        )
+
         val SUPPORT_BLOCK: ConfigBlockState = ConfigBlockState(
             "supportBlock",
             Blocks.SLIME_BLOCK.defaultBlockState(),
@@ -86,7 +93,14 @@ object Configs : IConfigHandler, IKeybindProvider {
         }
 
         val OPTIONS: List<IConfigBase> =
-            listOf(BEDROCK_MINER_ENABLED, APPROACH_MODE, OPEN_CONFIG_GUI, MAX_RETRIES, SUPPORT_BLOCK)
+            listOf(
+                BEDROCK_MINER_ENABLED,
+                APPROACH_MODE,
+                OPEN_CONFIG_GUI,
+                MAX_RETRIES,
+                SUPPORT_BLOCK,
+                REMOVE_GHOST_BLOCKS,
+            )
     }
 
     object Client {

@@ -3,6 +3,7 @@ package com.github.lxyan2333.bedrockminer.client.event
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback
 import net.fabricmc.fabric.api.event.player.UseBlockCallback
 import net.minecraft.world.InteractionResult
+import net.minecraft.world.level.Level
 
 import com.github.lxyan2333.bedrockminer.client.breaking.BreakingFlowController
 import com.github.lxyan2333.bedrockminer.client.breaking.ClientTickScheduler
@@ -10,12 +11,12 @@ import com.github.lxyan2333.bedrockminer.client.config.AllowOrBlockMode
 import com.github.lxyan2333.bedrockminer.client.config.Configs
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
-import net.minecraft.client.Minecraft
+import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.world.level.block.state.BlockState
 
 object ClientEventHandlers {
+    private var lastLevel: ClientLevel? = null
 
     private fun isBlockAllowed(blockState: BlockState): Boolean {
         val blockId = BuiltInRegistries.BLOCK.getKey(blockState.block).toString()
@@ -64,14 +65,18 @@ object ClientEventHandlers {
             return@register InteractionResult.FAIL
         }
 
-        ClientTickEvents.START_CLIENT_TICK.register { _ ->
-            if (Minecraft.getInstance().screen != null) {
+        ClientTickEvents.START_CLIENT_TICK.register { client ->
+            val currentLevel = client.level ?: return@register
+            if (currentLevel != lastLevel) {
+                lastLevel = currentLevel
+                BreakingFlowController.cancelAllFlows()
+            }
+
+            if (client.screen != null) {
                 return@register
             }
             ClientTickScheduler.onTick()
         }
-
-        ServerTickEvents.END_SERVER_TICK.register { }
 
         ClientPlayConnectionEvents.JOIN.register { _, _, _ ->
             if (Configs.Generic.BEDROCK_MINER_ENABLED.booleanValue) {

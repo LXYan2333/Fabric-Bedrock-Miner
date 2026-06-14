@@ -17,13 +17,15 @@ object BedrockMinerServer : DedicatedServerModInitializer {
 
         ServerPlayConnectionEvents.JOIN.register { listener, _, _ ->
             val player = listener.player
-            val payload = ModNetwork.ConfigSyncPayload(
-                ServerConfig.PROTOCOL_VERSION,
-                ServerConfig.serverBlockList,
-                ServerConfig.serverAllowList,
-                ServerConfig.serverBlockListMode,
-            )
-            ServerPlayNetworking.send(player, payload)
+            if (ServerPlayNetworking.canSend(player, ModNetwork.ConfigSyncPayload.TYPE)) {
+                val payload = ModNetwork.ConfigSyncPayload(
+                    ServerConfig.PROTOCOL_VERSION,
+                    ServerConfig.serverBlockList,
+                    ServerConfig.serverAllowList,
+                    ServerConfig.serverBlockListMode,
+                )
+                ServerPlayNetworking.send(player, payload)
+            }
         }
     }
 }

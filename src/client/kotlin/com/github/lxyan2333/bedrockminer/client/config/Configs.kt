@@ -24,6 +24,7 @@ import fi.dy.masa.malilib.hotkeys.IKeybindProvider
 import fi.dy.masa.malilib.util.StringUtils
 import fi.dy.masa.malilib.util.data.json.JsonUtils
 import net.minecraft.core.Direction
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.SupportType
 import java.nio.file.Files
@@ -108,13 +109,29 @@ object Configs : IConfigHandler, IKeybindProvider {
             "blockList",
             ImmutableList.of(),
             StringUtils.translate("bedrockminer.config.blockList.comment"),
-        )
+        ).apply {
+            setValueChangeCallback { config ->
+                val invalid = config.strings.firstOrNull { !isValidBlockName(it) }
+                if (invalid != null) {
+                    Messager.actionBar(StringUtils.translate("bedrockminer.message.invalid_block_name", invalid))
+                    config.setStrings(config.lastStringListValue)
+                }
+            }
+        }
 
         val ALLOW_LIST: ConfigStringList = ConfigStringList(
             "allowList",
             ImmutableList.of("minecraft:bedrock"),
             StringUtils.translate("bedrockminer.config.allowList.comment"),
-        )
+        ).apply {
+            setValueChangeCallback { config ->
+                val invalid = config.strings.firstOrNull { !isValidBlockName(it) }
+                if (invalid != null) {
+                    Messager.actionBar(StringUtils.translate("bedrockminer.message.invalid_block_name", invalid))
+                    config.setStrings(config.lastStringListValue)
+                }
+            }
+        }
 
         val AlloeOrBlockMode: ConfigOptionList = ConfigOptionList(
             "blockListMode",
@@ -194,5 +211,10 @@ object Configs : IConfigHandler, IKeybindProvider {
 
     fun init() {
         InputEventHandler.getKeybindManager().registerKeybindProvider(this)
+    }
+
+    private fun isValidBlockName(name: String): Boolean {
+        val key = net.minecraft.resources.Identifier.tryParse(name) ?: return false
+        return BuiltInRegistries.BLOCK.containsKey(key)
     }
 }

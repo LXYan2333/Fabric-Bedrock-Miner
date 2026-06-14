@@ -33,5 +33,6 @@
   "bedrockminer.message.need_slime": "需要更多粘液块！",
   "bedrockminer.message.need_support": "需要更多 %s！",
   "bedrockminer.message.invalid_support_block": "无效的支撑方块！顶面必须完整,可以放置红石火把。",
+  "bedrockminer.message.invalid_block_name": "无效的方块名称：%s！已恢复到之前的列表。",
   "bedrockminer.message.need_efficiency": "无法瞬间破坏活塞！需要效率V镐子 + 急迫II"
 }

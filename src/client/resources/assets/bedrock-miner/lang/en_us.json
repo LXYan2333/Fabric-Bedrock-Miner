@@ -33,5 +33,6 @@
   "bedrockminer.message.need_slime": "Need more slime blocks!",
   "bedrockminer.message.need_support": "Need more %s!",
   "bedrockminer.message.invalid_support_block": "Invalid support block! Must be sturdy on top face，so we can place redstone torch above it.",
+  "bedrockminer.message.invalid_block_name": "Invalid block name: %s! Reverted to previous list.",
   "bedrockminer.message.need_efficiency": "Cannot instantly mine piston! Need Efficiency V pickaxe + Haste II"
 }

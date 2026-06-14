@@ -1,6 +1,8 @@
 package com.github.lxyan2333.bedrockminer
 
-import com.github.lxyan2333.bedrockminer.config.ServerConfig
+import com.github.lxyan2333.bedrockminer.command.ServerCommands
+import com.github.lxyan2333.bedrockminer.config.ServerConfigData
+import com.github.lxyan2333.bedrockminer.config.ServerConfigManager
 import com.github.lxyan2333.bedrockminer.network.ModNetwork
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
@@ -12,17 +14,18 @@ object BedrockMinerServer : DedicatedServerModInitializer {
 
     override fun onInitializeServer() {
         logger.info("Bedrock Miner initialized")
-        ServerConfig.load()
+        ServerConfigManager.load()
         ModNetwork.registerPayloadTypes()
+        ServerCommands.register()
 
         ServerPlayConnectionEvents.JOIN.register { listener, _, _ ->
             val player = listener.player
             if (ServerPlayNetworking.canSend(player, ModNetwork.ConfigSyncPayload.TYPE)) {
                 val payload = ModNetwork.ConfigSyncPayload(
-                    ServerConfig.PROTOCOL_VERSION,
-                    ServerConfig.serverBlockList,
-                    ServerConfig.serverAllowList,
-                    ServerConfig.serverBlockListMode,
+                    ServerConfigData.PROTOCOL_VERSION,
+                    ServerConfigData.serverBlockList,
+                    ServerConfigData.serverAllowList,
+                    ServerConfigData.serverBlockListMode,
                 )
                 ServerPlayNetworking.send(player, payload)
             }

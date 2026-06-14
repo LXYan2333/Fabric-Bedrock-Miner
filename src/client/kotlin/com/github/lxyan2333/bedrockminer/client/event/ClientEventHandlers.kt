@@ -8,8 +8,10 @@ import com.github.lxyan2333.bedrockminer.client.breaking.BreakingFlowController
 import com.github.lxyan2333.bedrockminer.client.breaking.ClientTickScheduler
 import com.github.lxyan2333.bedrockminer.client.config.AllowOrBlockMode
 import com.github.lxyan2333.bedrockminer.client.config.Configs
+import com.github.lxyan2333.bedrockminer.client.config.ClientConfigHandler
 import com.github.lxyan2333.bedrockminer.client.message.Messager
-import com.github.lxyan2333.bedrockminer.config.ServerConfig
+import com.github.lxyan2333.bedrockminer.client.network.ClientNetworkHandler
+import com.github.lxyan2333.bedrockminer.config.ServerConfigData
 import com.github.lxyan2333.bedrockminer.network.ModNetwork
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
@@ -26,19 +28,19 @@ object ClientEventHandlers {
 
         // Always block special blocks unless server explicitly allows them
         val isIntegratedServer = Minecraft.getInstance().singleplayerServer != null
-        if (!ServerConfig.serverHasMod && !isIntegratedServer && ServerConfig.SPECIAL_BLOCKS.contains(blockId)) {
+        if (!ServerConfigData.serverHasMod && !isIntegratedServer && ServerConfigData.SPECIAL_BLOCKS.contains(blockId)) {
             return false
         }
 
-        if (ServerConfig.serverHasMod && !isIntegratedServer) {
+        if (ServerConfigData.serverHasMod && !isIntegratedServer) {
             // Server block list takes precedence
-            if (ServerConfig.serverBlockList.contains(blockId)) {
+            if (ServerConfigData.serverBlockList.contains(blockId)) {
                 return false
             }
 
             // Server allow list
-            if (!ServerConfig.serverAllowList.contains(blockId)) {
-                if (ServerConfig.serverBlockListMode == "BLOCKED") {
+            if (!ServerConfigData.serverAllowList.contains(blockId)) {
+                if (ServerConfigData.serverBlockListMode == "BLOCKED") {
                     return false
                 }
             }
@@ -63,19 +65,8 @@ object ClientEventHandlers {
     }
 
     fun register() {
-        ModNetwork.onProtocolMismatch = { serverVersion, clientVersion ->
-            Messager.chat("§c[Bedrock Miner]§r Protocol version mismatch! Server: $serverVersion, Client: $clientVersion. Using default config.")
-        }
-
         ModNetwork.registerPayloadTypes()
-        ModNetwork.registerClientHandlers()
-
-        ServerConfig.onConfigReceived = {
-            Messager.chat("§a[Bedrock Miner]§r Server has Bedrock Miner installed!")
-            Messager.chat("§7Block list:§r ${ServerConfig.serverBlockList.ifEmpty { "(empty)" }}")
-            Messager.chat("§7Allow list:§r ${ServerConfig.serverAllowList.ifEmpty { "(empty)" }}")
-            Messager.chat("§7Block list mode:§r ${ServerConfig.serverBlockListMode}")
-        }
+        ClientNetworkHandler.registerClientHandlers()
         // Right-click block with empty hand to toggle the mod on/off
         UseBlockCallback.EVENT.register { player, world, hand, hitResult ->
             val state = world.getBlockState(hitResult.blockPos)
@@ -131,7 +122,7 @@ object ClientEventHandlers {
 
         ClientPlayConnectionEvents.DISCONNECT.register { _, _ ->
             BreakingFlowController.onDisconnect()
-            ServerConfig.resetOnDisconnect()
+            ClientConfigHandler.resetOnDisconnect()
         }
     }
 }

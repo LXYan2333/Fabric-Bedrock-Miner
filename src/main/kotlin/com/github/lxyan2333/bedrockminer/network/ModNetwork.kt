@@ -1,0 +1,91 @@
+package com.github.lxyan2333.bedrockminer.network
+
+import com.github.lxyan2333.bedrockminer.config.ServerConfig
+import com.github.lxyan2333.bedrockminer.config.ServerConfig.SPECIAL_BLOCKS
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
+import net.minecraft.network.RegistryFriendlyByteBuf
+import net.minecraft.network.codec.StreamCodec
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.minecraft.resources.Identifier
+
+object ModNetwork {
+    val CONFIG_SYNC_ID = Identifier.fromNamespaceAndPath("bedrock-miner", "config_sync")
+    val DUMMY_ID = Identifier.fromNamespaceAndPath("bedrock-miner", "dummy")
+
+    var onProtocolMismatch: ((serverVersion: Int, clientVersion: Int) -> Unit)? = null
+
+    data class ConfigSyncPayload(
+        val protocolVersion: Int,
+        val blockList: List<String>,
+        val allowList: List<String>,
+        val blockListMode: String,
+    ) : CustomPacketPayload {
+        override fun type(): CustomPacketPayload.Type<ConfigSyncPayload> = TYPE
+
+        companion object {
+            val TYPE = CustomPacketPayload.Type<ConfigSyncPayload>(CONFIG_SYNC_ID)
+
+            val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, ConfigSyncPayload> =
+                StreamCodec.of({ buffer, payload ->
+                    buffer.writeVarInt(payload.protocolVersion)
+
+                    buffer.writeVarInt(payload.blockList.size)
+                    payload.blockList.forEach { buffer.writeUtf(it) }
+
+                    buffer.writeVarInt(payload.allowList.size)
+                    payload.allowList.forEach { buffer.writeUtf(it) }
+
+                    buffer.writeUtf(payload.blockListMode)
+                }, { buffer ->
+                    val protocolVersion = buffer.readVarInt()
+
+                    val blockList = mutableListOf<String>()
+                    val blockListSize = buffer.readVarInt()
+                    repeat(blockListSize) { blockList.add(buffer.readUtf()) }
+
+                    val allowList = mutableListOf<String>()
+                    val allowListSize = buffer.readVarInt()
+                    repeat(allowListSize) { allowList.add(buffer.readUtf()) }
+
+                    val blockListMode = buffer.readUtf()
+                    ConfigSyncPayload(protocolVersion, blockList, allowList, blockListMode)
+                })
+        }
+    }
+
+    object DummyPayload : CustomPacketPayload {
+        override fun type(): CustomPacketPayload.Type<DummyPayload> = TYPE
+
+        val TYPE = CustomPacketPayload.Type<DummyPayload>(DUMMY_ID)
+
+        val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, DummyPayload> =
+            StreamCodec.of({ _, _ -> }, { _ -> DummyPayload })
+    }
+
+    fun registerPayloadTypes() {
+        PayloadTypeRegistry.serverboundPlay().register(DummyPayload.TYPE, DummyPayload.STREAM_CODEC)
+        PayloadTypeRegistry.clientboundPlay().register(ConfigSyncPayload.TYPE, ConfigSyncPayload.STREAM_CODEC)
+    }
+
+    fun registerClientHandlers() {
+        ClientPlayNetworking.registerGlobalReceiver(ConfigSyncPayload.TYPE) { payload, _ ->
+            if (payload.protocolVersion != ServerConfig.PROTOCOL_VERSION) {
+                onProtocolMismatch?.invoke(payload.protocolVersion, ServerConfig.PROTOCOL_VERSION)
+                ServerConfig.applyFromPacket(
+                    payload.protocolVersion,
+                    SPECIAL_BLOCKS.toList(),
+                    listOf(),
+                    "ALLOWED",
+                )
+            } else {
+                ServerConfig.applyFromPacket(
+                    payload.protocolVersion,
+                    payload.blockList,
+                    payload.allowList,
+                    payload.blockListMode,
+                )
+            }
+        }
+    }
+}

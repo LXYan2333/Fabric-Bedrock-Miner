@@ -126,8 +126,25 @@ object Configs : IConfigHandler, IKeybindProvider {
     }
 
     object Server {
-        // Placeholder for future server-side configs
-        val OPTIONS: List<IConfigBase> = listOf()
+        val BLOCK_LIST: ConfigStringList = ConfigStringList(
+            "blockList",
+            ImmutableList.of(),
+            StringUtils.translate("bedrockminer.config.server.blockList.comment"),
+        )
+
+        val ALLOW_LIST: ConfigStringList = ConfigStringList(
+            "allowList",
+            ImmutableList.of(),
+            StringUtils.translate("bedrockminer.config.server.allowList.comment"),
+        )
+
+        val AlloeOrBlockMode: ConfigOptionList = ConfigOptionList(
+            "blockListMode",
+            AllowOrBlockMode.BLOCKED,
+            StringUtils.translate("bedrockminer.config.server.alloworblockmode.comment"),
+        )
+
+        val OPTIONS: List<IConfigBase> = listOf(BLOCK_LIST, ALLOW_LIST, AlloeOrBlockMode)
     }
 
     override fun load() {

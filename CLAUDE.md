@@ -14,23 +14,15 @@ The Core logic of this mod is a state machine in old/src/main/java/yan/lx/bedroc
 
 - use Fabirc API project when appropriate, do not create wheel
 
-[//]: # (- server side config support)
-
-[//]: # (  - allow config through minecraft command)
-
-[//]: # (  - persist store config options to disk)
-
-[//]: # (  - do not depend on malilib)
-
-[//]: # (  - communicate with client mod to achieve these goal:)
-
-[//]: # (    - option to disable/enable client Fabric Bedrock Miner mod on server entirely &#40;default enable&#41;)
-
-[//]: # (    - allow list and block list for blocks that can/can't be breaked using client mod &#40;and override client's config&#41;)
-
-[//]: # (      - an option to control, for block not in allow/block list, block or allow them)
-
-[//]: # (      - by default in block mode and block breaking special blocks &#40;listed below&#41;)
+- server side config support
+  - allow config through minecraft command
+  - persist store config options to disk
+  - do not depend on malilib
+  - communicate with client mod to achieve these goal:
+    - option to disable/enable client Fabric Bedrock Miner mod on server entirely (default enable)
+    - allow list and block list for blocks that can/can't be breaked using client mod (and override client's config)
+      - an option to control, for block not in allow/block list, block or allow them
+      - by default in block mode and block breaking special blocks (listed below)
 - client side GUI config interface using [MaLiLib](https://github.com/sakura-ryoko/malilib)  which provides these config options:
   - allow list and block list for blocks that can/can't be breaked using this mod
     - and an option to control, for block not in allow/block list, block or allow them

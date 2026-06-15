@@ -20,6 +20,7 @@
   "bedrockminer.config.server.blockList.comment": "服务端阻止列表（覆盖客户端配置）",
   "bedrockminer.config.server.allowList.comment": "服务端允许列表（覆盖客户端配置）",
   "bedrockminer.config.server.alloworblockmode.comment": "服务端默认模式，对于不在列表中的方块（覆盖客户端配置）",
+  "bedrockminer.config.server.waitServerTickPlayerEntityTicks.comment": "等待服务端更新玩家实体 §5§oyHeadRot§r 的 tick 数（用于§a原版全方向§r模式）\n若§a原版全方向§r模式下经常失败，可提高此值",
   "bedrockminer.message.started": "Fabric Bedrock Miner 已启动！",
   "bedrockminer.message.stopped": "Fabric Bedrock Miner 已停止。",
   "bedrockminer.message.cannot_find_approach": "找不到适用于 %s 模式的有效方法！",

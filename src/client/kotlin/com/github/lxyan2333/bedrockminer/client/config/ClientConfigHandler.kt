@@ -12,7 +12,7 @@ object ClientConfigHandler {
 
         Configs.Server.BLOCK_LIST.setStrings(blockList.toList())
         Configs.Server.ALLOW_LIST.setStrings(allowList.toList())
-        Configs.Server.AlloeOrBlockMode.setValueFromString(blockListMode)
+        Configs.Server.AllowBlockMode.setValueFromString(blockListMode)
     }
 
     fun resetOnDisconnect() {
@@ -24,6 +24,6 @@ object ClientConfigHandler {
 
         Configs.Server.BLOCK_LIST.setStrings(listOf())
         Configs.Server.ALLOW_LIST.setStrings(listOf())
-        Configs.Server.AlloeOrBlockMode.setValueFromString("BLOCKED")
+        Configs.Server.AllowBlockMode.setValueFromString("BLOCKED")
     }
 }

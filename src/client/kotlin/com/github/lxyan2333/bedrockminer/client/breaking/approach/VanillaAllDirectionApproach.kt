@@ -2,6 +2,7 @@ package com.github.lxyan2333.bedrockminer.client.breaking.approach
 
 import com.github.lxyan2333.bedrockminer.client.breaking.BlockPlacer
 import com.github.lxyan2333.bedrockminer.client.breaking.ClientTickScheduler
+import com.github.lxyan2333.bedrockminer.client.config.Configs
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import net.minecraft.core.BlockPos
@@ -20,7 +21,7 @@ class VanillaAllDirectionApproach internal constructor(
         mutex.withLock {
             try {
                 currentYawPitch = BlockPlacer.vanillaPistonPlacement1(direction)
-                ClientTickScheduler.awaitTicks(2)
+                ClientTickScheduler.awaitTicks(Configs.Server.WAIT_SERVER_TICK_PLAYER_ENTITY_TICKS.integerValue)
                 pre()
                 BlockPlacer.vanillaPistonPlacement2(pistonPos, direction)
             } finally {

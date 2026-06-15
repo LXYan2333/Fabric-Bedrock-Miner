@@ -155,19 +155,27 @@ object Configs : IConfigHandler, IKeybindProvider {
             StringUtils.translate("bedrockminer.config.server.allowList.comment"),
         )
 
-        val AlloeOrBlockMode: ConfigOptionList = ConfigOptionList(
+        val AllowBlockMode: ConfigOptionList = ConfigOptionList(
             "blockListMode",
             AllowOrBlockMode.BLOCKED,
             StringUtils.translate("bedrockminer.config.server.alloworblockmode.comment"),
         )
 
-        val OPTIONS: List<IConfigBase> = listOf(BLOCK_LIST, ALLOW_LIST, AlloeOrBlockMode)
+        val WAIT_SERVER_TICK_PLAYER_ENTITY_TICKS: ConfigInteger = ConfigInteger(
+            "waitServerTickPlayerEntityTicks",
+            2, 0, 100,
+            StringUtils.translate("bedrockminer.config.server.waitServerTickPlayerEntityTicks.comment"),
+        )
+
+        val OPTIONS: List<IConfigBase> =
+            listOf(WAIT_SERVER_TICK_PLAYER_ENTITY_TICKS, BLOCK_LIST, ALLOW_LIST, AllowBlockMode)
 
         val ALL_OPTIONS_WRAPPER: List<ConfigOptionWrapper> = listOf(
+            ConfigOptionWrapper(WAIT_SERVER_TICK_PLAYER_ENTITY_TICKS),
             ConfigOptionWrapper("bedrockminer.config.server.note"),
             ConfigOptionWrapper(BLOCK_LIST),
             ConfigOptionWrapper(ALLOW_LIST),
-            ConfigOptionWrapper(AlloeOrBlockMode),
+            ConfigOptionWrapper(AllowBlockMode),
         )
 
     }

@@ -1,12 +1,24 @@
 package com.github.lxyan2333.bedrockminer.config
 
+import com.github.lxyan2333.bedrockminer.network.ModNetwork
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
+import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.resources.Identifier
+import net.minecraft.server.MinecraftServer
 import net.fabricmc.loader.api.FabricLoader
 import java.nio.file.Files
 
 object ServerConfigManager {
     private val configFile = FabricLoader.getInstance().configDir.resolve("bedrock-miner-server.json")
+
+    lateinit var server: MinecraftServer
+        private set
+
+    fun init(server: MinecraftServer) {
+        this.server = server
+    }
 
     fun load() {
         if (!Files.exists(configFile)) return
@@ -15,10 +27,12 @@ object ServerConfigManager {
             if (element.isJsonObject) {
                 val root = element.asJsonObject
                 if (root.has("blockList")) {
-                    ServerConfigData.serverBlockList = root.getAsJsonArray("blockList").map { it.asString }.toMutableSet()
+                    ServerConfigData.serverBlockList =
+                        root.getAsJsonArray("blockList").map { it.asString }.toMutableSet()
                 }
                 if (root.has("allowList")) {
-                    ServerConfigData.serverAllowList = root.getAsJsonArray("allowList").map { it.asString }.toMutableSet()
+                    ServerConfigData.serverAllowList =
+                        root.getAsJsonArray("allowList").map { it.asString }.toMutableSet()
                 }
                 if (root.has("blockListMode")) {
                     ServerConfigData.serverBlockListMode = root.get("blockListMode").asString
@@ -48,6 +62,73 @@ object ServerConfigManager {
                 com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(root, writer)
             }
         } catch (_: Exception) {
+        }
+    }
+
+    fun isValidBlockName(name: String): Boolean {
+        val key = Identifier.tryParse(name) ?: return false
+        return BuiltInRegistries.BLOCK.containsKey(key)
+    }
+
+    fun addToBlockList(block: String): Boolean {
+        if (!isValidBlockName(block)) return false
+        ServerConfigData.serverBlockList.add(block)
+        save()
+        broadcastConfig()
+        return true
+    }
+
+    fun removeFromBlockList(block: String): Boolean {
+        if (!ServerConfigData.serverBlockList.remove(block)) return false
+        save()
+        broadcastConfig()
+        return true
+    }
+
+    fun clearBlockList() {
+        ServerConfigData.serverBlockList.clear()
+        save()
+        broadcastConfig()
+    }
+
+    fun addToAllowList(block: String): Boolean {
+        if (!isValidBlockName(block)) return false
+        ServerConfigData.serverAllowList.add(block)
+        save()
+        broadcastConfig()
+        return true
+    }
+
+    fun removeFromAllowList(block: String): Boolean {
+        if (!ServerConfigData.serverAllowList.remove(block)) return false
+        save()
+        broadcastConfig()
+        return true
+    }
+
+    fun clearAllowList() {
+        ServerConfigData.serverAllowList.clear()
+        save()
+        broadcastConfig()
+    }
+
+    fun setBlockListMode(mode: String) {
+        ServerConfigData.serverBlockListMode = mode
+        save()
+        broadcastConfig()
+    }
+
+    fun broadcastConfig() {
+        val payload = ModNetwork.ConfigSyncPayload(
+            ServerConfigData.PROTOCOL_VERSION,
+            ServerConfigData.serverBlockList,
+            ServerConfigData.serverAllowList,
+            ServerConfigData.serverBlockListMode,
+        )
+        for (player in server.playerList.players) {
+            if (ServerPlayNetworking.canSend(player, ModNetwork.ConfigSyncPayload.TYPE)) {
+                ServerPlayNetworking.send(player, payload)
+            }
         }
     }
 }

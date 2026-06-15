@@ -19,6 +19,7 @@ import fi.dy.masa.malilib.config.options.ConfigOptionList
 import fi.dy.masa.malilib.config.options.ConfigStringList
 import fi.dy.masa.malilib.event.InputEventHandler
 import fi.dy.masa.malilib.gui.GuiBase
+import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper
 import fi.dy.masa.malilib.hotkeys.IKeybindManager
 import fi.dy.masa.malilib.hotkeys.IKeybindProvider
 import fi.dy.masa.malilib.util.StringUtils
@@ -93,15 +94,14 @@ object Configs : IConfigHandler, IKeybindProvider {
             }
         }
 
-        val OPTIONS: List<IConfigBase> =
-            listOf(
-                BEDROCK_MINER_ENABLED,
-                APPROACH_MODE,
-                OPEN_CONFIG_GUI,
-                MAX_RETRIES,
-                SUPPORT_BLOCK,
-                REMOVE_GHOST_BLOCKS,
-            )
+        val OPTIONS: List<IConfigBase> = listOf(
+            BEDROCK_MINER_ENABLED,
+            APPROACH_MODE,
+            OPEN_CONFIG_GUI,
+            MAX_RETRIES,
+            SUPPORT_BLOCK,
+            REMOVE_GHOST_BLOCKS,
+        )
     }
 
     object Client {
@@ -162,6 +162,14 @@ object Configs : IConfigHandler, IKeybindProvider {
         )
 
         val OPTIONS: List<IConfigBase> = listOf(BLOCK_LIST, ALLOW_LIST, AlloeOrBlockMode)
+
+        val ALL_OPTIONS_WRAPPER: List<ConfigOptionWrapper> = listOf(
+            ConfigOptionWrapper("bedrockminer.config.server.note"),
+            ConfigOptionWrapper(BLOCK_LIST),
+            ConfigOptionWrapper(ALLOW_LIST),
+            ConfigOptionWrapper(AlloeOrBlockMode),
+        )
+
     }
 
     override fun load() {

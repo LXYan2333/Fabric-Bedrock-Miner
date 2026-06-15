@@ -9,6 +9,10 @@ object ClientConfigHandler {
         ServerConfigData.serverBlockList = blockList.toMutableSet()
         ServerConfigData.serverAllowList = allowList.toMutableSet()
         ServerConfigData.serverBlockListMode = blockListMode
+
+        Configs.Server.BLOCK_LIST.setStrings(blockList.toList())
+        Configs.Server.ALLOW_LIST.setStrings(allowList.toList())
+        Configs.Server.AlloeOrBlockMode.setValueFromString(blockListMode)
     }
 
     fun resetOnDisconnect() {
@@ -17,5 +21,9 @@ object ClientConfigHandler {
         ServerConfigData.serverBlockList = mutableSetOf()
         ServerConfigData.serverAllowList = mutableSetOf()
         ServerConfigData.serverBlockListMode = "BLOCKED"
+
+        Configs.Server.BLOCK_LIST.setStrings(listOf())
+        Configs.Server.ALLOW_LIST.setStrings(listOf())
+        Configs.Server.AlloeOrBlockMode.setValueFromString("BLOCKED")
     }
 }

@@ -34,5 +34,6 @@
   "bedrockminer.message.need_support": "Need more %s!",
   "bedrockminer.message.invalid_support_block": "Invalid support block! Must be sturdy on top face，so we can place redstone torch above it.",
   "bedrockminer.message.invalid_block_name": "Invalid block name: %s! Reverted to previous list.",
-  "bedrockminer.message.need_efficiency": "Cannot instantly mine piston! Need Efficiency V pickaxe + Haste II"
+  "bedrockminer.message.need_efficiency": "Cannot instantly mine piston! Need Efficiency V pickaxe + Haste II",
+  "bedrockminer.config.server.note": "§a§lFollowing config options is managed by server side's Fabric Bedrock Miner, modify them here has no effect§r"
 }

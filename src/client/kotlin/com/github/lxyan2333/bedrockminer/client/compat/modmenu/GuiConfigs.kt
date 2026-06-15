@@ -1,10 +1,7 @@
 package com.github.lxyan2333.bedrockminer.client.compat.modmenu
 
 import com.github.lxyan2333.bedrockminer.client.config.Configs
-import fi.dy.masa.malilib.config.IConfigBase
-import fi.dy.masa.malilib.gui.GuiBase
 import fi.dy.masa.malilib.gui.GuiConfigsBase
-import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper
 import fi.dy.masa.malilib.gui.button.ButtonBase
 import fi.dy.masa.malilib.gui.button.ButtonGeneric
 import fi.dy.masa.malilib.gui.button.IButtonActionListener
@@ -28,12 +25,11 @@ class GuiConfigs : GuiConfigsBase(10, 50, "bedrock-miner", null, "bedrockminer.g
     }
 
     override fun getConfigs(): List<ConfigOptionWrapper> {
-        val configs = when (ConfigGuiState.currentTab) {
-            ConfigGuiTab.GENERIC -> Configs.Generic.OPTIONS
-            ConfigGuiTab.CLIENT -> Configs.Client.OPTIONS
-            ConfigGuiTab.SERVER -> Configs.Server.OPTIONS
+        return when (ConfigGuiState.currentTab) {
+            ConfigGuiTab.GENERIC -> ConfigOptionWrapper.createFor(Configs.Generic.OPTIONS)
+            ConfigGuiTab.CLIENT -> ConfigOptionWrapper.createFor(Configs.Client.OPTIONS)
+            ConfigGuiTab.SERVER -> Configs.Server.ALL_OPTIONS_WRAPPER
         }
-        return ConfigOptionWrapper.createFor(configs)
     }
 
     private class ButtonListener(

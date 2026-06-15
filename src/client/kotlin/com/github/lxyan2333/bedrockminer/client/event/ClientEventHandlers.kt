@@ -108,13 +108,6 @@ object ClientEventHandlers {
         }
 
         ClientPlayConnectionEvents.JOIN.register { _, _, client ->
-            if (client.singleplayerServer == null) {
-                if (ClientPlayNetworking.canSend(ModNetwork.DummyPayload.TYPE)) {
-                    Messager.chat("server installed this mod")
-                } else {
-                    Messager.chat("server not installed this mod")
-                }
-            }
             if (Configs.Generic.BEDROCK_MINER_ENABLED.booleanValue) {
                 BreakingFlowController.enable()
             }

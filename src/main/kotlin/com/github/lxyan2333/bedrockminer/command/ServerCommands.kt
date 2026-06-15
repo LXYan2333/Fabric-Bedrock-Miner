@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.minecraft.commands.Commands
 import net.minecraft.commands.SharedSuggestionProvider
 import net.minecraft.commands.arguments.IdentifierArgument
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.server.permissions.Permissions
 
@@ -17,8 +18,12 @@ object ServerCommands {
                 Commands.literal("bedrock-miner")
                     .requires { source -> source.permissions().hasPermission(Permissions.COMMANDS_ADMIN) }.then(
                         Commands.literal("blocklist").then(
-                            Commands.literal("add").then(
-                                Commands.argument("block", IdentifierArgument.id()).executes { context ->
+                            Commands.literal("add")
+                                .then(Commands.argument("block", IdentifierArgument.id()).suggests { _, builder ->
+                                    SharedSuggestionProvider.suggestResource(
+                                        BuiltInRegistries.BLOCK.keySet(), builder
+                                    )
+                                }.executes { context ->
                                     val block = IdentifierArgument.getId(context, "block").toString()
                                     if (!ServerConfigManager.addToBlockList(block)) {
                                         context.source.sendFailure(
@@ -32,8 +37,13 @@ object ServerCommands {
                                     1
                                 })
                         ).then(
-                            Commands.literal("remove").then(
-                                Commands.argument("block", IdentifierArgument.id()).executes { context ->
+                            Commands.literal("remove")
+                                .then(Commands.argument("block", IdentifierArgument.id()).suggests { _, builder ->
+                                    SharedSuggestionProvider.suggestResource(
+                                        ServerConfigData.serverBlockList.mapNotNull { net.minecraft.resources.Identifier.tryParse(it) },
+                                        builder
+                                    )
+                                }.executes { context ->
                                     val block = IdentifierArgument.getId(context, "block").toString()
                                     if (!ServerConfigManager.removeFromBlockList(block)) {
                                         context.source.sendFailure(
@@ -63,8 +73,12 @@ object ServerCommands {
                             })
                     ).then(
                         Commands.literal("allowlist").then(
-                            Commands.literal("add").then(
-                                Commands.argument("block", IdentifierArgument.id()).executes { context ->
+                            Commands.literal("add")
+                                .then(Commands.argument("block", IdentifierArgument.id()).suggests { _, builder ->
+                                    SharedSuggestionProvider.suggestResource(
+                                        BuiltInRegistries.BLOCK.keySet(), builder
+                                    )
+                                }.executes { context ->
                                     val block = IdentifierArgument.getId(context, "block").toString()
                                     if (!ServerConfigManager.addToAllowList(block)) {
                                         context.source.sendFailure(
@@ -78,8 +92,13 @@ object ServerCommands {
                                     1
                                 })
                         ).then(
-                            Commands.literal("remove").then(
-                                Commands.argument("block", IdentifierArgument.id()).executes { context ->
+                            Commands.literal("remove")
+                                .then(Commands.argument("block", IdentifierArgument.id()).suggests { _, builder ->
+                                    SharedSuggestionProvider.suggestResource(
+                                        ServerConfigData.serverAllowList.mapNotNull { net.minecraft.resources.Identifier.tryParse(it) },
+                                        builder
+                                    )
+                                }.executes { context ->
                                     val block = IdentifierArgument.getId(context, "block").toString()
                                     if (!ServerConfigManager.removeFromAllowList(block)) {
                                         context.source.sendFailure(

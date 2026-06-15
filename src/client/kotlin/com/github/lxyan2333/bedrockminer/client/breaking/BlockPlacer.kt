@@ -22,7 +22,6 @@ object BlockPlacer {
     }
 
     fun getYawPitch(direction: Direction): Pair<Float, Float> {
-        val player = Minecraft.getInstance().player!!
 
         val pitch = when (direction) {
             Direction.UP -> 90f
@@ -30,12 +29,12 @@ object BlockPlacer {
             else -> 0f
         }
 
-        var yaw = when (direction) {
+        val yaw = when (direction) {
             Direction.SOUTH -> 180f
             Direction.EAST -> 90f
             Direction.NORTH -> 0f
             Direction.WEST -> -90f
-            else -> player.yRot
+            else -> 0f
         }
         return Pair(yaw, pitch)
     }
@@ -65,16 +64,19 @@ object BlockPlacer {
         // these two varialbe is the actually used value when determine the piston facing.
         // we set them on client so the piston facing is correct on client.
         val oldXRot = player.xRot
+        val oldYRot = player.yRot
         val oldYHeadRot = player.yHeadRot
 
         val (yaw, pitch) = getYawPitch(direction)
         try {
             player.xRot = pitch
+            player.yRot = yaw
             player.yHeadRot = yaw
             client.connection?.send(ServerboundMovePlayerPacket.Rot(yaw, pitch, player.onGround(), false))
             client.gameMode?.useItemOn(player, InteractionHand.MAIN_HAND, hitResult)
         } finally {
             player.xRot = oldXRot
+            player.yRot = oldYRot
             player.yHeadRot = oldYHeadRot
         }
     }

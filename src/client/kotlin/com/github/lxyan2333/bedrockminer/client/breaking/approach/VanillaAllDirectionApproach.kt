@@ -15,18 +15,26 @@ class VanillaAllDirectionApproach internal constructor(
     torchPos: BlockPos,
     slimePos: BlockPos? = null,
 ) : ApproachBase(targetPos, pistonPos, extendDir, torchPos, slimePos) {
-    private val mutex = Mutex()
 
     override suspend fun placePistonAfter(direction: Direction, pre: () -> Unit) {
         mutex.withLock {
-            BlockPlacer.vanillaPistonPlacement1(direction)
-            ClientTickScheduler.awaitTicks(2)
-            pre()
-            BlockPlacer.vanillaPistonPlacement2(pistonPos, direction)
+            try {
+                currentYawPitch = BlockPlacer.vanillaPistonPlacement1(direction)
+                ClientTickScheduler.awaitTicks(2)
+                pre()
+                BlockPlacer.vanillaPistonPlacement2(pistonPos, direction)
+            } finally {
+                currentYawPitch = null
+            }
         }
     }
 
     companion object {
+        private val mutex = Mutex()
+
+        @JvmField
+        var currentYawPitch: Pair<Float, Float>? = null
+
         fun findBest(level: Level, targetPos: BlockPos): VanillaAllDirectionApproach? {
             return findBest(level, targetPos, Direction.entries, Direction.entries, ::VanillaAllDirectionApproach)
         }

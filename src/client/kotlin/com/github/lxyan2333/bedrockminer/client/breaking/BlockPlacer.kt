@@ -40,13 +40,15 @@ object BlockPlacer {
         return Pair(yaw, pitch)
     }
 
-    fun vanillaPistonPlacement1(direction: Direction) {
+    fun vanillaPistonPlacement1(direction: Direction): Pair<Float, Float> {
         val client = Minecraft.getInstance()
-        val player = client.player ?: return
+        val player = client.player ?: return Pair(0.0F, 0.0F)
 
-        val (yaw, pitch) = getYawPitch(direction)
+        val ret = getYawPitch(direction)
 
-        client.connection?.send(ServerboundMovePlayerPacket.Rot(yaw, pitch, player.onGround(), false))
+        client.connection?.send(ServerboundMovePlayerPacket.Rot(ret.first, ret.second, player.onGround(), false))
+
+        return ret
     }
 
     fun vanillaPistonPlacement2(pos: BlockPos, direction: Direction) {

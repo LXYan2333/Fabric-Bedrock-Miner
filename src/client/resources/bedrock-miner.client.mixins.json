@@ -3,6 +3,7 @@
 	"package": "com.github.lxyan2333.bedrockminer.client.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
+		"ServerboundMovePlayerPacketMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

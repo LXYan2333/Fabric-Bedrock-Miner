@@ -16,6 +16,8 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
     var currentApproach: ApproachBase? = null
         internal set
 
+    var doCleanUp: Boolean = true
+
     private val targetBlockName: String
         get() = targetBlockState.block.name.string
 
@@ -93,7 +95,9 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
                 Messager.actionBar(StringUtils.translate("bedrockminer.message.out_of_range"))
             } finally {
                 currentApproach = null
-                cleanup(level, approach)
+                if (doCleanUp) {
+                    cleanup(level, approach)
+                }
             }
         }
 

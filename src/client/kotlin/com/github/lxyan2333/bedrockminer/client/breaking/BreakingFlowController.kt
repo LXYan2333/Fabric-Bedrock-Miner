@@ -43,6 +43,7 @@ object BreakingFlowController {
     fun disable() {
         if (!enabled) return
         enabled = false
+        activeFlows.forEach { it.doCleanUp = false }
         Messager.actionBar(StringUtils.translate("bedrockminer.message.stopped"))
         scope?.cancel()
         scope = null
@@ -67,6 +68,7 @@ object BreakingFlowController {
     }
 
     fun cancelAllFlows() {
+        activeFlows.forEach { it.doCleanUp = false }
         scope?.cancel()
         scope = null
         activeFlows.clear()

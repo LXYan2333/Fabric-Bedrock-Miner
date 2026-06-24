@@ -99,6 +99,21 @@ object BlockPlacer {
         if (!InventoryManager.switchToItem(Blocks.PISTON.asItem())) return
         val hitVec = Vec3(pos.x + 2 + direction.ordinal * 2.0, pos.y.toDouble(), pos.z.toDouble())
         val hitResult = BlockHitResult(hitVec, direction, pos, false)
-        client.gameMode?.useItemOn(player, InteractionHand.MAIN_HAND, hitResult)
+
+        val oldXRot = player.xRot
+        val oldYRot = player.yRot
+        val oldYHeadRot = player.yHeadRot
+        val (yaw, pitch) = getYawPitch(direction)
+
+        try {
+            player.xRot = pitch
+            player.yRot = yaw
+            player.yHeadRot = yaw
+            client.gameMode?.useItemOn(player, InteractionHand.MAIN_HAND, hitResult)
+        } finally {
+            player.xRot = oldXRot
+            player.yRot = oldYRot
+            player.yHeadRot = oldYHeadRot
+        }
     }
 }

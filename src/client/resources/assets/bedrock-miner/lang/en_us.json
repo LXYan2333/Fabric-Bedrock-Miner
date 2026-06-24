@@ -11,6 +11,7 @@
   "bedrockminer.config.opengui.comment": "Hotkey to open the config GUI",
   "bedrockminer.config.max_retries.comment": "Maximum number of retries for block breaking",
   "bedrockminer.config.remove_ghost_blocks.comment": "Force rebuild render sections to remove ghost blocks after breaking",
+  "bedrockminer.config.skip_instant_mine_check.comment": "Skip check for instant mine piston block ability (Efficiency V + Haste II)",
   "bedrockminer.config.support_block.comment": "Support block used to support redstone torch (e.g. slime block)",
   "bedrockminer.config.alloworblockmode.comment": "For blocks not in blocklist or allowlist, allow or block using Fabric Bedrock Miner on them",
   "bedrockminer.config.alloworblockmode.blocked": "Blocked",

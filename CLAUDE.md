@@ -27,12 +27,10 @@ The Core logic of this mod is a state machine in old/src/main/java/yan/lx/bedroc
   - allow list and block list for blocks that can/can't be breaked using this mod
     - and an option to control, for block not in allow/block list, block or allow them
   - communicate with server, respect server's allow list and block list when play on server
-  - append client local black list to server's black list
   - works on server without server side install this mode
     - unconditionally add special blocks (listed below) to blocklist (and do not allow override)
-      - unless server installed this mod and explicitly allow to mine these block
+      - unless server installed this mod and allow to mine these block
   - config the support block (in old mod, it is hard coded to slime block)
-  - config hold and click break mode (in old mod, it is hard coded to hold to break)
   - hotkey to turn on/off breaking mode.
   - checkbox to provide enable legacy right click bedrock on/off behaviour (default off)
 - better bedrock breaking flow control

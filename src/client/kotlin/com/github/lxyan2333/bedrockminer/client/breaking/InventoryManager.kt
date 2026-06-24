@@ -65,6 +65,18 @@ object InventoryManager {
     }
 
     private fun getEfficientToolSlot(inventory: Inventory): Int {
+        if (Configs.Generic.SKIP_INSTANT_MINE_CHECK.booleanValue) {
+            var bestSlot = -1
+            var bestSpeed = 0f
+            for (i in 0 until inventory.containerSize) {
+                val speed = getBlockBreakingSpeed(Blocks.PISTON.defaultBlockState(), inventory.getItem(i))
+                if (speed > bestSpeed) {
+                    bestSpeed = speed
+                    bestSlot = i
+                }
+            }
+            return bestSlot
+        }
         for (i in 0 until inventory.containerSize) {
             if (getBlockBreakingSpeed(
                     Blocks.PISTON.defaultBlockState(),
@@ -153,7 +165,7 @@ object InventoryManager {
             val supportBlockName = Configs.Generic.SUPPORT_BLOCK.blockStateValue.block.name.string
             return StringUtils.translate("bedrockminer.message.need_support", supportBlockName)
         }
-        if (!canInstantlyMinePiston()) {
+        if (!Configs.Generic.SKIP_INSTANT_MINE_CHECK.booleanValue && !canInstantlyMinePiston()) {
             return StringUtils.translate("bedrockminer.message.need_efficiency")
         }
         return null

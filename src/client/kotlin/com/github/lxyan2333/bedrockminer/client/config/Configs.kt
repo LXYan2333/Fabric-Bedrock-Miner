@@ -118,7 +118,7 @@ object Configs : IConfigHandler, IKeybindProvider {
             StringUtils.translate("bedrockminer.config.blockList.comment"),
         ).apply {
             setValueChangeCallback { config ->
-                val invalid = config.strings.firstOrNull { !isValidBlockName(it) }
+                val invalid = config.strings.firstOrNull { if (it == "") false else !isValidBlockName(it) }
                 if (invalid != null) {
                     Messager.actionBar(StringUtils.translate("bedrockminer.message.invalid_block_name", invalid))
                     config.setStrings(config.lastStringListValue)
@@ -132,7 +132,7 @@ object Configs : IConfigHandler, IKeybindProvider {
             StringUtils.translate("bedrockminer.config.allowList.comment"),
         ).apply {
             setValueChangeCallback { config ->
-                val invalid = config.strings.firstOrNull { !isValidBlockName(it) }
+                val invalid = config.strings.firstOrNull { if (it == "") false else !isValidBlockName(it) }
                 if (invalid != null) {
                     Messager.actionBar(StringUtils.translate("bedrockminer.message.invalid_block_name", invalid))
                     config.setStrings(config.lastStringListValue)

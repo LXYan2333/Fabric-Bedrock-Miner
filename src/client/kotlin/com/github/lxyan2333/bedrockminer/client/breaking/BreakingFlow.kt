@@ -56,7 +56,7 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
                 approach.placePiston(approach.extendDir)
 
                 // Step 2: wait for piston to fully extend
-                waitFor(40) {
+                waitFor(Configs.Generic.WAIT_TICKS.integerValue) {
                     try {
                         level.getBlockState(approach.extendPos)
                             .`is`(Blocks.PISTON_HEAD) && level.getBlockState(approach.pistonPos)
@@ -73,10 +73,10 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
                 }
 
                 // Step 4: wait for piston to fully retract
-                waitFor(40) {
+                waitFor(Configs.Generic.WAIT_TICKS.integerValue) {
                     !level.getBlockState(approach.pistonPos).`is`(Blocks.MOVING_PISTON)
                 }
-                waitFor(40) {
+                waitFor(Configs.Generic.WAIT_TICKS.integerValue) {
                     try {
                         (!level.getBlockState(approach.pistonPos)
                             .getValue(PistonBaseBlock.EXTENDED)) && (level.getBlockState(approach.pistonPos)
@@ -124,7 +124,7 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
         } catch (_: BlockInteractionRangeException) {
         }
 
-        waitFor(40) {
+        waitFor(Configs.Generic.WAIT_TICKS.integerValue) {
             val ok = level.getBlockState(approach.pistonPos).canBeReplaced() && level.getBlockState(approach.torchPos)
                 .canBeReplaced()
 

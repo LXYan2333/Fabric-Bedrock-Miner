@@ -85,6 +85,12 @@ object Configs : IConfigHandler, IKeybindProvider {
             StringUtils.translate("bedrockminer.config.skip_instant_mine_check.comment"),
         )
 
+        val WAIT_TICKS: ConfigInteger = ConfigInteger(
+            "waitTicks",
+            20, 1, 200,
+            StringUtils.translate("bedrockminer.config.wait_ticks.comment"),
+        )
+
         val SUPPORT_BLOCK: ConfigBlockState = ConfigBlockState(
             "supportBlock",
             Blocks.SLIME_BLOCK.defaultBlockState(),
@@ -105,6 +111,7 @@ object Configs : IConfigHandler, IKeybindProvider {
             APPROACH_MODE,
             OPEN_CONFIG_GUI,
             MAX_RETRIES,
+            WAIT_TICKS,
             SUPPORT_BLOCK,
             REMOVE_GHOST_BLOCKS,
             SKIP_INSTANT_MINE_CHECK,

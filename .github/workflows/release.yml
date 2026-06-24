@@ -1,0 +1,43 @@
+name: Release to CurseForge
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v6
+
+      - name: validate gradle wrapper
+        uses: gradle/actions/wrapper-validation@v6
+
+      - name: setup jdk
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
+
+      - name: make gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: build
+        run: ./gradlew build
+
+      - name: publish
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          curseforge-id: 523864
+          curseforge-token: ${{ secrets.CURSE_API_TOKEN }}
+
+      - name: capture build artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: Release Artifacts
+          path: build/libs/

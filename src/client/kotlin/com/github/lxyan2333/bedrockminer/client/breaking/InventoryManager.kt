@@ -103,12 +103,15 @@ object InventoryManager {
 
         var speed = stack.getDestroySpeed(block)
         if (speed > 1.0f) {
+            //? if >=1.21 {
             val efficiency_level =
                 Minecraft.getInstance().level!!.registryAccess().lookup(Registries.ENCHANTMENT).get().getOrThrow(
                     Enchantments.EFFICIENCY
                 )
 
             val level = EnchantmentHelper.getItemEnchantmentLevel(efficiency_level, stack)
+            //?} else
+            //val level = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_EFFICIENCY, stack)
             if (level > 0 && !stack.isEmpty) {
                 speed += (level * level + 1).toFloat()
             }
@@ -132,11 +135,17 @@ object InventoryManager {
             }
         }
 
+        //? if >=1.21 {
         speed *= player.getAttributeValue(Attributes.BLOCK_BREAK_SPEED).toFloat()
 
 		if (player.isEyeInFluid(FluidTags.WATER)) {
 			speed *= player.getAttributeValue(Attributes.SUBMERGED_MINING_SPEED).toFloat()
 		}
+        //?} else {
+        /*if (player.isEyeInFluid(FluidTags.WATER) && !EnchantmentHelper.hasAquaAffinity(player)) {
+            speed /= 5.0f
+        }
+        *///?}
 
         if (!player.onGround()) {
             speed /= 5.0f

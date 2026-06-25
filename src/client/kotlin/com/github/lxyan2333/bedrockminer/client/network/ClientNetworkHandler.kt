@@ -11,37 +11,47 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 
 object ClientNetworkHandler {
     fun registerClientHandlers() {
+        //? if >=1.20.5 {
         ClientPlayNetworking.registerGlobalReceiver(ModNetwork.ConfigSyncPayload.TYPE) { payload, _ ->
-            if (payload.protocolVersion != ServerConfigData.PROTOCOL_VERSION) {
-                Messager.chat(
-                    StringUtils.translate(
-                        "bedrockminer.message.protocol_mismatch",
-                        payload.protocolVersion.toString(),
-                        ServerConfigData.PROTOCOL_VERSION.toString()
-                    )
+            handleConfigSync(payload)
+        }
+        //?} else {
+        //ClientPlayNetworking.registerGlobalReceiver(ModNetwork.ConfigSyncPayload.TYPE) { payload, _, _ ->
+        //    handleConfigSync(payload)
+        //}
+        //?}
+    }
+
+    private fun handleConfigSync(payload: ModNetwork.ConfigSyncPayload) {
+        if (payload.protocolVersion != ServerConfigData.PROTOCOL_VERSION) {
+            Messager.chat(
+                StringUtils.translate(
+                    "bedrockminer.message.protocol_mismatch",
+                    payload.protocolVersion.toString(),
+                    ServerConfigData.PROTOCOL_VERSION.toString()
                 )
-                ClientConfigHandler.applyFromPacket(payload.protocolVersion, SPECIAL_BLOCKS, setOf(), "ALLOWED")
-            } else {
-                ClientConfigHandler.applyFromPacket(
-                    payload.protocolVersion, payload.blockList, payload.allowList, payload.blockListMode
+            )
+            ClientConfigHandler.applyFromPacket(payload.protocolVersion, SPECIAL_BLOCKS, setOf(), "ALLOWED")
+        } else {
+            ClientConfigHandler.applyFromPacket(
+                payload.protocolVersion, payload.blockList, payload.allowList, payload.blockListMode
+            )
+            Messager.chat(StringUtils.translate("bedrockminer.message.server_installed"))
+            Messager.chat(
+                StringUtils.translate(
+                    "bedrockminer.message.server_block_list", formatBlockList(ServerConfigData.serverBlockList)
                 )
-                Messager.chat(StringUtils.translate("bedrockminer.message.server_installed"))
-                Messager.chat(
-                    StringUtils.translate(
-                        "bedrockminer.message.server_block_list", formatBlockList(ServerConfigData.serverBlockList)
-                    )
+            )
+            Messager.chat(
+                StringUtils.translate(
+                    "bedrockminer.message.server_allow_list", formatBlockList(ServerConfigData.serverAllowList)
                 )
-                Messager.chat(
-                    StringUtils.translate(
-                        "bedrockminer.message.server_allow_list", formatBlockList(ServerConfigData.serverAllowList)
-                    )
+            )
+            Messager.chat(
+                StringUtils.translate(
+                    "bedrockminer.message.server_block_list_mode", ServerConfigData.serverBlockListMode
                 )
-                Messager.chat(
-                    StringUtils.translate(
-                        "bedrockminer.message.server_block_list_mode", ServerConfigData.serverBlockListMode
-                    )
-                )
-            }
+            )
         }
     }
 

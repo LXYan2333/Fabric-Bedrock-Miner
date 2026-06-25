@@ -5,6 +5,8 @@ import net.minecraft.core.BlockPos
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
+//? if <1.20.5
+//import net.minecraft.world.phys.Vec3
 //? if >=26.1 {
 import net.minecraft.world.inventory.ContainerInput
 //?} else
@@ -13,11 +15,16 @@ import net.minecraft.world.entity.player.Player
 
 object MinecraftClientCompat {
     fun canInteractWithBlock(pos: BlockPos): Boolean {
+        //? if <1.20.5 {
+        //val player = Minecraft.getInstance().player ?: return true
+        //return Vec3.atCenterOf(pos).distanceToSqr(player.eyePosition) <= 36.0
+        //?} else {
         val player = Minecraft.getInstance().player ?: return true
         //? if >=1.21.11 {
         return player.isWithinBlockInteractionRange(pos, 0.0)
         //?} else
         //return player.canInteractWithBlock(pos, 0.0)
+        //?}
     }
 
     fun rotationPacket(yaw: Float, pitch: Float, onGround: Boolean): ServerboundMovePlayerPacket.Rot {

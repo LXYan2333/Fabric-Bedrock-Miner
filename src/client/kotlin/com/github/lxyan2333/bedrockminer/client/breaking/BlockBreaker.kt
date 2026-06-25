@@ -31,6 +31,10 @@ object BlockBreaker {
 
     fun removeAllGhostBlock() {
         if (pendingUpdates.isEmpty()) return
+        //? if <1.20.2 {
+        //pendingUpdates.clear()
+        //return
+        //?} else {
 
         val mc = Minecraft.getInstance()
 
@@ -50,5 +54,6 @@ object BlockBreaker {
         } finally {
             pendingUpdates.clear()
         }
+        //?}
     }
 }

@@ -6,6 +6,13 @@ import com.github.lxyan2333.bedrockminer.client.config.Configs
 import com.mojang.blaze3d.buffers.GpuBufferSlice
 import com.mojang.blaze3d.pipeline.RenderTarget
 //?}
+//? if <1.20.5 {
+//import com.mojang.blaze3d.systems.RenderSystem
+//import com.mojang.blaze3d.vertex.DefaultVertexFormat
+//import com.mojang.blaze3d.vertex.PoseStack
+//import com.mojang.blaze3d.vertex.Tesselator
+//import com.mojang.blaze3d.vertex.VertexFormat
+//?}
 //? if >=1.21.11 {
 import fi.dy.masa.malilib.MaLiLib
 import fi.dy.masa.malilib.render.MaLiLibPipelines
@@ -14,6 +21,8 @@ import fi.dy.masa.malilib.render.RenderContext
 import fi.dy.masa.malilib.interfaces.IRenderer
 import fi.dy.masa.malilib.render.RenderUtils
 import net.minecraft.client.Minecraft
+//? if <1.20.5
+//import net.minecraft.client.renderer.GameRenderer
 //? if >=26.1 {
 import net.minecraft.client.renderer.RenderBuffers
 import net.minecraft.client.renderer.culling.Frustum
@@ -44,9 +53,16 @@ object AreaRenderer : IRenderer {
         renderAreas()
         profiler.pop()
     }
-    //?} else {
+    //?} else if >=1.20.5 {
     /*override fun onRenderWorldLast(
         posMatrix: Matrix4f,
+        projMatrix: Matrix4f
+    ) {
+        renderAreas()
+    }
+    *///?} else {
+    /*override fun onRenderWorldLast(
+        matrixStack: PoseStack,
         projMatrix: Matrix4f
     ) {
         renderAreas()
@@ -102,17 +118,50 @@ object AreaRenderer : IRenderer {
         } finally {
             ctx.close()
         }
-        //?} else {
+        //?} else if >=1.20.5 {
         /*val color = Configs.Area.AREA_BOX_COLOR.color
         RenderUtils.renderAreaOutline(
             pos1,
             pos2,
-            Configs.Area.AREA_BOX_LINE_WIDTH.floatValue,
+            Configs.Area.areaBoxLineWidth,
             color,
             color,
             color,
             Minecraft.getInstance()
         )
+        *///?} else {
+        /*renderAreaOutlineLegacy(pos1, pos2)
         *///?}
     }
+
+    //? if <1.20.5 {
+    /*private fun renderAreaOutlineLegacy(pos1: BlockPos, pos2: BlockPos) {
+        val mc = Minecraft.getInstance()
+        val cameraPos = mc.gameRenderer.mainCamera.position
+        val minX = minOf(pos1.x, pos2.x) - cameraPos.x
+        val minY = minOf(pos1.y, pos2.y) - cameraPos.y
+        val minZ = minOf(pos1.z, pos2.z) - cameraPos.z
+        val maxX = maxOf(pos1.x, pos2.x) + 1 - cameraPos.x
+        val maxY = maxOf(pos1.y, pos2.y) + 1 - cameraPos.y
+        val maxZ = maxOf(pos1.z, pos2.z) + 1 - cameraPos.z
+        val color = Configs.Area.AREA_BOX_COLOR.color
+        val depthEnabled = Configs.Area.HIDE_AREA_BOX_BEHIND_BLOCKS.booleanValue
+
+        RenderSystem.lineWidth(Configs.Area.areaBoxLineWidth)
+        RenderSystem.setShader(GameRenderer::getPositionColorShader)
+        if (!depthEnabled) {
+            RenderSystem.disableDepthTest()
+        }
+
+        val tessellator = Tesselator.getInstance()
+        val buffer = tessellator.builder
+        buffer.begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR)
+        RenderUtils.drawBoxAllEdgesBatchedLines(minX, minY, minZ, maxX, maxY, maxZ, color, buffer)
+        tessellator.end()
+
+        if (!depthEnabled) {
+            RenderSystem.enableDepthTest()
+        }
+    }
+    *///?}
 }

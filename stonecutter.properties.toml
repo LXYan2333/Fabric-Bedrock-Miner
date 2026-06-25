@@ -6,6 +6,15 @@ mod.version = "1.0.1"
 deps.fabric_loader = "0.19.3"
 deps.fabric_kotlin = "1.13.12+kotlin.2.4.0"
 
+["1.20.1"]
+mod.mc_compat = "1.20.1"
+mod.mc_releases = ["1.20.1"]
+
+deps.fabric_api = "0.92.9+1.20.1"
+deps.malilib_mc = "1.20.1"
+deps.malilib = "0.16.4-alpha.1"
+deps.mod_menu = "7.2.2"
+
 ["1.21.1"]
 mod.mc_compat = ">=1.21 <=1.21.1"
 mod.mc_releases = ["1.21", "1.21.1"]

@@ -19,7 +19,10 @@ import fi.dy.masa.malilib.config.options.ConfigBlockState
 import fi.dy.masa.malilib.config.options.ConfigBoolean
 import fi.dy.masa.malilib.config.options.ConfigBooleanHotkeyed
 import fi.dy.masa.malilib.config.options.ConfigColor
+//? if >=1.20.5 {
 import fi.dy.masa.malilib.config.options.ConfigFloat
+//?} else
+//import fi.dy.masa.malilib.config.options.ConfigDouble
 import fi.dy.masa.malilib.config.options.ConfigHotkey
 import fi.dy.masa.malilib.config.options.ConfigInteger
 import fi.dy.masa.malilib.config.options.ConfigOptionList
@@ -30,6 +33,8 @@ import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper
 import fi.dy.masa.malilib.hotkeys.IKeybindManager
 import fi.dy.masa.malilib.hotkeys.IKeybindProvider
 import fi.dy.masa.malilib.util.StringUtils
+//? if <1.20.5
+//import fi.dy.masa.malilib.util.FileUtils
 //? if >=1.21.11 {
 import fi.dy.masa.malilib.util.data.json.JsonUtils
 //?} else
@@ -38,11 +43,16 @@ import net.minecraft.core.Direction
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.SupportType
+//? if <1.20.5
+//import java.io.File
 import java.nio.file.Files
 import kotlin.io.path.exists
 
 object Configs : IConfigHandler, IKeybindProvider {
+    //? if >=1.20.5 {
     private val configFile = MaLiLibReference.CONFIG_DIR.resolve("bedrock-miner.json")
+    //?} else
+    //private val configFile = File(FileUtils.getConfigDirectory(), "bedrock-miner.json")
 
     object Generic {
         val BEDROCK_MINER_ENABLED: ConfigBooleanHotkeyed = ConfigBooleanHotkeyed(
@@ -270,6 +280,7 @@ object Configs : IConfigHandler, IKeybindProvider {
             StringUtils.translate("bedrockminer.config.area.hide_area_box_behind_blocks.comment"),
         )
 
+        //? if >=1.20.5 {
         val AREA_BOX_LINE_WIDTH: ConfigFloat = ConfigFloat(
             "areaBoxLineWidth",
             2.0f,
@@ -278,6 +289,24 @@ object Configs : IConfigHandler, IKeybindProvider {
             true,
             StringUtils.translate("bedrockminer.config.area.area_box_line_width.comment"),
         )
+        //?} else {
+        /*val AREA_BOX_LINE_WIDTH: ConfigDouble = ConfigDouble(
+            "areaBoxLineWidth",
+            2.0,
+            0.5,
+            8.0,
+            true,
+            StringUtils.translate("bedrockminer.config.area.area_box_line_width.comment"),
+        )
+        *///?}
+
+        val areaBoxLineWidth: Float
+            get() {
+                //? if >=1.20.5 {
+                return AREA_BOX_LINE_WIDTH.floatValue
+                //?} else
+                //return AREA_BOX_LINE_WIDTH.doubleValue.toFloat()
+            }
 
         val OPTIONS: List<IConfigBase> = listOf(
             AREA_RESTRICTION_ENABLED,
@@ -289,9 +318,15 @@ object Configs : IConfigHandler, IKeybindProvider {
     }
 
     override fun load() {
+        //? if >=1.20.5 {
         if (!Files.exists(configFile)) return
+        //?} else
+        //if (!configFile.exists()) return
         try {
+            //? if >=1.20.5 {
             val element = JsonParser.parseReader(Files.newBufferedReader(configFile))
+            //?} else
+            //val element = JsonParser.parseReader(configFile.reader())
             if (element.isJsonObject) {
                 ConfigUtils.readConfigBase(element.asJsonObject, "Generic", Generic.OPTIONS)
                 ConfigUtils.readConfigBase(element.asJsonObject, "Client", Client.OPTIONS)
@@ -304,9 +339,12 @@ object Configs : IConfigHandler, IKeybindProvider {
 
     override fun save() {
         try {
+            //? if >=1.20.5 {
             if (!MaLiLibReference.CONFIG_DIR.exists()) {
                 Files.createDirectories(MaLiLibReference.CONFIG_DIR)
             }
+            //?} else
+            //FileUtils.getConfigDirectory().mkdirs()
             val root = JsonObject()
             ConfigUtils.writeConfigBase(root, "Generic", Generic.OPTIONS)
             ConfigUtils.writeConfigBase(root, "Client", Client.OPTIONS)
@@ -314,8 +352,10 @@ object Configs : IConfigHandler, IKeybindProvider {
             ConfigUtils.writeConfigBase(root, "Area", Area.OPTIONS)
             //? if >=1.21.11 {
             JsonUtils.writeJsonToFile(root, configFile)
-            //?} else
+            //?} else if >=1.20.5
             //JsonUtils.writeJsonToFileAsPath(root, configFile)
+            //? if <1.20.5
+            //JsonUtils.writeJsonToFile(root, configFile)
         } catch (_: Exception) {
         }
     }

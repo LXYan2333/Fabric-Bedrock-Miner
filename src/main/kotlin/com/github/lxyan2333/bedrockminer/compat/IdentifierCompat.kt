@@ -17,8 +17,10 @@ object IdentifierCompat {
     fun of(namespace: String, path: String): MinecraftIdentifier {
         //? if >=1.21.11 {
         return Identifier.fromNamespaceAndPath(namespace, path)
-        //?} else
+        //?} else if >=1.21 {
         //return ResourceLocation.fromNamespaceAndPath(namespace, path)
+        //?} else
+        //return ResourceLocation(namespace, path)
     }
 
     fun parse(id: String): MinecraftIdentifier? {

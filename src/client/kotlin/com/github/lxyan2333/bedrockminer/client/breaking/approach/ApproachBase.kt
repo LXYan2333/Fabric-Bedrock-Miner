@@ -11,7 +11,6 @@ import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.level.Level
-import net.minecraft.world.level.block.BaseTorchBlock
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.RedstoneWallTorchBlock
@@ -117,10 +116,10 @@ abstract class ApproachBase internal constructor(
 
     protected fun torchCanSurvive(level: Level, pos: BlockPos): Boolean {
         val standing = Blocks.REDSTONE_TORCH.defaultBlockState()
-        if ((Blocks.REDSTONE_TORCH as BaseTorchBlock).canSurvive(standing, level, pos)) return true
+        if (standing.canSurvive(level, pos)) return true
         for (facing in Direction.Plane.HORIZONTAL) {
             val wall = Blocks.REDSTONE_WALL_TORCH.defaultBlockState().setValue(RedstoneWallTorchBlock.FACING, facing)
-            if ((Blocks.REDSTONE_WALL_TORCH as RedstoneWallTorchBlock).canSurvive(wall, level, pos)) return true
+            if (wall.canSurvive(level, pos)) return true
         }
         return false
     }

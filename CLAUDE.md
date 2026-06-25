@@ -58,15 +58,65 @@ See `doc/related minecraft quirk.md` for detailed write-ups. Key quirk affecting
 
 ## Build & Development
 
-```bash
-./gradlew build          # Build the mod (runs tests, outputs to build/libs/)
-./gradlew runClient      # Launch Minecraft client with the mod for testing
-./gradlew runServer      # Launch Minecraft server with the mod
+```console
+$ ./gradlew build
+$ ./gradlew :1.21.1:build
+$ ./gradlew :1.21.11:build
+$ ./gradlew :26.1.2:build
+etc...
 ```
 
-The project uses **Fabric Loom** (`net.fabricmc.fabric-loom`) as the Gradle plugin for Minecraft modding. Loom handles Minecraft dependency resolution, mappings, and mixin processing.
+The project uses **Stonecutter** plus **Fabric Loom**. Stonecutter creates one Gradle subproject per Minecraft version under `versions/`; Loom handles Minecraft dependency resolution, mappings, and mixin processing.
 
-**Target**: Minecraft `26.1.2` (snapshot), Java 25, Kotlin 2.4.0. Version properties live in `gradle.properties`.
+**Active source target**: `26.1.2`. Keep `stonecutter.gradle.kts` on `stonecutter active "26.1.2"` unless the user explicitly asks to switch it. Java runtime for local builds should be `/home/lxyan/.local/jdk/26`; generated mod Java compatibility still varies by Minecraft version in `build.gradle.kts`.
+
+## Adding Minecraft Version Support With Stonecutter
+
+Follow this procedure when adding another Minecraft version:
+
+1. Add the version to `settings.gradle.kts` in the `stonecutter { create(rootProject) { versions(...) } }` list. Keep `vcsVersion` and `stonecutter active` deliberate; this repo currently treats `26.1.2` as the clean active source base.
+2. Add a matching table in `stonecutter.properties.toml`. Include:
+   - `mod.mc_compat`
+   - `mod.mc_releases`
+   - `deps.fabric_api`
+   - `deps.malilib_mc`
+   - `deps.malilib`
+   - `deps.mod_menu`
+3. Verify dependency coordinates before coding. MaLiLib uses versioned artifact names such as `malilib-fabric-1.21` and `malilib-fabric-1.21.11`, Check metadata with curl when needed, for example:
+   ```console
+   $ curl -fsSL http://masa.dy.fi/maven/sakura-ryoko/fi/dy/masa/malilib/malilib-fabric-1.21/maven-metadata.xml
+   ```
+4. Build the new target alone first:
+   ```console
+   $ ./gradlew :<mc-version>:build
+   ```
+5. Fix API differences with Stonecutter inline conditions in source:
+   ```kotlin
+   //? if >=1.21.11 {
+   newApi()
+   //?} else
+   //oldApi()
+   ```
+6. If the same inline condition appears more than once, abstract it into a compat class instead of duplicating branches. Existing examples:
+   - `compat/IdentifierCompat.kt` for `Identifier` vs `ResourceLocation`
+   - `compat/CommandCompat.kt` for command permission and ID argument APIs
+   - `client/compat/MinecraftClientCompat.kt` for client interaction, packets, inventory slot, and chat API drift
+   - `compat/NetworkCompat.kt` for Fabric networking payload registry API drift
+7. Do not use Stonecutter `replacements` for Java/Kotlin source API rewrites such as class names, method names, fields, imports, or package names. Source-level differences should be visible as inline conditions or compat classes. The only current `replacements` use is for access widener mapping text: `classTweaker v2 named` -> `classTweaker v2 official` for `26.1+`.
+8. Keep version-specific access widener and mixin/resource behavior generated through Stonecutter and Gradle resource expansion. If a mixin JSON has placeholders such as `${mixin_java}`, ensure the relevant `processResources` task expands that file.
+9. After the new target builds, run the full build:
+   ```bash
+   JAVA_HOME=/home/lxyan/.local/jdk/26 PATH=/home/lxyan/.local/jdk/26/bin:$PATH ./gradlew build
+   ```
+10. Confirm `stonecutter.gradle.kts` still points at the intended active source version before committing.
+
+Important notes:
+
+- Prefer keeping active source code in the newest `26.1.2` API shape and use inline conditions for older versions.
+- Avoid changing active-source names just to satisfy an older version; older names belong in the `else` branch or a compat class.
+- For Minecraft resource IDs, use `IdentifierCompat` rather than directly importing `Identifier` or `ResourceLocation` in feature code.
+- For MaLiLib API drift, inspect `litematica`'s source can be helpful.
+- CI uses GitHub Actions with `actions/setup-java` and Oracle JDK 26. Artifact paths are `versions/*/build/libs/*.jar`.
 
 ## Architecture
 
@@ -114,4 +164,4 @@ The `old/` directory contains the previous working implementation in Java under 
 
 ## CI
 
-GitHub Actions (`.github/workflows/build.yml`) builds on every push and PR using Java 25 on ubuntu-24.04. Artifacts are uploaded from `build/libs/`.
+GitHub Actions (`.github/workflows/build.yml`) builds on every push and PR using Oracle JDK 26 on ubuntu-24.04. Artifacts are uploaded from `versions/*/build/libs/*.jar`.

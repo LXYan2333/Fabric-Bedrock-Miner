@@ -41,8 +41,8 @@
   "accessWidener": "bedrock-miner.accesswidener",
   "depends": {
     "fabricloader": ">=0.19.3",
-    "minecraft": "~26.1.2",
-    "java": ">=25",
+    "minecraft": "${minecraft}",
+    "java": ">=${java}",
     "fabric-api": "*",
     "fabric-language-kotlin": "*",
     "malilib": "*"

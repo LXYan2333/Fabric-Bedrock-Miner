@@ -1,6 +1,6 @@
 package com.github.lxyan2333.bedrockminer.network
 
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
+import com.github.lxyan2333.bedrockminer.compat.NetworkCompat
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
@@ -59,7 +59,7 @@ object ModNetwork {
     }
 
     fun registerPayloadTypes() {
-        PayloadTypeRegistry.serverboundPlay().register(DummyPayload.TYPE, DummyPayload.STREAM_CODEC)
-        PayloadTypeRegistry.clientboundPlay().register(ConfigSyncPayload.TYPE, ConfigSyncPayload.STREAM_CODEC)
+        NetworkCompat.registerServerboundPlay(DummyPayload.TYPE, DummyPayload.STREAM_CODEC)
+        NetworkCompat.registerClientboundPlay(ConfigSyncPayload.TYPE, ConfigSyncPayload.STREAM_CODEC)
     }
 }

@@ -1,8 +1,8 @@
 package com.github.lxyan2333.bedrockminer.client.message
 
+import com.github.lxyan2333.bedrockminer.client.compat.MinecraftClientCompat
 import fi.dy.masa.malilib.gui.Message
 import fi.dy.masa.malilib.util.InfoUtils.showGuiOrActionBarMessage
-import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.Component
 
 object Messager {
@@ -11,6 +11,6 @@ object Messager {
     }
 
     fun chat(message: String) {
-        Minecraft.getInstance().gui.chat.addClientSystemMessage(Component.literal(message))
+        MinecraftClientCompat.addChatMessage(Component.literal(message))
     }
 }

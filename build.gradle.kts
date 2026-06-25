@@ -1,13 +1,34 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-	id("net.fabricmc.fabric-loom")
+	id("dev.kikugie.loom-back-compat")
 	`maven-publish`
-	id("org.jetbrains.kotlin.jvm") version "2.4.0"
+	id("org.jetbrains.kotlin.jvm")
 }
 
-version = providers.gradleProperty("mod_version").get()
-group = providers.gradleProperty("maven_group").get()
+version = "${property("mod.version")}+${sc.current.version}"
+group = property("mod.group") as String
+base.archivesName = property("mod.id") as String
+
+val requiredJava: JavaVersion = when {
+	sc.current.parsed >= "26.1" -> JavaVersion.VERSION_25
+	sc.current.parsed >= "1.20.5" -> JavaVersion.VERSION_21
+	sc.current.parsed >= "1.18" -> JavaVersion.VERSION_17
+	sc.current.parsed >= "1.17" -> JavaVersion.VERSION_16
+	else -> JavaVersion.VERSION_1_8
+}
+
+val requiredJvmTarget = when (requiredJava) {
+	JavaVersion.VERSION_25 -> JvmTarget.JVM_25
+	JavaVersion.VERSION_21 -> JvmTarget.JVM_21
+	JavaVersion.VERSION_17 -> JvmTarget.JVM_17
+	JavaVersion.VERSION_16 -> JvmTarget.JVM_16
+	JavaVersion.VERSION_1_8 -> JvmTarget.JVM_1_8
+	else -> error("Unsupported Java target: $requiredJava")
+}
+
+fun scProperty(key: String): String = sc.properties[key]
+val processedAccessWidener = sc.process(rootProject.file("src/client/resources/bedrock-miner.accesswidener"), "build/processed.accesswidener")
 
 repositories {
 	// Add repositories to retrieve artifacts from in here.
@@ -30,7 +51,7 @@ repositories {
 loom {
 	splitEnvironmentSourceSets()
 
-	accessWidenerPath = file("src/client/resources/bedrock-miner.accesswidener")
+	accessWidenerPath = processedAccessWidener
 
 	mods {
 		register("bedrock-miner") {
@@ -41,34 +62,74 @@ loom {
 }
 
 dependencies {
-	// To change the versions see the gradle.properties file
-	minecraft("com.mojang:minecraft:${providers.gradleProperty("minecraft_version").get()}")
+	fun fapi(vararg modules: String) {
+		for (module in modules) {
+			modImplementation(fabricApi.module(module, scProperty("deps.fabric_api")))
+		}
+	}
 
-	implementation("net.fabricmc:fabric-loader:${providers.gradleProperty("loader_version").get()}")
+	minecraft("com.mojang:minecraft:${sc.current.version}")
+	loomx.applyMojangMappings()
 
-	// Fabric API. This is technically optional, but you probably want it anyway.
-	implementation("net.fabricmc.fabric-api:fabric-api:${providers.gradleProperty("fabric_api_version").get()}")
-	implementation("net.fabricmc:fabric-language-kotlin:${providers.gradleProperty("fabric_kotlin_version").get()}")
-	implementation("fi.dy.masa.malilib:malilib-fabric-${providers.gradleProperty("minecraft_version").get()}:${providers.gradleProperty("malilib_version").get()}")
-	compileOnly("com.terraformersmc:modmenu:${providers.gradleProperty("mod_menu_version").get()}")
+	modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
+
+	fapi(
+		"fabric-command-api-v2",
+		"fabric-events-interaction-v0",
+		"fabric-lifecycle-events-v1",
+		"fabric-networking-api-v1",
+	)
+	modImplementation("net.fabricmc:fabric-language-kotlin:${property("deps.fabric_kotlin")}")
+	modImplementation("fi.dy.masa.malilib:malilib-fabric-${sc.current.version}:${scProperty("deps.malilib")}")
+	modCompileOnly("com.terraformersmc:modmenu:${scProperty("deps.mod_menu")}")
+
+	modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
 }
 
 tasks.processResources {
-	val version = version
-	inputs.property("version", version)
+	val props = mapOf(
+		"version" to project.version,
+		"minecraft" to scProperty("mod.mc_compat"),
+		"java" to requiredJava.majorVersion,
+		"mixin_java" to "JAVA_${requiredJava.majorVersion}",
+	)
+	inputs.properties(props)
 
 	filesMatching("fabric.mod.json") {
-		expand("version" to version)
+		expand(props)
+	}
+	filesMatching("*.mixins.json") {
+		expand(props)
+	}
+}
+
+tasks.named<ProcessResources>("processClientResources") {
+	val props = mapOf(
+		"version" to project.version,
+		"minecraft" to scProperty("mod.mc_compat"),
+		"java" to requiredJava.majorVersion,
+		"mixin_java" to "JAVA_${requiredJava.majorVersion}",
+	)
+	inputs.properties(props)
+
+	exclude("bedrock-miner.accesswidener")
+
+	filesMatching("*.mixins.json") {
+		expand(props)
+	}
+
+	from(processedAccessWidener) {
+		rename { "bedrock-miner.accesswidener" }
 	}
 }
 
 tasks.withType<JavaCompile>().configureEach {
-	options.release = 25
+	options.release = requiredJava.majorVersion.toInt()
 }
 
 kotlin {
 	compilerOptions {
-		jvmTarget = JvmTarget.JVM_25
+		jvmTarget = requiredJvmTarget
 	}
 }
 
@@ -78,8 +139,8 @@ java {
 	// If you remove this line, sources will not be generated.
 	withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_25
-	targetCompatibility = JavaVersion.VERSION_25
+	sourceCompatibility = requiredJava
+	targetCompatibility = requiredJava
 }
 
 tasks.jar {

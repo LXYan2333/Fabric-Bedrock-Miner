@@ -1,5 +1,6 @@
 package com.github.lxyan2333.bedrockminer.client.breaking
 
+import com.github.lxyan2333.bedrockminer.client.compat.MinecraftClientCompat
 import net.minecraft.client.Minecraft
 import net.minecraft.core.registries.Registries
 import net.minecraft.tags.FluidTags
@@ -15,7 +16,6 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket
 import net.minecraft.world.entity.ai.attributes.Attributes
-import net.minecraft.world.inventory.ContainerInput
 import fi.dy.masa.malilib.util.StringUtils
 import com.github.lxyan2333.bedrockminer.client.config.Configs
 
@@ -50,10 +50,7 @@ object InventoryManager {
         val inventory = player.inventory
 
         val switch = inventory.suitableHotbarSlot
-        gameMode.handleContainerInput(
-            player.containerMenu.containerId, slot, switch,
-            ContainerInput.SWAP, player
-        )
+        MinecraftClientCompat.swapInventorySlot(player.containerMenu.containerId, slot, switch, player)
         inventory.selectedSlot = switch
     }
 

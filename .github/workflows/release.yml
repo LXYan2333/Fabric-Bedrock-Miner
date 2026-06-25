@@ -21,7 +21,7 @@ jobs:
       - name: setup jdk
         uses: actions/setup-java@v5
         with:
-          java-version: '25'
+          java-version: '26'
           distribution: 'microsoft'
 
       - name: make gradle wrapper executable
@@ -33,6 +33,7 @@ jobs:
       - name: publish
         uses: Kir-Antipov/mc-publish@v3.3
         with:
+          files: versions/*/build/libs/*.jar
           curseforge-id: 523864
           curseforge-token: ${{ secrets.CURSE_API_TOKEN }}
 
@@ -40,4 +41,4 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: Release Artifacts
-          path: build/libs/
+          path: versions/*/build/libs/*.jar

@@ -2,23 +2,31 @@ package com.github.lxyan2333.bedrockminer.client.render
 
 import com.github.lxyan2333.bedrockminer.client.area.AreaRestriction
 import com.github.lxyan2333.bedrockminer.client.config.Configs
+//? if >=26.1 {
 import com.mojang.blaze3d.buffers.GpuBufferSlice
 import com.mojang.blaze3d.pipeline.RenderTarget
+//?}
 import fi.dy.masa.malilib.MaLiLib
 import fi.dy.masa.malilib.interfaces.IRenderer
 import fi.dy.masa.malilib.render.MaLiLibPipelines
 import fi.dy.masa.malilib.render.RenderContext
 import fi.dy.masa.malilib.render.RenderUtils
 import net.minecraft.client.Minecraft
+//? if >=26.1 {
 import net.minecraft.client.renderer.RenderBuffers
 import net.minecraft.client.renderer.culling.Frustum
 import net.minecraft.client.renderer.state.level.CameraRenderState
-import net.minecraft.core.BlockPos
 import net.minecraft.util.profiling.ProfilerFiller
+//?}
+import net.minecraft.core.BlockPos
+import org.joml.Matrix4f
+//? if >=26.1 {
 import org.joml.Matrix4fc
 import org.joml.Vector4f
+//?}
 
 object AreaRenderer : IRenderer {
+    //? if >=26.1 {
     override fun onRenderWorldLast(
         fb: RenderTarget,
         modelViewMatrix: Matrix4fc,
@@ -29,12 +37,25 @@ object AreaRenderer : IRenderer {
         fogColor: Vector4f,
         profiler: ProfilerFiller
     ) {
+        profiler.push("bedrock_miner_area_restriction")
+        renderAreas()
+        profiler.pop()
+    }
+    //?} else {
+    /*override fun onRenderWorldLast(
+        posMatrix: Matrix4f,
+        projMatrix: Matrix4f
+    ) {
+        renderAreas()
+    }
+    *///?}
+
+    private fun renderAreas() {
         if (!Configs.Area.AREA_RESTRICTION_ENABLED.booleanValue) return
 
         val player = Minecraft.getInstance().player ?: return
         val eyePos = player.eyePosition
 
-        profiler.push("bedrock_miner_area_restriction")
         for (area in AreaRestriction.configuredAreas()) {
             val pos1 = area.pos1
             val pos2 = area.pos2
@@ -43,7 +64,6 @@ object AreaRenderer : IRenderer {
 
             renderAreaOutline(pos1, pos2)
         }
-        profiler.pop()
     }
 
     private fun renderAreaOutline(pos1: BlockPos, pos2: BlockPos) {

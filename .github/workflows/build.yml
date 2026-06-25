@@ -22,7 +22,7 @@ jobs:
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
       - name: build
-        run: ./gradlew build
+        run: ./gradlew build --no-parallel --max-workers=1
       - name: capture build artifacts
         uses: actions/upload-artifact@v7
         with:

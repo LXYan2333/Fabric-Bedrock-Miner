@@ -28,7 +28,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: build
-        run: ./gradlew build
+        run: ./gradlew build --no-parallel --max-workers=1
 
       - name: publish
         uses: Kir-Antipov/mc-publish@v3.3

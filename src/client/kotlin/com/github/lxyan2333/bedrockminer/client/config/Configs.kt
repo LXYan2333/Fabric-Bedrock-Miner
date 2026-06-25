@@ -1,5 +1,6 @@
 package com.github.lxyan2333.bedrockminer.client.config
 
+import com.github.lxyan2333.bedrockminer.client.area.AreaRestriction
 import com.github.lxyan2333.bedrockminer.client.breaking.BreakingFlowController
 import com.github.lxyan2333.bedrockminer.client.compat.modmenu.GuiConfigs
 import com.github.lxyan2333.bedrockminer.client.message.Messager
@@ -13,6 +14,8 @@ import fi.dy.masa.malilib.config.IConfigHandler
 import fi.dy.masa.malilib.config.options.ConfigBlockState
 import fi.dy.masa.malilib.config.options.ConfigBoolean
 import fi.dy.masa.malilib.config.options.ConfigBooleanHotkeyed
+import fi.dy.masa.malilib.config.options.ConfigColor
+import fi.dy.masa.malilib.config.options.ConfigFloat
 import fi.dy.masa.malilib.config.options.ConfigHotkey
 import fi.dy.masa.malilib.config.options.ConfigInteger
 import fi.dy.masa.malilib.config.options.ConfigOptionList
@@ -194,6 +197,57 @@ object Configs : IConfigHandler, IKeybindProvider {
 
     }
 
+    object Area {
+        val AREA_RESTRICTION_ENABLED: ConfigBoolean = ConfigBoolean(
+            "areaRestrictionEnabled",
+            false,
+            StringUtils.translate("bedrockminer.config.area.area_restriction_enabled.comment"),
+        )
+
+        val RESTRICT_MINING_AREA: ConfigStringList = ConfigStringList(
+            "restrictMiningArea",
+            ImmutableList.of(),
+            StringUtils.translate("bedrockminer.config.area.restrict_mining_area.comment"),
+        ).apply {
+            setValueChangeCallback { config ->
+                val invalid = config.strings.firstOrNull { it.isNotEmpty() && !AreaRestriction.isValidArea(it) }
+                if (invalid != null) {
+                    Messager.actionBar(StringUtils.translate("bedrockminer.message.invalid_area", invalid))
+                    config.setStrings(config.lastStringListValue)
+                }
+            }
+        }
+
+        val AREA_BOX_COLOR: ConfigColor = ConfigColor(
+            "areaBoxColor",
+            "#FF40FF78",
+            StringUtils.translate("bedrockminer.config.area.area_box_color.comment"),
+        )
+
+        val HIDE_AREA_BOX_BEHIND_BLOCKS: ConfigBoolean = ConfigBoolean(
+            "hideAreaBoxBehindBlocks",
+            false,
+            StringUtils.translate("bedrockminer.config.area.hide_area_box_behind_blocks.comment"),
+        )
+
+        val AREA_BOX_LINE_WIDTH: ConfigFloat = ConfigFloat(
+            "areaBoxLineWidth",
+            2.0f,
+            0.5f,
+            8.0f,
+            true,
+            StringUtils.translate("bedrockminer.config.area.area_box_line_width.comment"),
+        )
+
+        val OPTIONS: List<IConfigBase> = listOf(
+            AREA_RESTRICTION_ENABLED,
+            RESTRICT_MINING_AREA,
+            AREA_BOX_COLOR,
+            HIDE_AREA_BOX_BEHIND_BLOCKS,
+            AREA_BOX_LINE_WIDTH,
+        )
+    }
+
     override fun load() {
         if (!Files.exists(configFile)) return
         try {
@@ -202,6 +256,7 @@ object Configs : IConfigHandler, IKeybindProvider {
                 ConfigUtils.readConfigBase(element.asJsonObject, "Generic", Generic.OPTIONS)
                 ConfigUtils.readConfigBase(element.asJsonObject, "Client", Client.OPTIONS)
                 ConfigUtils.readConfigBase(element.asJsonObject, "Server", Server.OPTIONS)
+                ConfigUtils.readConfigBase(element.asJsonObject, "Area", Area.OPTIONS)
             }
         } catch (_: Exception) {
         }
@@ -216,6 +271,7 @@ object Configs : IConfigHandler, IKeybindProvider {
             ConfigUtils.writeConfigBase(root, "Generic", Generic.OPTIONS)
             ConfigUtils.writeConfigBase(root, "Client", Client.OPTIONS)
             ConfigUtils.writeConfigBase(root, "Server", Server.OPTIONS)
+            ConfigUtils.writeConfigBase(root, "Area", Area.OPTIONS)
             JsonUtils.writeJsonToFile(root, configFile)
         } catch (_: Exception) {
         }

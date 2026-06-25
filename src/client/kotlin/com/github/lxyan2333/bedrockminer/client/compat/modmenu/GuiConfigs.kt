@@ -29,6 +29,7 @@ class GuiConfigs : GuiConfigsBase(10, 50, "bedrock-miner", null, "bedrockminer.g
             ConfigGuiTab.GENERIC -> ConfigOptionWrapper.createFor(Configs.Generic.OPTIONS)
             ConfigGuiTab.CLIENT -> ConfigOptionWrapper.createFor(Configs.Client.OPTIONS)
             ConfigGuiTab.SERVER -> Configs.Server.ALL_OPTIONS_WRAPPER
+            ConfigGuiTab.AREA -> ConfigOptionWrapper.createFor(Configs.Area.OPTIONS)
         }
     }
 
@@ -46,6 +47,7 @@ class GuiConfigs : GuiConfigsBase(10, 50, "bedrock-miner", null, "bedrockminer.g
 
     enum class ConfigGuiTab(val translationKey: String) {
         GENERIC("bedrockminer.gui.button.config_gui.generic"),
+        AREA("bedrockminer.gui.button.config_gui.area"),
         CLIENT("bedrockminer.gui.button.config_gui.client"),
         SERVER("bedrockminer.gui.button.config_gui.server");
 

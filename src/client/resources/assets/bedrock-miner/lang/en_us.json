@@ -44,5 +44,12 @@
   "bedrockminer.message.server_block_list": "§7Block list:§r %s",
   "bedrockminer.message.server_allow_list": "§7Allow list:§r %s",
   "bedrockminer.message.server_block_list_mode": "§7Block list mode:§r %s",
-  "bedrockminer.message.empty": "(empty)"
+  "bedrockminer.message.empty": "(empty)",
+  "bedrockminer.config.area.area_restriction_enabled.comment": "Enable mining area restriction",
+  "bedrockminer.config.area.restrict_mining_area.comment": "Mining areas (format: x1,y1,z1;x2,y2,z2)",
+  "bedrockminer.config.area.area_box_color.comment": "Area restriction box line color",
+  "bedrockminer.config.area.hide_area_box_behind_blocks.comment": "Hide area restriction box lines behind blocks",
+  "bedrockminer.config.area.area_box_line_width.comment": "Area restriction box line width",
+  "bedrockminer.message.invalid_area": "Invalid area format: %s",
+  "bedrockminer.gui.button.config_gui.area": "Mining Area Restriction"
 }

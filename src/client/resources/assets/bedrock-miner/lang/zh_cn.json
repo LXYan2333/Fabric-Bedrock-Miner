@@ -44,5 +44,12 @@
   "bedrockminer.message.server_block_list": "§7阻止列表:§r %s",
   "bedrockminer.message.server_allow_list": "§7允许列表:§r %s",
   "bedrockminer.message.server_block_list_mode": "§7阻止列表模式:§r %s",
-  "bedrockminer.message.empty": "（空）"
+  "bedrockminer.message.empty": "（空）",
+  "bedrockminer.config.area.area_restriction_enabled.comment": "启用挖掘区域限制",
+  "bedrockminer.config.area.restrict_mining_area.comment": "挖掘区域列表（格式：x1,y1,z1;x2,y2,z2）",
+  "bedrockminer.config.area.area_box_color.comment": "区域限制框线条颜色",
+  "bedrockminer.config.area.hide_area_box_behind_blocks.comment": "被方块遮挡时隐藏区域限制框线条",
+  "bedrockminer.config.area.area_box_line_width.comment": "区域限制框线条宽度",
+  "bedrockminer.message.invalid_area": "无效的区域格式：%s",
+  "bedrockminer.gui.button.config_gui.area": "可挖掘区域限制"
 }

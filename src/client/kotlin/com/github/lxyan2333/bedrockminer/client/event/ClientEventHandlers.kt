@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.event.player.AttackBlockCallback
 import net.fabricmc.fabric.api.event.player.UseBlockCallback
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.minecraft.world.InteractionResult
+import com.github.lxyan2333.bedrockminer.client.area.AreaRestriction
 import com.github.lxyan2333.bedrockminer.client.breaking.BreakingFlowController
 import com.github.lxyan2333.bedrockminer.client.breaking.ClientTickScheduler
 import com.github.lxyan2333.bedrockminer.client.config.AllowOrBlockMode
@@ -11,8 +12,11 @@ import com.github.lxyan2333.bedrockminer.client.config.Configs
 import com.github.lxyan2333.bedrockminer.client.config.ClientConfigHandler
 import com.github.lxyan2333.bedrockminer.client.message.Messager
 import com.github.lxyan2333.bedrockminer.client.network.ClientNetworkHandler
+import com.github.lxyan2333.bedrockminer.client.render.AreaRenderer
 import com.github.lxyan2333.bedrockminer.config.ServerConfigData
 import com.github.lxyan2333.bedrockminer.network.ModNetwork
+import fi.dy.masa.malilib.config.ConfigManager
+import fi.dy.masa.malilib.event.RenderEventHandler
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.minecraft.client.Minecraft
@@ -65,6 +69,9 @@ object ClientEventHandlers {
     }
 
     fun register() {
+        ConfigManager.getInstance().registerConfigHandler("bedrock-miner", Configs)
+        Configs.init()
+        RenderEventHandler.getInstance().registerWorldLastRenderer(AreaRenderer)
         ModNetwork.registerPayloadTypes()
         ClientNetworkHandler.registerClientHandlers()
         // Right-click block with empty hand to toggle the mod on/off
@@ -89,6 +96,9 @@ object ClientEventHandlers {
             }
             val blockState = world.getBlockState(pos)
             if (!isBlockAllowed(blockState)) {
+                return@register InteractionResult.PASS
+            }
+            if (!AreaRestriction.isPositionAllowed(pos)) {
                 return@register InteractionResult.PASS
             }
             BreakingFlowController.tryEnqueueBlock(pos)

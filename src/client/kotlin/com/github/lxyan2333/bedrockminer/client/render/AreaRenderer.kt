@@ -33,9 +33,9 @@ import net.minecraft.core.BlockPos
 //? if >=26.1 {
 import org.joml.Matrix4fc
 import org.joml.Vector4f
-//?} else if >=1.20.5 {
+//?} else if >=1.20 {
 /*import org.joml.Matrix4f*///?}
-//? if <1.20.5
+//? if <1.20
 //import com.mojang.math.Matrix4f
 
 

@@ -119,7 +119,7 @@ object InventoryManager {
         }
 
         if (MobEffectUtil.hasDigSpeed(player)) {
-            speed *= 1.0f + (MobEffectUtil.getDigSpeedAmplification(player) + 1) * 0.2f
+            speed *= 1.0f + (getDigSpeedAmplification() + 1) * 0.2f
         }
 
         //? if >=1.21.11 {
@@ -153,6 +153,21 @@ object InventoryManager {
         }
 
         return speed
+    }
+
+    private fun getDigSpeedAmplification(): Int {
+        val player = Minecraft.getInstance().player ?: return 0
+        //? if >=1.21 {
+        return MobEffectUtil.getDigSpeedAmplification(player)
+        //?} else {
+        /*val haste = player.getEffect(MobEffects.DIG_SPEED)?.amplifier?.let(::unsignedByteAmplifier) ?: 0
+        val conduit = player.getEffect(MobEffects.CONDUIT_POWER)?.amplifier?.let(::unsignedByteAmplifier) ?: 0
+        return maxOf(haste, conduit)
+        *///?}
+    }
+
+    private fun unsignedByteAmplifier(amplifier: Int): Int {
+        return if (amplifier < 0) amplifier + 256 else amplifier
     }
 
     fun countItem(item: Item): Int {

@@ -1,9 +1,9 @@
 package com.github.lxyan2333.bedrockminer.client.breaking
 
+import com.github.lxyan2333.bedrockminer.client.compat.MinecraftClientCompat
 import net.minecraft.client.Minecraft
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
-import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Blocks
@@ -45,7 +45,7 @@ object BlockPlacer {
 
         val ret = getYawPitch(direction)
 
-        client.connection?.send(ServerboundMovePlayerPacket.Rot(ret.first, ret.second, player.onGround(), false))
+        client.connection?.send(MinecraftClientCompat.rotationPacket(ret.first, ret.second, player.onGround()))
 
         return ret
     }
@@ -72,7 +72,7 @@ object BlockPlacer {
             player.xRot = pitch
             player.yRot = yaw
             player.yHeadRot = yaw
-            client.connection?.send(ServerboundMovePlayerPacket.Rot(yaw, pitch, player.onGround(), false))
+            client.connection?.send(MinecraftClientCompat.rotationPacket(yaw, pitch, player.onGround()))
             client.gameMode?.useItemOn(player, InteractionHand.MAIN_HAND, hitResult)
         } finally {
             player.xRot = oldXRot

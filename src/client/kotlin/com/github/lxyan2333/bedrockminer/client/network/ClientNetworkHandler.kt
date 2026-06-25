@@ -2,13 +2,12 @@ package com.github.lxyan2333.bedrockminer.client.network
 
 import com.github.lxyan2333.bedrockminer.client.config.ClientConfigHandler
 import com.github.lxyan2333.bedrockminer.client.message.Messager
+import com.github.lxyan2333.bedrockminer.compat.IdentifierCompat
 import com.github.lxyan2333.bedrockminer.config.ServerConfigData
 import com.github.lxyan2333.bedrockminer.config.ServerConfigData.SPECIAL_BLOCKS
 import com.github.lxyan2333.bedrockminer.network.ModNetwork
 import fi.dy.masa.malilib.util.StringUtils
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
-import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.resources.Identifier
 
 object ClientNetworkHandler {
     fun registerClientHandlers() {
@@ -50,8 +49,7 @@ object ClientNetworkHandler {
         if (blocks.isEmpty()) return StringUtils.translate("bedrockminer.message.empty")
         return blocks.joinToString(", ") { blockId ->
             try {
-                val key = Identifier.tryParse(blockId)!!
-                val block = BuiltInRegistries.BLOCK.getValue(key)
+                val block = IdentifierCompat.block(blockId)!!
                 block.name.string
             } catch (_: Exception) {
                 blockId

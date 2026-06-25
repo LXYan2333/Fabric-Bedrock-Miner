@@ -1,14 +1,14 @@
 package com.github.lxyan2333.bedrockminer.network
 
+import com.github.lxyan2333.bedrockminer.compat.IdentifierCompat
 import com.github.lxyan2333.bedrockminer.compat.NetworkCompat
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-import net.minecraft.resources.Identifier
 
 object ModNetwork {
-    val CONFIG_SYNC_ID = Identifier.fromNamespaceAndPath("bedrock-miner", "config_sync")
-    val DUMMY_ID = Identifier.fromNamespaceAndPath("bedrock-miner", "dummy")
+    val CONFIG_SYNC_ID = IdentifierCompat.of("bedrock-miner", "config_sync")
+    val DUMMY_ID = IdentifierCompat.of("bedrock-miner", "dummy")
 
     data class ConfigSyncPayload(
         val protocolVersion: Int,

@@ -80,7 +80,7 @@ dependencies {
 		"fabric-networking-api-v1",
 	)
 	modImplementation("net.fabricmc:fabric-language-kotlin:${property("deps.fabric_kotlin")}")
-	modImplementation("fi.dy.masa.malilib:malilib-fabric-${sc.current.version}:${scProperty("deps.malilib")}")
+	modImplementation("fi.dy.masa.malilib:malilib-fabric-${scProperty("deps.malilib_mc")}:${scProperty("deps.malilib")}")
 	modCompileOnly("com.terraformersmc:modmenu:${scProperty("deps.mod_menu")}")
 
 	modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")

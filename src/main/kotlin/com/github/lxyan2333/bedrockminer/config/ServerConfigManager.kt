@@ -1,11 +1,10 @@
 package com.github.lxyan2333.bedrockminer.config
 
+import com.github.lxyan2333.bedrockminer.compat.IdentifierCompat
 import com.github.lxyan2333.bedrockminer.network.ModNetwork
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
-import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.resources.Identifier
 import net.minecraft.server.MinecraftServer
 import net.fabricmc.loader.api.FabricLoader
 import java.nio.file.Files
@@ -66,8 +65,7 @@ object ServerConfigManager {
     }
 
     fun isValidBlockName(name: String): Boolean {
-        val key = Identifier.tryParse(name) ?: return false
-        return BuiltInRegistries.BLOCK.containsKey(key)
+        return IdentifierCompat.isKnownBlock(name)
     }
 
     fun addToBlockList(block: String): Boolean {

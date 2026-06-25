@@ -22,7 +22,7 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
         get() = targetBlockState.block.name.string
 
     private val supportBlock: Block
-        get() = Configs.Generic.SUPPORT_BLOCK.blockStateValue.block
+        get() = Configs.Generic.supportBlock
 
     suspend fun execute() {
         val level = Minecraft.getInstance().level ?: return

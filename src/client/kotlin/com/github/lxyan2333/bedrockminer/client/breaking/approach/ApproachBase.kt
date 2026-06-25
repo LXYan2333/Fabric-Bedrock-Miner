@@ -1,6 +1,7 @@
 package com.github.lxyan2333.bedrockminer.client.breaking.approach
 
 import com.github.lxyan2333.bedrockminer.client.breaking.BreakingFlowController.isPositionProtected
+import com.github.lxyan2333.bedrockminer.client.compat.MinecraftClientCompat
 import net.minecraft.client.Minecraft
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
@@ -58,7 +59,7 @@ abstract class ApproachBase internal constructor(
         if (usedPos.any { isPositionProtected(it) }) return null
 
         val player = Minecraft.getInstance().player ?: return null
-        if (usedPos.any { !player.isWithinBlockInteractionRange(it, 0.0) }) return null
+        if (usedPos.any { !MinecraftClientCompat.canInteractWithBlock(it) }) return null
         if (usedPos.any { !canSeeAnyFaceOfPos(level, player, it) }) return null
 
         if (!canPlaceBlock(level, player, pistonPos, Blocks.PISTON)) return null
@@ -75,7 +76,7 @@ abstract class ApproachBase internal constructor(
         }
 
         if ((Blocks.PISTON as PistonBaseBlock).getNeighborSignal(level, pistonPos, pushDir)) return 3
-        if (player.boundingBox.intersects(extendPos)) return 2
+        if (player.boundingBox.intersects(net.minecraft.world.phys.AABB(extendPos))) return 2
         if (supportBlockPos != null) return 1
         return 0
     }
@@ -127,7 +128,7 @@ abstract class ApproachBase internal constructor(
 
     companion object {
         val supportBlock: Block
-            get() = Configs.Generic.SUPPORT_BLOCK.blockStateValue.block
+            get() = Configs.Generic.supportBlock
 
         fun findBest(level: Level, targetPos: BlockPos): ApproachBase? {
             return when (ApproachMode.valueOf(Configs.Generic.APPROACH_MODE.stringValue)) {

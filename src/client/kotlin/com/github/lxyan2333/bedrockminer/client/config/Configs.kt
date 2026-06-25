@@ -4,6 +4,7 @@ import com.github.lxyan2333.bedrockminer.client.area.AreaRestriction
 import com.github.lxyan2333.bedrockminer.client.breaking.BreakingFlowController
 import com.github.lxyan2333.bedrockminer.client.compat.modmenu.GuiConfigs
 import com.github.lxyan2333.bedrockminer.client.message.Messager
+import com.github.lxyan2333.bedrockminer.compat.IdentifierCompat
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.common.collect.ImmutableList
@@ -11,7 +12,10 @@ import fi.dy.masa.malilib.MaLiLibReference
 import fi.dy.masa.malilib.config.ConfigUtils
 import fi.dy.masa.malilib.config.IConfigBase
 import fi.dy.masa.malilib.config.IConfigHandler
+//? if >=1.21.11 {
 import fi.dy.masa.malilib.config.options.ConfigBlockState
+//?} else
+//import fi.dy.masa.malilib.config.options.ConfigString
 import fi.dy.masa.malilib.config.options.ConfigBoolean
 import fi.dy.masa.malilib.config.options.ConfigBooleanHotkeyed
 import fi.dy.masa.malilib.config.options.ConfigColor
@@ -26,9 +30,12 @@ import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper
 import fi.dy.masa.malilib.hotkeys.IKeybindManager
 import fi.dy.masa.malilib.hotkeys.IKeybindProvider
 import fi.dy.masa.malilib.util.StringUtils
+//? if >=1.21.11 {
 import fi.dy.masa.malilib.util.data.json.JsonUtils
+//?} else
+//import fi.dy.masa.malilib.util.JsonUtils
 import net.minecraft.core.Direction
-import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.SupportType
 import java.nio.file.Files
@@ -94,6 +101,7 @@ object Configs : IConfigHandler, IKeybindProvider {
             StringUtils.translate("bedrockminer.config.wait_ticks.comment"),
         )
 
+        //? if >=1.21.11 {
         val SUPPORT_BLOCK: ConfigBlockState = ConfigBlockState(
             "supportBlock",
             Blocks.SLIME_BLOCK.defaultBlockState(),
@@ -108,6 +116,29 @@ object Configs : IConfigHandler, IKeybindProvider {
                 }
             }
         }
+        //?} else {
+        /*val SUPPORT_BLOCK: ConfigString = ConfigString(
+            "supportBlock",
+            "minecraft:slime_block",
+            StringUtils.translate("bedrockminer.config.support_block.comment"),
+        ).apply {
+            setValueChangeCallback { config ->
+                val block = blockFromName(config.stringValue)
+                if (block == null) {
+                    config.setValueFromString(config.defaultStringValue)
+                    Messager.actionBar(StringUtils.translate("bedrockminer.message.invalid_support_block"))
+                }
+            }
+        }
+        *///?}
+
+        val supportBlock: Block
+            get() {
+                //? if >=1.21.11 {
+                return SUPPORT_BLOCK.blockStateValue.block
+                //?} else
+                //return blockFromName(SUPPORT_BLOCK.stringValue) ?: Blocks.SLIME_BLOCK
+            }
 
         val OPTIONS: List<IConfigBase> = listOf(
             BEDROCK_MINER_ENABLED,
@@ -131,7 +162,10 @@ object Configs : IConfigHandler, IKeybindProvider {
                 val invalid = config.strings.firstOrNull { if (it == "") false else !isValidBlockName(it) }
                 if (invalid != null) {
                     Messager.actionBar(StringUtils.translate("bedrockminer.message.invalid_block_name", invalid))
+                    //? if >=1.21.11 {
                     config.setStrings(config.lastStringListValue)
+                    //?} else
+                    //config.setStrings(config.defaultStrings)
                 }
             }
         }
@@ -145,7 +179,10 @@ object Configs : IConfigHandler, IKeybindProvider {
                 val invalid = config.strings.firstOrNull { if (it == "") false else !isValidBlockName(it) }
                 if (invalid != null) {
                     Messager.actionBar(StringUtils.translate("bedrockminer.message.invalid_block_name", invalid))
+                    //? if >=1.21.11 {
                     config.setStrings(config.lastStringListValue)
+                    //?} else
+                    //config.setStrings(config.defaultStrings)
                 }
             }
         }
@@ -213,7 +250,10 @@ object Configs : IConfigHandler, IKeybindProvider {
                 val invalid = config.strings.firstOrNull { it.isNotEmpty() && !AreaRestriction.isValidArea(it) }
                 if (invalid != null) {
                     Messager.actionBar(StringUtils.translate("bedrockminer.message.invalid_area", invalid))
+                    //? if >=1.21.11 {
                     config.setStrings(config.lastStringListValue)
+                    //?} else
+                    //config.setStrings(config.defaultStrings)
                 }
             }
         }
@@ -272,7 +312,10 @@ object Configs : IConfigHandler, IKeybindProvider {
             ConfigUtils.writeConfigBase(root, "Client", Client.OPTIONS)
             ConfigUtils.writeConfigBase(root, "Server", Server.OPTIONS)
             ConfigUtils.writeConfigBase(root, "Area", Area.OPTIONS)
+            //? if >=1.21.11 {
             JsonUtils.writeJsonToFile(root, configFile)
+            //?} else
+            //JsonUtils.writeJsonToFileAsPath(root, configFile)
         } catch (_: Exception) {
         }
     }
@@ -300,7 +343,10 @@ object Configs : IConfigHandler, IKeybindProvider {
     }
 
     private fun isValidBlockName(name: String): Boolean {
-        val key = net.minecraft.resources.Identifier.tryParse(name) ?: return false
-        return BuiltInRegistries.BLOCK.containsKey(key)
+        return IdentifierCompat.isKnownBlock(name)
+    }
+
+    private fun blockFromName(name: String): Block? {
+        return IdentifierCompat.block(name)
     }
 }

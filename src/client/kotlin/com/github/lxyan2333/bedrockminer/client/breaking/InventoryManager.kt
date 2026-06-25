@@ -35,11 +35,11 @@ object InventoryManager {
         if (slot == -1) return false
 
         if (Inventory.isHotbarSlot(slot)) {
-            inventory.selectedSlot = slot
+            MinecraftClientCompat.setSelectedSlot(inventory, slot)
         } else {
             pickFromInventory(slot)
         }
-        client.connection?.send(ServerboundSetCarriedItemPacket(inventory.selectedSlot))
+        client.connection?.send(ServerboundSetCarriedItemPacket(MinecraftClientCompat.selectedSlot(inventory)))
         return true
     }
 
@@ -51,7 +51,7 @@ object InventoryManager {
 
         val switch = inventory.suitableHotbarSlot
         MinecraftClientCompat.swapInventorySlot(player.containerMenu.containerId, slot, switch, player)
-        inventory.selectedSlot = switch
+        MinecraftClientCompat.setSelectedSlot(inventory, switch)
     }
 
     private fun findSlotWithItem(inventory: Inventory, item: Item): Int {
@@ -88,7 +88,9 @@ object InventoryManager {
 
     fun canInstantlyMinePiston(): Boolean {
         val player = Minecraft.getInstance().player ?: return false
-        for (stack in player.inventory) {
+        val inventory = player.inventory
+        for (i in 0 until inventory.containerSize) {
+            val stack = inventory.getItem(i)
             if (stack.isEmpty) continue
             if (getBlockBreakingSpeed(Blocks.PISTON.defaultBlockState(), stack) > INSTANT_MINE_THRESHOLD) {
                 return true
@@ -117,8 +119,12 @@ object InventoryManager {
             speed *= 1.0f + (MobEffectUtil.getDigSpeedAmplification(player) + 1) * 0.2f
         }
 
-        if (player.hasEffect(MobEffects.MINING_FATIGUE)) {
-            val amplifier = player.getEffect(MobEffects.MINING_FATIGUE)?.amplifier ?: 0
+        //? if >=1.21.11 {
+        val miningFatigue = MobEffects.MINING_FATIGUE
+        //?} else
+        //val miningFatigue = MobEffects.DIG_SLOWDOWN
+        if (player.hasEffect(miningFatigue)) {
+            val amplifier = player.getEffect(miningFatigue)?.amplifier ?: 0
             speed *= when (amplifier) {
                 0 -> 0.3f
                 1 -> 0.09f
@@ -158,8 +164,9 @@ object InventoryManager {
         if (countItem(Blocks.REDSTONE_TORCH.asItem()) < 1) {
             return StringUtils.translate("bedrockminer.message.need_torches")
         }
-        if (countItem(Configs.Generic.SUPPORT_BLOCK.blockStateValue.block.asItem()) < 1) {
-            val supportBlockName = Configs.Generic.SUPPORT_BLOCK.blockStateValue.block.name.string
+        val supportBlock = Configs.Generic.supportBlock
+        if (countItem(supportBlock.asItem()) < 1) {
+            val supportBlockName = supportBlock.name.string
             return StringUtils.translate("bedrockminer.message.need_support", supportBlockName)
         }
         if (!Configs.Generic.SKIP_INSTANT_MINE_CHECK.booleanValue && !canInstantlyMinePiston()) {

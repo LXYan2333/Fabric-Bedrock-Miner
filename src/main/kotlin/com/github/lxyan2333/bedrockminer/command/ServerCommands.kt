@@ -2,29 +2,29 @@ package com.github.lxyan2333.bedrockminer.command
 
 import com.github.lxyan2333.bedrockminer.config.ServerConfigData
 import com.github.lxyan2333.bedrockminer.config.ServerConfigManager
+import com.github.lxyan2333.bedrockminer.compat.CommandCompat
+import com.github.lxyan2333.bedrockminer.compat.IdentifierCompat
 import com.mojang.brigadier.arguments.StringArgumentType
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.minecraft.commands.Commands
 import net.minecraft.commands.SharedSuggestionProvider
-import net.minecraft.commands.arguments.IdentifierArgument
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
-import net.minecraft.server.permissions.Permissions
 
 object ServerCommands {
     fun register() {
         CommandRegistrationCallback.EVENT.register { dispatcher, _, _ ->
             dispatcher.register(
                 Commands.literal("bedrock-miner")
-                    .requires { source -> source.permissions().hasPermission(Permissions.COMMANDS_ADMIN) }.then(
+                    .requires { source -> CommandCompat.requiresAdmin(source) }.then(
                         Commands.literal("blocklist").then(
                             Commands.literal("add")
-                                .then(Commands.argument("block", IdentifierArgument.id()).suggests { _, builder ->
+                                .then(CommandCompat.idArgument("block").suggests { _, builder ->
                                     SharedSuggestionProvider.suggestResource(
                                         BuiltInRegistries.BLOCK.keySet(), builder
                                     )
                                 }.executes { context ->
-                                    val block = IdentifierArgument.getId(context, "block").toString()
+                                    val block = CommandCompat.getId(context, "block")
                                     if (!ServerConfigManager.addToBlockList(block)) {
                                         context.source.sendFailure(
                                             Component.literal("Invalid block name: $block")
@@ -38,13 +38,13 @@ object ServerCommands {
                                 })
                         ).then(
                             Commands.literal("remove")
-                                .then(Commands.argument("block", IdentifierArgument.id()).suggests { _, builder ->
+                                .then(CommandCompat.idArgument("block").suggests { _, builder ->
                                     SharedSuggestionProvider.suggestResource(
-                                        ServerConfigData.serverBlockList.mapNotNull { net.minecraft.resources.Identifier.tryParse(it) },
+                                        ServerConfigData.serverBlockList.mapNotNull { IdentifierCompat.parse(it) },
                                         builder
                                     )
                                 }.executes { context ->
-                                    val block = IdentifierArgument.getId(context, "block").toString()
+                                    val block = CommandCompat.getId(context, "block")
                                     if (!ServerConfigManager.removeFromBlockList(block)) {
                                         context.source.sendFailure(
                                             Component.literal("Block $block is not in block list")
@@ -74,12 +74,12 @@ object ServerCommands {
                     ).then(
                         Commands.literal("allowlist").then(
                             Commands.literal("add")
-                                .then(Commands.argument("block", IdentifierArgument.id()).suggests { _, builder ->
+                                .then(CommandCompat.idArgument("block").suggests { _, builder ->
                                     SharedSuggestionProvider.suggestResource(
                                         BuiltInRegistries.BLOCK.keySet(), builder
                                     )
                                 }.executes { context ->
-                                    val block = IdentifierArgument.getId(context, "block").toString()
+                                    val block = CommandCompat.getId(context, "block")
                                     if (!ServerConfigManager.addToAllowList(block)) {
                                         context.source.sendFailure(
                                             Component.literal("Invalid block name: $block")
@@ -93,13 +93,13 @@ object ServerCommands {
                                 })
                         ).then(
                             Commands.literal("remove")
-                                .then(Commands.argument("block", IdentifierArgument.id()).suggests { _, builder ->
+                                .then(CommandCompat.idArgument("block").suggests { _, builder ->
                                     SharedSuggestionProvider.suggestResource(
-                                        ServerConfigData.serverAllowList.mapNotNull { net.minecraft.resources.Identifier.tryParse(it) },
+                                        ServerConfigData.serverAllowList.mapNotNull { IdentifierCompat.parse(it) },
                                         builder
                                     )
                                 }.executes { context ->
-                                    val block = IdentifierArgument.getId(context, "block").toString()
+                                    val block = CommandCompat.getId(context, "block")
                                     if (!ServerConfigManager.removeFromAllowList(block)) {
                                         context.source.sendFailure(
                                             Component.literal("Block $block is not in allow list")

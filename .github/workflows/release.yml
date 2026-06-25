@@ -22,7 +22,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           java-version: '26'
-          distribution: 'microsoft'
+          distribution: 'oracle'
 
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew

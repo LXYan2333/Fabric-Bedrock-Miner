@@ -18,7 +18,6 @@ import net.minecraft.world.level.block.RedstoneWallTorchBlock
 
 import com.github.lxyan2333.bedrockminer.client.config.ApproachMode
 import com.github.lxyan2333.bedrockminer.client.config.Configs
-import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.block.piston.PistonBaseBlock
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.HitResult
@@ -62,7 +61,7 @@ abstract class ApproachBase internal constructor(
         if (usedPos.any { !MinecraftClientCompat.canInteractWithBlock(it) }) return null
         if (usedPos.any { !canSeeAnyFaceOfPos(level, player, it) }) return null
 
-        if (!canPlaceBlock(level, player, pistonPos, Blocks.PISTON)) return null
+        if (!canPlaceBlock(player, pistonPos, Blocks.PISTON)) return null
 
         if (!level.getBlockState(extendPos).canBeReplaced()) return null
         if (isPositionProtected(extendPos)) return null
@@ -72,7 +71,7 @@ abstract class ApproachBase internal constructor(
         if (supportBlockPos == null && !torchCanSurvive(level, torchPos)) return null
 
         if (supportBlockPos != null) {
-            if (!canPlaceBlock(level, player, supportBlockPos, supportBlock)) return null
+            if (!canPlaceBlock(player, supportBlockPos, supportBlock)) return null
         }
 
         if ((Blocks.PISTON as PistonBaseBlock).getNeighborSignal(level, pistonPos, pushDir)) return 3
@@ -107,7 +106,7 @@ abstract class ApproachBase internal constructor(
     }
 
     protected fun canPlaceBlock(
-        level: Level, player: Player, pos: BlockPos, block: Block,
+        player: Player, pos: BlockPos, block: Block,
     ): Boolean {
         val ctx = BlockPlaceContext(
             player, InteractionHand.MAIN_HAND, ItemStack(block),

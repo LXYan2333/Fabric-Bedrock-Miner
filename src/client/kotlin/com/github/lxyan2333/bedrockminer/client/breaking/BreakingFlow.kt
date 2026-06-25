@@ -91,7 +91,7 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
                     Messager.actionBar(StringUtils.translate("bedrockminer.message.block_broken", targetBlockName))
                     return
                 }
-            } catch (e: BlockInteractionRangeException) {
+            } catch (_: BlockInteractionRangeException) {
                 Messager.actionBar(StringUtils.translate("bedrockminer.message.out_of_range"))
             } finally {
                 currentApproach = null

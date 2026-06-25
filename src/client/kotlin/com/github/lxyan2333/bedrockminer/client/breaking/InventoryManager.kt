@@ -46,7 +46,6 @@ object InventoryManager {
     private fun pickFromInventory(slot: Int) {
         val client = Minecraft.getInstance()
         val player = client.player ?: return
-        val gameMode = client.gameMode ?: return
         val inventory = player.inventory
 
         val switch = inventory.suitableHotbarSlot
@@ -133,10 +132,10 @@ object InventoryManager {
             }
         }
 
-        speed *= player.getAttributeValue(Attributes.BLOCK_BREAK_SPEED).toFloat();
+        speed *= player.getAttributeValue(Attributes.BLOCK_BREAK_SPEED).toFloat()
 
 		if (player.isEyeInFluid(FluidTags.WATER)) {
-			speed *= player.getAttributeValue(Attributes.SUBMERGED_MINING_SPEED).toFloat();
+			speed *= player.getAttributeValue(Attributes.SUBMERGED_MINING_SPEED).toFloat()
 		}
 
         if (!player.onGround()) {

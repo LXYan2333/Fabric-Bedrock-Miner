@@ -6,9 +6,9 @@ import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 //?} else {
-//import net.fabricmc.fabric.api.networking.v1.PacketType
-//import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
-//?}
+/*import net.fabricmc.fabric.api.networking.v1.PacketType
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
+*///?}
 
 object NetworkCompat {
     //? if >=1.20.5 {
@@ -32,12 +32,12 @@ object NetworkCompat {
         //PayloadTypeRegistry.playS2C().register(type, codec)
     }
     //?} else {
-    //fun registerServerboundPlay(type: PacketType<*>) {
-    //    ServerPlayNetworking.registerGlobalReceiver(type) { _, _, _ -> }
-    //}
-    //
-    //fun registerClientboundPlay(type: PacketType<*>) {
-    //    // Old FabricPacket S2C channels are registered by the client receiver.
-    //}
-    //?}
+    /*fun registerServerboundPlay(type: PacketType<*>) {
+        ServerPlayNetworking.registerGlobalReceiver(type) { _, _, _ -> }
+    }
+    
+    fun registerClientboundPlay(type: PacketType<*>) {
+        // Old FabricPacket S2C channels are registered by the client receiver.
+    }
+    *///?}
 }

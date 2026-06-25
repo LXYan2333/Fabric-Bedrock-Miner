@@ -32,9 +32,25 @@ object BlockBreaker {
     fun removeAllGhostBlock() {
         if (pendingUpdates.isEmpty()) return
         //? if <1.20.2 {
-        //pendingUpdates.clear()
-        //return
-        //?} else {
+        /*val mc = Minecraft.getInstance()
+
+        try {
+            mc.execute {
+                val renderer = mc.levelRenderer
+                val viewArea = renderer.viewArea ?: return@execute
+                val dispatcher = renderer.chunkRenderDispatcher ?: return@execute
+                val cache = RenderRegionCache()
+
+                for (pos in pendingUpdates) {
+                    val section = viewArea.getRenderChunkAt(pos) ?: continue
+                    dispatcher.rebuildChunkSync(section,cache)
+                    section.setNotDirty()
+                }
+            }
+        } finally {
+            pendingUpdates.clear()
+        }
+        *///?} else {
 
         val mc = Minecraft.getInstance()
 

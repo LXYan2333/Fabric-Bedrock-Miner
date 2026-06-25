@@ -7,10 +7,10 @@ import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 //?} else {
-//import net.fabricmc.fabric.api.networking.v1.FabricPacket
-//import net.fabricmc.fabric.api.networking.v1.PacketType
-//import net.minecraft.network.FriendlyByteBuf
-//?}
+/*import net.fabricmc.fabric.api.networking.v1.FabricPacket
+import net.fabricmc.fabric.api.networking.v1.PacketType
+import net.minecraft.network.FriendlyByteBuf
+*///?}
 
 //? if >=1.20.5 {
 typealias ModPacketBuf = RegistryFriendlyByteBuf
@@ -119,8 +119,8 @@ object ModNetwork {
         NetworkCompat.registerServerboundPlay(DummyPayload.TYPE, DummyPayload.STREAM_CODEC)
         NetworkCompat.registerClientboundPlay(ConfigSyncPayload.TYPE, ConfigSyncPayload.STREAM_CODEC)
         //?} else {
-        //NetworkCompat.registerServerboundPlay(DummyPayload.TYPE)
-        //NetworkCompat.registerClientboundPlay(ConfigSyncPayload.TYPE)
-        //?}
+        /*NetworkCompat.registerServerboundPlay(DummyPayload.TYPE)
+        NetworkCompat.registerClientboundPlay(ConfigSyncPayload.TYPE)
+        *///?}
     }
 }

@@ -7,12 +7,12 @@ import com.mojang.blaze3d.buffers.GpuBufferSlice
 import com.mojang.blaze3d.pipeline.RenderTarget
 //?}
 //? if <1.20.5 {
-//import com.mojang.blaze3d.systems.RenderSystem
-//import com.mojang.blaze3d.vertex.DefaultVertexFormat
-//import com.mojang.blaze3d.vertex.PoseStack
-//import com.mojang.blaze3d.vertex.Tesselator
-//import com.mojang.blaze3d.vertex.VertexFormat
-//?}
+/*import com.mojang.blaze3d.systems.RenderSystem
+import com.mojang.blaze3d.vertex.DefaultVertexFormat
+import com.mojang.blaze3d.vertex.PoseStack
+import com.mojang.blaze3d.vertex.Tesselator
+import com.mojang.blaze3d.vertex.VertexFormat
+*///?}
 //? if >=1.21.11 {
 import fi.dy.masa.malilib.MaLiLib
 import fi.dy.masa.malilib.render.MaLiLibPipelines

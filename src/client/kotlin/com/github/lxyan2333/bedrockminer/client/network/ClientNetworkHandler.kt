@@ -16,10 +16,10 @@ object ClientNetworkHandler {
             handleConfigSync(payload)
         }
         //?} else {
-        //ClientPlayNetworking.registerGlobalReceiver(ModNetwork.ConfigSyncPayload.TYPE) { payload, _, _ ->
-        //    handleConfigSync(payload)
-        //}
-        //?}
+        /*ClientPlayNetworking.registerGlobalReceiver(ModNetwork.ConfigSyncPayload.TYPE) { payload, _, _ ->
+            handleConfigSync(payload)
+        }
+        *///?}
     }
 
     private fun handleConfigSync(payload: ModNetwork.ConfigSyncPayload) {

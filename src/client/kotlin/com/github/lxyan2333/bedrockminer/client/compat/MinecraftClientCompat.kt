@@ -16,9 +16,9 @@ import net.minecraft.world.entity.player.Player
 object MinecraftClientCompat {
     fun canInteractWithBlock(pos: BlockPos): Boolean {
         //? if <1.20.5 {
-        //val player = Minecraft.getInstance().player ?: return true
-        //return Vec3.atCenterOf(pos).distanceToSqr(player.eyePosition) <= 36.0
-        //?} else {
+        /*val player = Minecraft.getInstance().player ?: return true
+        return Vec3.atCenterOf(pos).distanceToSqr(player.eyePosition) <= 36.0
+        *///?} else {
         val player = Minecraft.getInstance().player ?: return true
         //? if >=1.21.11 {
         return player.isWithinBlockInteractionRange(pos, 0.0)

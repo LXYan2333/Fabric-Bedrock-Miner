@@ -7,8 +7,8 @@ import net.minecraft.commands.Commands
 //? if >=1.21.11 {
 import net.minecraft.commands.arguments.IdentifierArgument
 //?} else {
-//import net.minecraft.commands.arguments.ResourceLocationArgument
-//?}
+/*import net.minecraft.commands.arguments.ResourceLocationArgument
+*///?}
 //? if >=1.21.11 {
 import net.minecraft.server.permissions.Permissions
 //?}

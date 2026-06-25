@@ -4,8 +4,8 @@ import net.minecraft.core.registries.BuiltInRegistries
 //? if >=1.21.11 {
 import net.minecraft.resources.Identifier
 //?} else {
-//import net.minecraft.resources.ResourceLocation
-//?}
+/*import net.minecraft.resources.ResourceLocation
+*///?}
 import net.minecraft.world.level.block.Block
 
 //? if >=1.21.11 {

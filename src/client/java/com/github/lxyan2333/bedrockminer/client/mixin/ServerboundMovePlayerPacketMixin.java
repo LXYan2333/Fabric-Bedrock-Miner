@@ -28,8 +28,19 @@ public abstract class ServerboundMovePlayerPacketMixin {
     @Mutable
     private float xRot;
 
+    //? if >=1.21.11 {
     @Inject(method = "<init>(DDDFFZZZZ)V", at = @At("RETURN"))
     private void bedrockMiner$modifyRotation(double x, double y, double z, float originalYRot, float originalXRot, boolean onGround, boolean horizontalCollision, boolean hasPos, boolean hasRotArgument, CallbackInfo ci) {
+        bedrockMiner$modifyRotation();
+    }
+    //?} else {
+    /*@Inject(method = "<init>(DDDFFZZZ)V", at = @At("RETURN"))
+    private void bedrockMiner$modifyRotation(double x, double y, double z, float originalYRot, float originalXRot, boolean onGround, boolean hasPos, boolean hasRotArgument, CallbackInfo ci) {
+        bedrockMiner$modifyRotation();
+    }
+    *///?}
+
+    private void bedrockMiner$modifyRotation() {
         if (!this.hasRot) {
             return;
         }

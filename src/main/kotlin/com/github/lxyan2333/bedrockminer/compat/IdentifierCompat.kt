@@ -21,8 +21,8 @@ object IdentifierCompat {
         //? if >=1.21.11 {
         return Identifier.fromNamespaceAndPath(namespace, path)
         //?} else if >=1.21 {
-        //return ResourceLocation.fromNamespaceAndPath(namespace, path)
-        //?} else
+        /*return ResourceLocation.fromNamespaceAndPath(namespace, path)
+        *///?} else
         //return ResourceLocation(namespace, path)
     }
 

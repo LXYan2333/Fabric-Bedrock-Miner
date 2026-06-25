@@ -8,7 +8,6 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.minecraft.commands.Commands
 import net.minecraft.commands.SharedSuggestionProvider
-import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 
 object ServerCommands {
@@ -21,7 +20,7 @@ object ServerCommands {
                             Commands.literal("add")
                                 .then(CommandCompat.idArgument("block").suggests { _, builder ->
                                     SharedSuggestionProvider.suggestResource(
-                                        BuiltInRegistries.BLOCK.keySet(), builder
+                                        IdentifierCompat.blockIds(), builder
                                     )
                                 }.executes { context ->
                                     val block = CommandCompat.getId(context, "block")
@@ -31,9 +30,7 @@ object ServerCommands {
                                         )
                                         return@executes 0
                                     }
-                                    context.source.sendSuccess(
-                                        { Component.literal("Added $block to block list") }, true
-                                    )
+                                    CommandCompat.sendSuccess(context.source, Component.literal("Added $block to block list"), true)
                                     1
                                 })
                         ).then(
@@ -51,24 +48,18 @@ object ServerCommands {
                                         )
                                         return@executes 0
                                     }
-                                    context.source.sendSuccess(
-                                        { Component.literal("Removed $block from block list") }, true
-                                    )
+                                    CommandCompat.sendSuccess(context.source, Component.literal("Removed $block from block list"), true)
                                     1
                                 })
                         ).then(
                             Commands.literal("clear").executes { context ->
                                 ServerConfigManager.clearBlockList()
-                                context.source.sendSuccess(
-                                    { Component.literal("Cleared block list") }, true
-                                )
+                                CommandCompat.sendSuccess(context.source, Component.literal("Cleared block list"), true)
                                 1
                             }).then(
                             Commands.literal("list").executes { context ->
                                 val list = ServerConfigData.serverBlockList.ifEmpty { "(empty)" }
-                                context.source.sendSuccess(
-                                    { Component.literal("Block list: $list") }, false
-                                )
+                                CommandCompat.sendSuccess(context.source, Component.literal("Block list: $list"), false)
                                 1
                             })
                     ).then(
@@ -76,7 +67,7 @@ object ServerCommands {
                             Commands.literal("add")
                                 .then(CommandCompat.idArgument("block").suggests { _, builder ->
                                     SharedSuggestionProvider.suggestResource(
-                                        BuiltInRegistries.BLOCK.keySet(), builder
+                                        IdentifierCompat.blockIds(), builder
                                     )
                                 }.executes { context ->
                                     val block = CommandCompat.getId(context, "block")
@@ -86,9 +77,7 @@ object ServerCommands {
                                         )
                                         return@executes 0
                                     }
-                                    context.source.sendSuccess(
-                                        { Component.literal("Added $block to allow list") }, true
-                                    )
+                                    CommandCompat.sendSuccess(context.source, Component.literal("Added $block to allow list"), true)
                                     1
                                 })
                         ).then(
@@ -106,24 +95,18 @@ object ServerCommands {
                                         )
                                         return@executes 0
                                     }
-                                    context.source.sendSuccess(
-                                        { Component.literal("Removed $block from allow list") }, true
-                                    )
+                                    CommandCompat.sendSuccess(context.source, Component.literal("Removed $block from allow list"), true)
                                     1
                                 })
                         ).then(
                             Commands.literal("clear").executes { context ->
                                 ServerConfigManager.clearAllowList()
-                                context.source.sendSuccess(
-                                    { Component.literal("Cleared allow list") }, true
-                                )
+                                CommandCompat.sendSuccess(context.source, Component.literal("Cleared allow list"), true)
                                 1
                             }).then(
                             Commands.literal("list").executes { context ->
                                 val list = ServerConfigData.serverAllowList.ifEmpty { "(empty)" }
-                                context.source.sendSuccess(
-                                    { Component.literal("Allow list: $list") }, false
-                                )
+                                CommandCompat.sendSuccess(context.source, Component.literal("Allow list: $list"), false)
                                 1
                             })
                     ).then(
@@ -142,36 +125,36 @@ object ServerCommands {
                                     return@executes 0
                                 }
                                 ServerConfigManager.setBlockListMode(mode)
-                                context.source.sendSuccess(
-                                    { Component.literal("Set block list mode to $mode") }, true
-                                )
+                                CommandCompat.sendSuccess(context.source, Component.literal("Set block list mode to $mode"), true)
                                 1
                             })
                     ).then(
                         Commands.literal("reload").executes { context ->
                             ServerConfigManager.load()
                             ServerConfigManager.broadcastConfig()
-                            context.source.sendSuccess(
-                                { Component.literal("Reloaded server config from disk") }, true
-                            )
+                            CommandCompat.sendSuccess(context.source, Component.literal("Reloaded server config from disk"), true)
                             1
                         }).then(
                         Commands.literal("show").executes { context ->
-                            context.source.sendSuccess(
-                                { Component.literal("§7Block list:§r ${ServerConfigData.serverBlockList.ifEmpty { "(empty)" }}") },
-                                false
+                            CommandCompat.sendSuccess(
+                                context.source,
+                                Component.literal("§7Block list:§r ${ServerConfigData.serverBlockList.ifEmpty { "(empty)" }}"),
+                                false,
                             )
-                            context.source.sendSuccess(
-                                { Component.literal("§7Allow list:§r ${ServerConfigData.serverAllowList.ifEmpty { "(empty)" }}") },
-                                false
+                            CommandCompat.sendSuccess(
+                                context.source,
+                                Component.literal("§7Allow list:§r ${ServerConfigData.serverAllowList.ifEmpty { "(empty)" }}"),
+                                false,
                             )
-                            context.source.sendSuccess(
-                                { Component.literal("§7Block list mode:§r ${ServerConfigData.serverBlockListMode}") },
-                                false
+                            CommandCompat.sendSuccess(
+                                context.source,
+                                Component.literal("§7Block list mode:§r ${ServerConfigData.serverBlockListMode}"),
+                                false,
                             )
-                            context.source.sendSuccess(
-                                { Component.literal("§7Protocol version:§r ${ServerConfigData.PROTOCOL_VERSION}") },
-                                false
+                            CommandCompat.sendSuccess(
+                                context.source,
+                                Component.literal("§7Protocol version:§r ${ServerConfigData.PROTOCOL_VERSION}"),
+                                false,
                             )
                             1
                         })

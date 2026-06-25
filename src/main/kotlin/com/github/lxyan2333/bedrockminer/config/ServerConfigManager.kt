@@ -1,10 +1,10 @@
 package com.github.lxyan2333.bedrockminer.config
 
+import com.github.lxyan2333.bedrockminer.compat.NetworkCompat
 import com.github.lxyan2333.bedrockminer.compat.IdentifierCompat
 import com.github.lxyan2333.bedrockminer.network.ModNetwork
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.server.MinecraftServer
 import net.fabricmc.loader.api.FabricLoader
 import java.nio.file.Files
@@ -124,8 +124,8 @@ object ServerConfigManager {
             ServerConfigData.serverBlockListMode,
         )
         for (player in server.playerList.players) {
-            if (ServerPlayNetworking.canSend(player, ModNetwork.ConfigSyncPayload.TYPE)) {
-                ServerPlayNetworking.send(player, payload)
+            if (NetworkCompat.canSendConfig(player)) {
+                NetworkCompat.sendConfig(player, payload)
             }
         }
     }

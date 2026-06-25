@@ -1,13 +1,13 @@
 package com.github.lxyan2333.bedrockminer
 
 import com.github.lxyan2333.bedrockminer.command.ServerCommands
+import com.github.lxyan2333.bedrockminer.compat.NetworkCompat
 import com.github.lxyan2333.bedrockminer.config.ServerConfigData
 import com.github.lxyan2333.bedrockminer.config.ServerConfigManager
 import com.github.lxyan2333.bedrockminer.network.ModNetwork
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import org.slf4j.LoggerFactory
 
 object BedrockMinerServer : DedicatedServerModInitializer {
@@ -25,14 +25,14 @@ object BedrockMinerServer : DedicatedServerModInitializer {
 
         ServerPlayConnectionEvents.JOIN.register { listener, _, _ ->
             val player = listener.player
-            if (ServerPlayNetworking.canSend(player, ModNetwork.ConfigSyncPayload.TYPE)) {
+            if (NetworkCompat.canSendConfig(player)) {
                 val payload = ModNetwork.ConfigSyncPayload(
                     ServerConfigData.PROTOCOL_VERSION,
                     ServerConfigData.serverBlockList,
                     ServerConfigData.serverAllowList,
                     ServerConfigData.serverBlockListMode,
                 )
-                ServerPlayNetworking.send(player, payload)
+                NetworkCompat.sendConfig(player, payload)
             }
         }
     }

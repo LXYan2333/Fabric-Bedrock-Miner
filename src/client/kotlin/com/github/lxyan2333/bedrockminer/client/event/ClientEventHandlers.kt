@@ -13,6 +13,7 @@ import com.github.lxyan2333.bedrockminer.client.config.ClientConfigHandler
 import com.github.lxyan2333.bedrockminer.client.message.Messager
 import com.github.lxyan2333.bedrockminer.client.network.ClientNetworkHandler
 import com.github.lxyan2333.bedrockminer.client.render.AreaRenderer
+import com.github.lxyan2333.bedrockminer.compat.IdentifierCompat
 import com.github.lxyan2333.bedrockminer.config.ServerConfigData
 import com.github.lxyan2333.bedrockminer.network.ModNetwork
 import fi.dy.masa.malilib.config.ConfigManager
@@ -21,14 +22,13 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.ClientLevel
-import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.world.level.block.state.BlockState
 
 object ClientEventHandlers {
     private var lastLevel: ClientLevel? = null
 
     private fun isBlockAllowed(blockState: BlockState): Boolean {
-        val blockId = BuiltInRegistries.BLOCK.getKey(blockState.block).toString()
+        val blockId = IdentifierCompat.blockId(blockState.block).toString()
 
         // Always block special blocks unless server explicitly allows them
         val isIntegratedServer = Minecraft.getInstance().singleplayerServer != null

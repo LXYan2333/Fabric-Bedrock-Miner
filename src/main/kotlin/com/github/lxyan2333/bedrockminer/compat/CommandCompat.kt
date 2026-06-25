@@ -4,6 +4,7 @@ import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
+import net.minecraft.network.chat.Component
 //? if >=1.21.11 {
 import net.minecraft.commands.arguments.IdentifierArgument
 //?} else {
@@ -33,5 +34,12 @@ object CommandCompat {
         return IdentifierArgument.getId(context, name).toString()
         //?} else
         //return ResourceLocationArgument.getId(context, name).toString()
+    }
+
+    fun sendSuccess(source: CommandSourceStack, message: Component, broadcastToOps: Boolean) {
+        //? if >=1.20 {
+        source.sendSuccess({ message }, broadcastToOps)
+        //?} else
+        //source.sendSuccess(message, broadcastToOps)
     }
 }

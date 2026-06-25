@@ -38,6 +38,10 @@ repositories {
 	// for more information about repositories.
 	mavenCentral()
 	maven {
+		url = uri("http://masa.dy.fi/maven")
+		isAllowInsecureProtocol = true
+	}
+	maven {
 		url = uri("https://masa.dy.fi/maven/sakura-ryoko")
 	}
 	maven {

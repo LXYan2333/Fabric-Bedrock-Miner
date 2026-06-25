@@ -1,6 +1,9 @@
 package com.github.lxyan2333.bedrockminer.compat
 
+//? if >=1.19.3 {
 import net.minecraft.core.registries.BuiltInRegistries
+//?} else
+//import net.minecraft.core.Registry
 //? if >=1.21.11 {
 import net.minecraft.resources.Identifier
 //?} else {
@@ -32,19 +35,33 @@ object IdentifierCompat {
 
     fun isKnownBlock(id: String): Boolean {
         val key = parse(id) ?: return false
-        return BuiltInRegistries.BLOCK.containsKey(key)
+        return blockRegistry().containsKey(key)
     }
 
     fun block(id: MinecraftIdentifier): Block {
         //? if >=1.21.11 {
-        return BuiltInRegistries.BLOCK.getValue(id)
+        return blockRegistry().getValue(id)
         //?} else
-        //return BuiltInRegistries.BLOCK.get(id)
+        //return blockRegistry().get(id)
     }
 
     fun block(id: String): Block? {
         val key = parse(id) ?: return null
-        if (!BuiltInRegistries.BLOCK.containsKey(key)) return null
+        if (!blockRegistry().containsKey(key)) return null
         return block(key)
     }
+
+    fun blockIds(): Set<MinecraftIdentifier> {
+        return blockRegistry().keySet()
+    }
+
+    fun blockId(block: Block): MinecraftIdentifier {
+        return blockRegistry().getKey(block)
+    }
+
+    private fun blockRegistry() =
+        //? if >=1.19.3
+        BuiltInRegistries.BLOCK
+        //? if <1.19.3
+        //Registry.BLOCK
 }

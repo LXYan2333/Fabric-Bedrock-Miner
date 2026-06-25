@@ -2,6 +2,7 @@ package com.github.lxyan2333.bedrockminer.client.breaking
 
 import com.github.lxyan2333.bedrockminer.client.compat.MinecraftClientCompat
 import net.minecraft.client.Minecraft
+//? if >=1.21
 import net.minecraft.core.registries.Registries
 import net.minecraft.tags.FluidTags
 import net.minecraft.world.effect.MobEffectUtil
@@ -147,7 +148,7 @@ object InventoryManager {
         }
         *///?}
 
-        if (!player.onGround()) {
+        if (!MinecraftClientCompat.isOnGround(player)) {
             speed /= 5.0f
         }
 

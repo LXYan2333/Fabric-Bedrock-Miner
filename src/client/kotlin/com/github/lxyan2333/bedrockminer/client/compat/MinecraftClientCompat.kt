@@ -5,13 +5,16 @@ import net.minecraft.core.BlockPos
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
-//? if <1.20.5
-//import net.minecraft.world.phys.Vec3
+import net.minecraft.world.phys.Vec3
 //? if >=26.1 {
 import net.minecraft.world.inventory.ContainerInput
 //?} else
 //import net.minecraft.world.inventory.ClickType
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.state.BlockState
+//? if <1.20
+//import net.minecraft.world.level.material.Fluids
 
 object MinecraftClientCompat {
     fun canInteractWithBlock(pos: BlockPos): Boolean {
@@ -63,4 +66,27 @@ object MinecraftClientCompat {
         //?} else
         //chat.addMessage(message)
     }
+
+    fun isOnGround(player: Player): Boolean {
+        //? if >=1.20
+        return player.onGround()
+        //? if <1.20
+        //return player.isOnGround
+    }
+
+    fun blockCenter(pos: BlockPos): Vec3 {
+        return Vec3.atCenterOf(pos)
+    }
+
+    fun canBeReplaced(level: Level, pos: BlockPos): Boolean {
+        return canBeReplaced(level.getBlockState(pos))
+    }
+
+    fun canBeReplaced(state: BlockState): Boolean {
+        //? if >=1.20
+        return state.canBeReplaced()
+        //? if <1.20
+        //return state.canBeReplaced(Fluids.EMPTY)
+    }
+
 }

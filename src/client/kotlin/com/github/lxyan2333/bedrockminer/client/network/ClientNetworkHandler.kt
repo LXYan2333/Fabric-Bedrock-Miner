@@ -15,9 +15,13 @@ object ClientNetworkHandler {
         ClientPlayNetworking.registerGlobalReceiver(ModNetwork.ConfigSyncPayload.TYPE) { payload, _ ->
             handleConfigSync(payload)
         }
-        //?} else {
+        //?} else if >=1.20 {
         /*ClientPlayNetworking.registerGlobalReceiver(ModNetwork.ConfigSyncPayload.TYPE) { payload, _, _ ->
             handleConfigSync(payload)
+        }
+        *///?} else {
+        /*ClientPlayNetworking.registerGlobalReceiver(ModNetwork.CONFIG_SYNC_ID) { _, _, buffer, _ ->
+            handleConfigSync(ModNetwork.ConfigSyncPayload.readFromBuffer(buffer))
         }
         *///?}
     }

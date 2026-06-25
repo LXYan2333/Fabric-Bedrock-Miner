@@ -45,7 +45,7 @@ object BlockPlacer {
 
         val ret = getYawPitch(direction)
 
-        client.connection?.send(MinecraftClientCompat.rotationPacket(ret.first, ret.second, player.onGround()))
+        client.connection?.send(MinecraftClientCompat.rotationPacket(ret.first, ret.second, MinecraftClientCompat.isOnGround(player)))
 
         return ret
     }
@@ -72,7 +72,7 @@ object BlockPlacer {
             player.xRot = pitch
             player.yRot = yaw
             player.yHeadRot = yaw
-            client.connection?.send(MinecraftClientCompat.rotationPacket(yaw, pitch, player.onGround()))
+            client.connection?.send(MinecraftClientCompat.rotationPacket(yaw, pitch, MinecraftClientCompat.isOnGround(player)))
             client.gameMode?.useItemOn(player, InteractionHand.MAIN_HAND, hitResult)
         } finally {
             player.xRot = oldXRot

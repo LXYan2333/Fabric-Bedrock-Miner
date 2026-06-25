@@ -1,6 +1,7 @@
 package com.github.lxyan2333.bedrockminer.client.breaking
 
 import com.github.lxyan2333.bedrockminer.client.breaking.approach.ApproachBase
+import com.github.lxyan2333.bedrockminer.client.compat.MinecraftClientCompat
 import net.minecraft.client.Minecraft
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.Level
@@ -125,10 +126,10 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
         }
 
         waitFor(Configs.Generic.WAIT_TICKS.integerValue) {
-            val ok = level.getBlockState(approach.pistonPos).canBeReplaced() && level.getBlockState(approach.torchPos)
-                .canBeReplaced()
+            val ok = MinecraftClientCompat.canBeReplaced(level, approach.pistonPos) &&
+                MinecraftClientCompat.canBeReplaced(level, approach.torchPos)
 
-            ok && approach.supportBlockPos?.let { level.getBlockState(it).canBeReplaced() } ?: true
+            ok && approach.supportBlockPos?.let { MinecraftClientCompat.canBeReplaced(level, it) } ?: true
         }
     }
 }

@@ -119,7 +119,7 @@ object Configs : IConfigHandler, IKeybindProvider {
         ).apply {
             setValueChangeCallback { config ->
                 config.blockStateValue.cache?.let {
-                    if (!it.isFaceSturdy(Direction.UP, SupportType.CENTER)) {
+                    if (!isValidSupportBlock(config.blockStateValue.block)) {
                         config.setBlockStateValue(config.lastBlockStateValue)
                         Messager.actionBar(StringUtils.translate("bedrockminer.message.invalid_support_block"))
                     }
@@ -134,7 +134,7 @@ object Configs : IConfigHandler, IKeybindProvider {
         ).apply {
             setValueChangeCallback { config ->
                 val block = blockFromName(config.stringValue)
-                if (block == null) {
+                if (block == null || !isValidSupportBlock(block)) {
                     config.setValueFromString(config.defaultStringValue)
                     Messager.actionBar(StringUtils.translate("bedrockminer.message.invalid_support_block"))
                 }
@@ -147,7 +147,7 @@ object Configs : IConfigHandler, IKeybindProvider {
                 //? if >=1.21.11 {
                 return SUPPORT_BLOCK.blockStateValue.block
                 //?} else
-                //return blockFromName(SUPPORT_BLOCK.stringValue) ?: Blocks.SLIME_BLOCK
+                //return blockFromName(SUPPORT_BLOCK.stringValue)?.takeIf(::isValidSupportBlock) ?: Blocks.SLIME_BLOCK
             }
 
         val OPTIONS: List<IConfigBase> = listOf(
@@ -388,5 +388,9 @@ object Configs : IConfigHandler, IKeybindProvider {
 
     private fun blockFromName(name: String): Block? {
         return IdentifierCompat.block(name)
+    }
+
+    private fun isValidSupportBlock(block: Block): Boolean {
+        return block.defaultBlockState().cache?.isFaceSturdy(Direction.UP, SupportType.CENTER) == true
     }
 }

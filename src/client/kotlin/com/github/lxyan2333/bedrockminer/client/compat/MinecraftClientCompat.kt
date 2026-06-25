@@ -1,11 +1,17 @@
 package com.github.lxyan2333.bedrockminer.client.compat
 
 import net.minecraft.client.Minecraft
+import net.minecraft.client.player.LocalPlayer
 import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket
 import net.minecraft.network.chat.Component
+//? if <1.19
+//import net.minecraft.network.chat.TextComponent
+import net.minecraft.world.InteractionHand
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.phys.Vec3
+import net.minecraft.world.phys.BlockHitResult
 //? if >=26.1 {
 import net.minecraft.world.inventory.ContainerInput
 //?} else
@@ -67,6 +73,13 @@ object MinecraftClientCompat {
         //chat.addMessage(message)
     }
 
+    fun literal(message: String): Component {
+        //? if >=1.19
+        return Component.literal(message)
+        //? if <1.19
+        //return TextComponent(message)
+    }
+
     fun isOnGround(player: Player): Boolean {
         //? if >=1.20
         return player.onGround()
@@ -76,6 +89,18 @@ object MinecraftClientCompat {
 
     fun blockCenter(pos: BlockPos): Vec3 {
         return Vec3.atCenterOf(pos)
+    }
+
+    fun offset(pos: Vec3, direction: Direction, distance: Double): Vec3 {
+        return pos.add(direction.stepX * distance, direction.stepY * distance, direction.stepZ * distance)
+    }
+
+    fun useItemOn(player: LocalPlayer, hand: InteractionHand, hitResult: BlockHitResult) {
+        val gameMode = Minecraft.getInstance().gameMode ?: return
+        //? if >=1.19
+        gameMode.useItemOn(player, hand, hitResult)
+        //? if <1.19
+        //Minecraft.getInstance().level?.let { gameMode.useItemOn(player, it, hand, hitResult) }
     }
 
     fun canBeReplaced(level: Level, pos: BlockPos): Boolean {

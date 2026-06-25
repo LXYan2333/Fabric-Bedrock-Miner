@@ -38,8 +38,7 @@ repositories {
 	// for more information about repositories.
 	mavenCentral()
 	maven {
-		url = uri("http://masa.dy.fi/maven")
-		isAllowInsecureProtocol = true
+		url = uri("https://masa.dy.fi/maven")
 	}
 	maven {
 		url = uri("https://masa.dy.fi/maven/sakura-ryoko")
@@ -78,7 +77,7 @@ dependencies {
 	modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
 
 	fapi(
-		"fabric-command-api-v2",
+		if (sc.current.parsed >= "1.19") "fabric-command-api-v2" else "fabric-command-api-v1",
 		"fabric-events-interaction-v0",
 		"fabric-lifecycle-events-v1",
 		"fabric-networking-api-v1",

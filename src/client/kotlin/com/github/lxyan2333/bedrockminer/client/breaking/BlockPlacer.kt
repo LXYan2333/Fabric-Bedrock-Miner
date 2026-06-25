@@ -18,7 +18,7 @@ object BlockPlacer {
         val player = client.player ?: return
         if (!InventoryManager.switchToItem(item)) return
         val hitResult = BlockHitResult(Vec3.atBottomCenterOf(pos), Direction.DOWN, pos, false)
-        client.gameMode?.useItemOn(player, InteractionHand.MAIN_HAND, hitResult)
+        MinecraftClientCompat.useItemOn(player, InteractionHand.MAIN_HAND, hitResult)
     }
 
     fun getYawPitch(direction: Direction): Pair<Float, Float> {
@@ -58,7 +58,7 @@ object BlockPlacer {
         if (!InventoryManager.switchToItem(Blocks.PISTON.asItem())) return
 
         val hitPos = pos.relative(direction.opposite)
-        val hitVec = Vec3.atCenterOf(hitPos).relative(direction, 0.5)
+        val hitVec = MinecraftClientCompat.offset(Vec3.atCenterOf(hitPos), direction, 0.5)
         val hitResult = BlockHitResult(hitVec, direction, pos, false)
 
         // these two varialbe is the actually used value when determine the piston facing.
@@ -73,7 +73,7 @@ object BlockPlacer {
             player.yRot = yaw
             player.yHeadRot = yaw
             client.connection?.send(MinecraftClientCompat.rotationPacket(yaw, pitch, MinecraftClientCompat.isOnGround(player)))
-            client.gameMode?.useItemOn(player, InteractionHand.MAIN_HAND, hitResult)
+            MinecraftClientCompat.useItemOn(player, InteractionHand.MAIN_HAND, hitResult)
         } finally {
             player.xRot = oldXRot
             player.yRot = oldYRot
@@ -109,7 +109,7 @@ object BlockPlacer {
             player.xRot = pitch
             player.yRot = yaw
             player.yHeadRot = yaw
-            client.gameMode?.useItemOn(player, InteractionHand.MAIN_HAND, hitResult)
+            MinecraftClientCompat.useItemOn(player, InteractionHand.MAIN_HAND, hitResult)
         } finally {
             player.xRot = oldXRot
             player.yRot = oldYRot

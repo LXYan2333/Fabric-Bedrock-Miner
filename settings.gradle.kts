@@ -45,7 +45,7 @@ loomx {
 
 stonecutter {
 	create(rootProject) {
-		versions("1.19.2", "1.20.1", "1.21.1", "1.21.11", "26.1.2")
+		versions("1.18.2", "1.19.2", "1.20.1", "1.21.1", "1.21.11", "26.1.2")
 		vcsVersion = "1.21.11"
 	}
 }

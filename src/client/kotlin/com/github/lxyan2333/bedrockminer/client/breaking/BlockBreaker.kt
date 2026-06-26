@@ -2,7 +2,9 @@ package com.github.lxyan2333.bedrockminer.client.breaking
 
 import com.github.lxyan2333.bedrockminer.client.config.Configs
 import net.minecraft.client.Minecraft
+//? if >=1.18 {
 import net.minecraft.client.renderer.chunk.RenderRegionCache
+//?}
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.world.item.Items
@@ -39,11 +41,16 @@ object BlockBreaker {
                 val renderer = mc.levelRenderer
                 val viewArea = renderer.viewArea ?: return@execute
                 val dispatcher = renderer.chunkRenderDispatcher ?: return@execute
+                //? if >=1.18 {
                 val cache = RenderRegionCache()
+                //?}
 
                 for (pos in pendingUpdates) {
                     val section = viewArea.getRenderChunkAt(pos) ?: continue
-                    dispatcher.rebuildChunkSync(section,cache)
+                    //? if >=1.18 {
+                    dispatcher.rebuildChunkSync(section, cache)
+                    //?} else
+                    //dispatcher.rebuildChunkSync(section)
                     section.setNotDirty()
                 }
             }

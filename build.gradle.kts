@@ -28,6 +28,7 @@ val requiredJvmTarget = when (requiredJava) {
 }
 
 fun scProperty(key: String): String = sc.properties[key]
+val supportsSplitEnvironment = sc.current.parsed >= "1.18"
 val processedAccessWidener = sc.process(rootProject.file("src/client/resources/bedrock-miner.accesswidener"), "build/processed.accesswidener")
 
 repositories {
@@ -51,8 +52,14 @@ repositories {
 	}
 }
 
+if (!supportsSplitEnvironment) {
+	sourceSets.create("client")
+}
+
 loom {
-	splitEnvironmentSourceSets()
+	if (supportsSplitEnvironment) {
+		splitEnvironmentSourceSets()
+	}
 
 	accessWidenerPath = processedAccessWidener
 
@@ -61,6 +68,40 @@ loom {
 			sourceSet(sourceSets.main.get())
 			sourceSet(sourceSets.getByName("client"))
 		}
+	}
+}
+
+if (!supportsSplitEnvironment) {
+	sourceSets.named("client") {
+		compileClasspath += sourceSets.main.get().output + sourceSets.main.get().compileClasspath
+		runtimeClasspath += output + compileClasspath
+	}
+
+	val mergeClientClassesIntoMain by tasks.registering(Copy::class) {
+		dependsOn("clientClasses")
+		from(sourceSets.getByName("client").output.classesDirs)
+		into(layout.buildDirectory.dir("classes/java/main"))
+	}
+	val mergeResourcesIntoMainClasses by tasks.registering(Copy::class) {
+		dependsOn("processResources")
+		from(layout.buildDirectory.dir("resources/main"))
+		into(layout.buildDirectory.dir("classes/java/main"))
+	}
+	tasks.named("compileClientKotlin") {
+		dependsOn(mergeResourcesIntoMainClasses)
+	}
+	tasks.named("compileClientJava") {
+		dependsOn(mergeResourcesIntoMainClasses)
+	}
+
+	tasks.named("jar") {
+		dependsOn(mergeClientClassesIntoMain)
+		dependsOn(mergeResourcesIntoMainClasses)
+		(this as Jar).duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+	}
+	tasks.named("runClient") {
+		dependsOn(mergeClientClassesIntoMain)
+		dependsOn(mergeResourcesIntoMainClasses)
 	}
 }
 
@@ -86,7 +127,9 @@ dependencies {
 	modImplementation("fi.dy.masa.malilib:malilib-fabric-${scProperty("deps.malilib_mc")}:${scProperty("deps.malilib")}")
 	modCompileOnly("com.terraformersmc:modmenu:${scProperty("deps.mod_menu")}")
 
-	modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
+	modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}") {
+		exclude(group = "net.fabricmc", module = "fabric-loader")
+	}
 }
 
 tasks.processResources {
@@ -95,6 +138,7 @@ tasks.processResources {
 		"minecraft" to scProperty("mod.mc_compat"),
 		"java" to requiredJava.majorVersion,
 		"mixin_java" to "JAVA_${requiredJava.majorVersion}",
+		"fabric_api_mod_id" to if (sc.current.parsed >= "1.18") "fabric-api" else "fabric",
 	)
 	inputs.properties(props)
 
@@ -104,6 +148,20 @@ tasks.processResources {
 	filesMatching("*.mixins.json") {
 		expand(props)
 	}
+
+	if (!supportsSplitEnvironment) {
+		dependsOn("stonecutterGenerateClient")
+		from(layout.buildDirectory.dir("generated/stonecutter/client/resources")) {
+			exclude("bedrock-miner.accesswidener")
+
+			filesMatching("*.mixins.json") {
+				expand(props)
+			}
+		}
+		from(layout.buildDirectory.file("generated/stonecutter/client/resources/bedrock-miner.accesswidener")) {
+			rename { "bedrock-miner.accesswidener" }
+		}
+	}
 }
 
 tasks.named<ProcessResources>("processClientResources") {
@@ -112,17 +170,18 @@ tasks.named<ProcessResources>("processClientResources") {
 		"minecraft" to scProperty("mod.mc_compat"),
 		"java" to requiredJava.majorVersion,
 		"mixin_java" to "JAVA_${requiredJava.majorVersion}",
+		"fabric_api_mod_id" to if (sc.current.parsed >= "1.18") "fabric-api" else "fabric",
 	)
 	inputs.properties(props)
 
-	exclude("bedrock-miner.accesswidener")
+	if (!supportsSplitEnvironment) {
+		exclude("bedrock-miner.accesswidener")
+		exclude("*.mixins.json")
+		exclude("assets/**")
+	}
 
 	filesMatching("*.mixins.json") {
 		expand(props)
-	}
-
-	from(processedAccessWidener) {
-		rename { "bedrock-miner.accesswidener" }
 	}
 }
 

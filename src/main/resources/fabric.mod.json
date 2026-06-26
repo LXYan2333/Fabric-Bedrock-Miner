@@ -43,7 +43,7 @@
     "fabricloader": ">=0.19.3",
     "minecraft": "${minecraft}",
     "java": ">=${java}",
-    "fabric-api": "*",
+    "${fabric_api_mod_id}": "*",
     "fabric-language-kotlin": "*",
     "malilib": "*"
   },

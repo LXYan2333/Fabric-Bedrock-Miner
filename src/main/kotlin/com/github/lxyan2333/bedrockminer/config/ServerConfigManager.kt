@@ -2,9 +2,9 @@ package com.github.lxyan2333.bedrockminer.config
 
 import com.github.lxyan2333.bedrockminer.compat.NetworkCompat
 import com.github.lxyan2333.bedrockminer.compat.IdentifierCompat
+import com.github.lxyan2333.bedrockminer.compat.GsonCompat
 import com.github.lxyan2333.bedrockminer.network.ModNetwork
 import com.google.gson.JsonObject
-import com.google.gson.JsonParser
 import net.minecraft.server.MinecraftServer
 import net.fabricmc.loader.api.FabricLoader
 import java.nio.file.Files
@@ -20,21 +20,20 @@ object ServerConfigManager {
     }
 
     fun load() {
-        if (!Files.exists(configFile)) return
         try {
-            val element = JsonParser.parseReader(Files.newBufferedReader(configFile))
+            val element = GsonCompat.parseFile(configFile) ?: return
             if (element.isJsonObject) {
                 val root = element.asJsonObject
                 if (root.has("blockList")) {
                     ServerConfigData.serverBlockList =
-                        root.getAsJsonArray("blockList").map { it.asString }.toMutableSet()
+                        root.getAsJsonArray("blockList").map { GsonCompat.asString(it) }.toMutableSet()
                 }
                 if (root.has("allowList")) {
                     ServerConfigData.serverAllowList =
-                        root.getAsJsonArray("allowList").map { it.asString }.toMutableSet()
+                        root.getAsJsonArray("allowList").map { GsonCompat.asString(it) }.toMutableSet()
                 }
                 if (root.has("blockListMode")) {
-                    ServerConfigData.serverBlockListMode = root.get("blockListMode").asString
+                    ServerConfigData.serverBlockListMode = GsonCompat.asString(root.get("blockListMode"))
                 }
             }
         } catch (_: Exception) {

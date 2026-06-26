@@ -4,9 +4,9 @@ import com.github.lxyan2333.bedrockminer.client.area.AreaRestriction
 import com.github.lxyan2333.bedrockminer.client.breaking.BreakingFlowController
 import com.github.lxyan2333.bedrockminer.client.compat.modmenu.GuiConfigs
 import com.github.lxyan2333.bedrockminer.client.message.Messager
+import com.github.lxyan2333.bedrockminer.compat.GsonCompat
 import com.github.lxyan2333.bedrockminer.compat.IdentifierCompat
 import com.google.gson.JsonObject
-import com.google.gson.JsonParser
 import com.google.common.collect.ImmutableList
 import fi.dy.masa.malilib.MaLiLibReference
 import fi.dy.masa.malilib.config.ConfigUtils
@@ -17,7 +17,9 @@ import fi.dy.masa.malilib.config.options.ConfigBlockState
 //?} else
 //import fi.dy.masa.malilib.config.options.ConfigString
 import fi.dy.masa.malilib.config.options.ConfigBoolean
+//? if >=1.18 {
 import fi.dy.masa.malilib.config.options.ConfigBooleanHotkeyed
+//?}
 import fi.dy.masa.malilib.config.options.ConfigColor
 //? if >=1.20.5 {
 import fi.dy.masa.malilib.config.options.ConfigFloat
@@ -55,6 +57,7 @@ object Configs : IConfigHandler, IKeybindProvider {
     //private val configFile = File(FileUtils.getConfigDirectory(), "bedrock-miner.json")
 
     object Generic {
+        //? if >=1.18 {
         val BEDROCK_MINER_ENABLED: ConfigBooleanHotkeyed = ConfigBooleanHotkeyed(
             "toggleEnabled",
             false,
@@ -69,6 +72,32 @@ object Configs : IConfigHandler, IKeybindProvider {
                 }
             }
         }
+        //?} else {
+        /*val BEDROCK_MINER_ENABLED: ConfigBoolean = ConfigBoolean(
+            "toggleEnabled",
+            false,
+            StringUtils.translate("bedrockminer.config.toggle_enabled.comment"),
+        ).apply {
+            setValueChangeCallback { v ->
+                if (v.booleanValue) {
+                    BreakingFlowController.enable()
+                } else {
+                    BreakingFlowController.disable()
+                }
+            }
+        }
+
+        val BEDROCK_MINER_ENABLE_HOTKEY: ConfigHotkey = ConfigHotkey(
+            "toggleEnabledHotkey",
+            "LEFT_ALT,B,M",
+            StringUtils.translate("bedrockminer.config.toggle_enabled.comment"),
+        ).apply {
+            keybind.setCallback { _, _ ->
+                BEDROCK_MINER_ENABLED.booleanValue = !BEDROCK_MINER_ENABLED.booleanValue
+                true
+            }
+        }
+        *///?}
 
         val APPROACH_MODE: ConfigOptionList = ConfigOptionList(
             "approachMode",
@@ -152,6 +181,8 @@ object Configs : IConfigHandler, IKeybindProvider {
 
         val OPTIONS: List<IConfigBase> = listOf(
             BEDROCK_MINER_ENABLED,
+            //? if <1.18
+            //BEDROCK_MINER_ENABLE_HOTKEY,
             APPROACH_MODE,
             OPEN_CONFIG_GUI,
             MAX_RETRIES,
@@ -318,15 +349,8 @@ object Configs : IConfigHandler, IKeybindProvider {
     }
 
     override fun load() {
-        //? if >=1.20.5 {
-        if (!Files.exists(configFile)) return
-        //?} else
-        //if (!configFile.exists()) return
         try {
-            //? if >=1.20.5 {
-            val element = JsonParser.parseReader(Files.newBufferedReader(configFile))
-            //?} else
-            //val element = JsonParser.parseReader(configFile.reader())
+            val element = GsonCompat.parseFile(configFile) ?: return
             if (element.isJsonObject) {
                 ConfigUtils.readConfigBase(element.asJsonObject, "Generic", Generic.OPTIONS)
                 ConfigUtils.readConfigBase(element.asJsonObject, "Client", Client.OPTIONS)
@@ -369,12 +393,21 @@ object Configs : IConfigHandler, IKeybindProvider {
         manager?.addHotkeysForCategory(
             "bedrock-miner",
             "bedrock-miner.hotkeys.generic",
-            listOf(Generic.BEDROCK_MINER_ENABLED, Generic.OPEN_CONFIG_GUI)
+            listOf(
+                //? if >=1.18 {
+                Generic.BEDROCK_MINER_ENABLED,
+                //?} else
+                //Generic.BEDROCK_MINER_ENABLE_HOTKEY,
+                Generic.OPEN_CONFIG_GUI,
+            )
         )
     }
 
     override fun addKeysToMap(manager: IKeybindManager?) {
+        //? if >=1.18 {
         manager?.addKeybindToMap(Generic.BEDROCK_MINER_ENABLED.keybind)
+        //?} else
+        //manager?.addKeybindToMap(Generic.BEDROCK_MINER_ENABLE_HOTKEY.keybind)
         manager?.addKeybindToMap(Generic.OPEN_CONFIG_GUI.keybind)
     }
 

@@ -1,9 +1,11 @@
 {
 	"required": true,
 	"package": "com.github.lxyan2333.bedrockminer.client.mixin",
+	"plugin": "com.github.lxyan2333.bedrockminer.client.mixin.BedrockMinerMixinPlugin",
 	"compatibilityLevel": "${mixin_java}",
 	"client": [
-		"ServerboundMovePlayerPacketMixin"
+		"ServerboundMovePlayerPacketMixin",
+		"legacy.GuiTextFieldGenericMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

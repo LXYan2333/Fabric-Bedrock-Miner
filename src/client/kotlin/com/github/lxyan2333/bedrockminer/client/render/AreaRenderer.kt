@@ -7,7 +7,7 @@ import com.github.lxyan2333.bedrockminer.client.config.Configs
 import com.mojang.blaze3d.buffers.GpuBufferSlice
 import com.mojang.blaze3d.pipeline.RenderTarget
 //?}
-//? if <1.20.5 {
+//? if <1.21 {
 /*import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
@@ -23,7 +23,7 @@ import fi.dy.masa.malilib.render.RenderContext
 import fi.dy.masa.malilib.interfaces.IRenderer
 import fi.dy.masa.malilib.render.RenderUtils
 import net.minecraft.client.Minecraft
-//? if <1.20.5
+//? if <1.21
 //import net.minecraft.client.renderer.GameRenderer
 //? if >=26.1 {
 import net.minecraft.client.renderer.RenderBuffers
@@ -129,7 +129,7 @@ object AreaRenderer : IRenderer {
         } finally {
             ctx.close()
         }
-        //?} else if >=1.20.5 {
+        //?} else if >=1.21 {
         /*val color = Configs.Area.AREA_BOX_COLOR.color
         RenderUtils.renderAreaOutline(
             pos1,
@@ -145,7 +145,7 @@ object AreaRenderer : IRenderer {
         *///?}
     }
 
-    //? if <1.20.5 {
+    //? if <1.21 {
     /*private fun renderAreaOutlineLegacy(pos1: BlockPos, pos2: BlockPos) {
         val mc = Minecraft.getInstance()
         val cameraPos = mc.gameRenderer.mainCamera.position

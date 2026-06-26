@@ -111,6 +111,8 @@ object InventoryManager {
                 )
 
             val level = EnchantmentHelper.getItemEnchantmentLevel(efficiency_level, stack)
+            //?} else if >=1.20.5 {
+            //val level = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.EFFICIENCY, stack)
             //?} else
             //val level = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_EFFICIENCY, stack)
             if (level > 0 && !stack.isEmpty) {

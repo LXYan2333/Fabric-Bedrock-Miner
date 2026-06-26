@@ -1,6 +1,7 @@
 package com.github.lxyan2333.bedrockminer.client.render
 
 import com.github.lxyan2333.bedrockminer.client.area.AreaRestriction
+import com.github.lxyan2333.bedrockminer.client.compat.MinecraftClientCompat
 import com.github.lxyan2333.bedrockminer.client.config.Configs
 //? if >=26.1 {
 import com.mojang.blaze3d.buffers.GpuBufferSlice
@@ -11,6 +12,7 @@ import com.mojang.blaze3d.pipeline.RenderTarget
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.Tesselator
+//? if >=1.17
 import com.mojang.blaze3d.vertex.VertexFormat
 *///?}
 //? if >=1.21.11 {
@@ -62,10 +64,17 @@ object AreaRenderer : IRenderer {
     ) {
         renderAreas()
     }
-    *///?} else {
+    *///?} else if >=1.17 {
     /*override fun onRenderWorldLast(
         matrixStack: PoseStack,
         projMatrix: Matrix4f
+    ) {
+        renderAreas()
+    }
+    *///?} else {
+    /*override fun onRenderWorldLast(
+        partialTicks: Float,
+        matrixStack: PoseStack
     ) {
         renderAreas()
     }
@@ -75,7 +84,7 @@ object AreaRenderer : IRenderer {
         if (!Configs.Area.AREA_RESTRICTION_ENABLED.booleanValue) return
 
         val player = Minecraft.getInstance().player ?: return
-        val eyePos = player.eyePosition
+        val eyePos = MinecraftClientCompat.eyePosition(player)
 
         for (area in AreaRestriction.configuredAreas()) {
             val pos1 = area.pos1
@@ -150,6 +159,7 @@ object AreaRenderer : IRenderer {
         val depthEnabled = Configs.Area.HIDE_AREA_BOX_BEHIND_BLOCKS.booleanValue
 
         RenderSystem.lineWidth(Configs.Area.areaBoxLineWidth)
+        //? if >=1.17
         RenderSystem.setShader(GameRenderer::getPositionColorShader)
         if (!depthEnabled) {
             RenderSystem.disableDepthTest()
@@ -157,7 +167,10 @@ object AreaRenderer : IRenderer {
 
         val tessellator = Tesselator.getInstance()
         val buffer = tessellator.builder
+        //? if >=1.17 {
         buffer.begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR)
+        //?} else
+        //buffer.begin(1, DefaultVertexFormat.POSITION_COLOR)
         RenderUtils.drawBoxAllEdgesBatchedLines(minX, minY, minZ, maxX, maxY, maxZ, color, buffer)
         tessellator.end()
 

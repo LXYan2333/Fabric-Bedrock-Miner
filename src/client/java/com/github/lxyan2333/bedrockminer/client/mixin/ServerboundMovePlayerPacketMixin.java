@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+//? if >=1.17
 @Mixin(ServerboundMovePlayerPacket.class)
 public abstract class ServerboundMovePlayerPacketMixin {
 
@@ -33,7 +34,7 @@ public abstract class ServerboundMovePlayerPacketMixin {
     private void bedrockMiner$modifyRotation(double x, double y, double z, float originalYRot, float originalXRot, boolean onGround, boolean horizontalCollision, boolean hasPos, boolean hasRotArgument, CallbackInfo ci) {
         bedrockMiner$modifyRotation();
     }
-    //?} else {
+    //?} else if >=1.17 {
     /*@Inject(method = "<init>(DDDFFZZZ)V", at = @At("RETURN"))
     private void bedrockMiner$modifyRotation(double x, double y, double z, float originalYRot, float originalXRot, boolean onGround, boolean hasPos, boolean hasRotArgument, CallbackInfo ci) {
         bedrockMiner$modifyRotation();

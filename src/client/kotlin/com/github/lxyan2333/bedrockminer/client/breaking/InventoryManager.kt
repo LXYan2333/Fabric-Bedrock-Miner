@@ -56,7 +56,7 @@ object InventoryManager {
 
     private fun findSlotWithItem(inventory: Inventory, item: Item): Int {
         for (i in 0 until inventory.containerSize) {
-            if (inventory.getItem(i).`is`(item)) return i
+            if (MinecraftClientCompat.stackIs(inventory.getItem(i), item)) return i
         }
         return -1
     }

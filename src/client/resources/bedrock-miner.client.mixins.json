@@ -5,6 +5,8 @@
 	"compatibilityLevel": "${mixin_java}",
 	"client": [
 		"ServerboundMovePlayerPacketMixin",
+		"legacy.ServerboundMovePlayerPacketPosRotMixin",
+		"legacy.ServerboundMovePlayerPacketRotMixin",
 		"legacy.GuiTextFieldGenericMixin"
 	],
 	"injectors": {

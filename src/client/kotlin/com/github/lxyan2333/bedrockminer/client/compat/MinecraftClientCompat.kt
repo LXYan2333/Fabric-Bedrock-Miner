@@ -26,7 +26,7 @@ object MinecraftClientCompat {
     fun canInteractWithBlock(pos: BlockPos): Boolean {
         //? if <1.20.5 {
         /*val player = Minecraft.getInstance().player ?: return true
-        return Vec3.atCenterOf(pos).distanceToSqr(player.eyePosition) <= 36.0
+        return Vec3.atCenterOf(pos).distanceToSqr(eyePosition(player)) <= 36.0
         *///?} else {
         val player = Minecraft.getInstance().player ?: return true
         //? if >=1.21.11 {
@@ -34,6 +34,13 @@ object MinecraftClientCompat {
         //?} else
         //return player.canInteractWithBlock(pos, 0.0)
         //?}
+    }
+
+    fun eyePosition(player: Player): Vec3 {
+        //? if >=1.17
+        return player.eyePosition
+        //? if <1.17
+        //return player.getEyePosition(1.0f)
     }
 
     fun rotationPacket(yaw: Float, pitch: Float, onGround: Boolean): ServerboundMovePlayerPacket.Rot {
@@ -89,6 +96,13 @@ object MinecraftClientCompat {
 
     fun blockCenter(pos: BlockPos): Vec3 {
         return Vec3.atCenterOf(pos)
+    }
+
+    fun stackIs(stack: net.minecraft.world.item.ItemStack, item: net.minecraft.world.item.Item): Boolean {
+        //? if >=1.17
+        return stack.`is`(item)
+        //? if <1.17
+        //return stack.item == item
     }
 
     fun offset(pos: Vec3, direction: Direction, distance: Double): Vec3 {

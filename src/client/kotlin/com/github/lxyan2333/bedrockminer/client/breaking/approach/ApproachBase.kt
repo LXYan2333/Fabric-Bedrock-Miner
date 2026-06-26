@@ -84,7 +84,7 @@ abstract class ApproachBase internal constructor(
         player: Player,
         pos: BlockPos,
     ): Boolean {
-        val eyePos = player.eyePosition
+        val eyePos = MinecraftClientCompat.eyePosition(player)
         for (face in Direction.entries) {
             val faceCenter = Vec3.atCenterOf(pos).add(
                 face.stepX * 0.49, face.stepY * 0.49, face.stepZ * 0.49
@@ -142,7 +142,7 @@ abstract class ApproachBase internal constructor(
             factory: (BlockPos, BlockPos, Direction, BlockPos, BlockPos?) -> T,
         ): T? {
             val player = Minecraft.getInstance().player ?: return null
-            val playerEyePos = player.eyePosition
+            val playerEyePos = MinecraftClientCompat.eyePosition(player)
             val faces = allowedFaces.sortedBy { playerEyePos.distanceTo(MinecraftClientCompat.blockCenter(targetPos.relative(it))) }.take(5)
                 .let { dirs -> if (dirs.size > 2) dirs.drop(1) + dirs.first() else dirs }
 

@@ -19,8 +19,24 @@ public class BedrockMinerMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
+        if (mixinClassName.endsWith(".ServerboundMovePlayerPacketMixin")) {
+            //? if >=1.17 {
+            return true;
+            //?} else {
+            /*return false;
+            *///?}
+        }
+
+        if (mixinClassName.endsWith(".legacy.ServerboundMovePlayerPacketPosRotMixin")
+                || mixinClassName.endsWith(".legacy.ServerboundMovePlayerPacketRotMixin")) {
+            //? if <1.17 {
+            /*return true;
+            *///?} else
+            return false;
+        }
+
         if (mixinClassName.endsWith(".legacy.GuiTextFieldGenericMixin")) {
-            //? if <= 1.19.2 {
+            //? if >=1.17 && <=1.19.2 {
             /*return true;
             *///?} else {
             return false;

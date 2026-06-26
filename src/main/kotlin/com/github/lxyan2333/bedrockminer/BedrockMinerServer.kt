@@ -8,10 +8,16 @@ import com.github.lxyan2333.bedrockminer.network.ModNetwork
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
+//? if >=1.17 {
 import org.slf4j.LoggerFactory
+//?} else
+//import org.apache.logging.log4j.LogManager
 
 object BedrockMinerServer : DedicatedServerModInitializer {
+    //? if >=1.17 {
     private val logger = LoggerFactory.getLogger("bedrock-miner")
+    //?} else
+    //private val logger = LogManager.getLogger("bedrock-miner")
 
     override fun onInitializeServer() {
         logger.info("Bedrock Miner initialized")

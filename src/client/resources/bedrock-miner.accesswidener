@@ -15,7 +15,7 @@ accessible field net/minecraft/world/level/block/state/BlockBehaviour$BlockState
 accessible field net/minecraft/client/renderer/LevelRenderer viewArea Lnet/minecraft/client/renderer/ViewArea;
 #? if <1.17
 #accessible field net/minecraft/client/renderer/LevelRenderer chunkRenderDispatcher Lnet/minecraft/client/renderer/chunk/ChunkRenderDispatcher;
-#? if > 1.19.2 {
+#? if >=1.20 {
 accessible method net/minecraft/world/level/block/piston/PistonBaseBlock getNeighborSignal (Lnet/minecraft/world/level/SignalGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;)Z
 #?} else {
 #accessible method net/minecraft/world/level/block/piston/PistonBaseBlock getNeighborSignal (Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;)Z

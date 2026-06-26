@@ -42,6 +42,15 @@ deps.malilib_mc = "1.19.2"
 deps.malilib = "0.13.0"
 deps.mod_menu = "4.0.6"
 
+["1.19.4"]
+mod.mc_compat = "1.19.4"
+mod.mc_releases = ["1.19.4"]
+
+deps.fabric_api = "0.87.2+1.19.4"
+deps.malilib_mc = "1.19.4"
+deps.malilib = "0.15.5-alpha.1"
+deps.mod_menu = "6.3.1"
+
 ["1.20.1"]
 mod.mc_compat = "1.20.1"
 mod.mc_releases = ["1.20.1"]

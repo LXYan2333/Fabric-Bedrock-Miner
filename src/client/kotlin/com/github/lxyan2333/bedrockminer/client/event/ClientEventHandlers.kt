@@ -1,8 +1,6 @@
 package com.github.lxyan2333.bedrockminer.client.event
 
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback
-import net.fabricmc.fabric.api.event.player.UseBlockCallback
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.minecraft.world.InteractionResult
 import com.github.lxyan2333.bedrockminer.client.area.AreaRestriction
 import com.github.lxyan2333.bedrockminer.client.breaking.BreakingFlowController
@@ -18,6 +16,7 @@ import com.github.lxyan2333.bedrockminer.config.ServerConfigData
 import com.github.lxyan2333.bedrockminer.network.ModNetwork
 import fi.dy.masa.malilib.config.ConfigManager
 import fi.dy.masa.malilib.event.RenderEventHandler
+import fi.dy.masa.malilib.util.StringUtils
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.minecraft.client.Minecraft
@@ -33,18 +32,21 @@ object ClientEventHandlers {
         // Always block special blocks unless server explicitly allows them
         val isIntegratedServer = Minecraft.getInstance().singleplayerServer != null
         if (!ServerConfigData.serverHasMod && !isIntegratedServer && ServerConfigData.SPECIAL_BLOCKS.contains(blockId)) {
+            Messager.actionBar(StringUtils.translate("bedrockminer.message.restricted.server_special_block", blockId))
             return false
         }
 
         if (ServerConfigData.serverHasMod && !isIntegratedServer) {
             // Server block list takes precedence
             if (ServerConfigData.serverBlockList.contains(blockId)) {
+                Messager.actionBar(StringUtils.translate("bedrockminer.message.restricted.server_block_list", blockId))
                 return false
             }
 
             // Server allow list
             if (!ServerConfigData.serverAllowList.contains(blockId)) {
                 if (ServerConfigData.serverBlockListMode == "BLOCKED") {
+                    Messager.actionBar(StringUtils.translate("bedrockminer.message.restricted.server_allow_list", blockId))
                     return false
                 }
             }
@@ -74,15 +76,6 @@ object ClientEventHandlers {
         RenderEventHandler.getInstance().registerWorldLastRenderer(AreaRenderer)
         ModNetwork.registerPayloadTypes()
         ClientNetworkHandler.registerClientHandlers()
-        // Right-click block with empty hand to toggle the mod on/off
-        UseBlockCallback.EVENT.register { player, world, hand, hitResult ->
-            val state = world.getBlockState(hitResult.blockPos)
-            if (isBlockAllowed(state) && player.mainHandItem.isEmpty) {
-                BreakingFlowController.toggle()
-                return@register InteractionResult.FAIL
-            }
-            InteractionResult.PASS
-        }
 
         AttackBlockCallback.EVENT.register { player, world, hand, pos, direction ->
             if (!world.isClientSide) {
@@ -99,6 +92,14 @@ object ClientEventHandlers {
                 return@register InteractionResult.PASS
             }
             if (!AreaRestriction.isPositionAllowed(pos)) {
+                Messager.actionBar(
+                    StringUtils.translate(
+                        "bedrockminer.message.restricted.area",
+                        pos.x,
+                        pos.y,
+                        pos.z,
+                    )
+                )
                 return@register InteractionResult.PASS
             }
             BreakingFlowController.tryEnqueueBlock(pos)

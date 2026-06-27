@@ -32,7 +32,6 @@ The Core logic of this mod is a state machine in old/src/main/java/yan/lx/bedroc
       - unless server installed this mod and allow to mine these block
   - config the support block (in old mod, it is hard coded to slime block)
   - hotkey to turn on/off breaking mode.
-  - checkbox to provide enable legacy right click bedrock on/off behaviour (default off)
 - better bedrock breaking flow control
   - allow breaking block from all directions
   - take care of piston's quasi-connectivity
@@ -151,7 +150,7 @@ Mixin classes are written in **Java** (required by the Mixin annotation processo
 
 The `old/` directory contains the previous working implementation in Java under the `yan.lx.bedrockminer` package. It's gitignored but kept for reference during the rewrite. Key design from old code:
 
-- **`BreakingFlowController`** — orchestrates the bedrock-breaking state machine; toggled on/off via right-clicking bedrock with empty hand
+- **`BreakingFlowController`** — orchestrates the bedrock-breaking state machine;
 - **`TargetBlock`** — per-block state machine managing the piston placement/power/retract cycle
 - **`MinecraftClientMixin`** — hooks into `doItemUse` (toggle on/off) and `handleBlockBreaking` (add target blocks)
 - **Block-breaking flow**: place piston above bedrock → power with redstone torch → break torch → break piston → place facing-down piston → power again → piston head retracts, breaking the bedrock below

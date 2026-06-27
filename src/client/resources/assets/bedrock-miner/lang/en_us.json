@@ -38,7 +38,7 @@
   "bedrockminer.message.invalid_support_block": "Invalid support block! Must be sturdy on top face，so we can place redstone torch above it.",
   "bedrockminer.message.invalid_block_name": "Invalid block name: %s! Reverted to previous list.",
   "bedrockminer.message.need_efficiency": "Cannot instantly mine piston! Need Efficiency V pickaxe + Haste II",
-  "bedrockminer.config.server.note": "§a§lFollowing config options is managed by server side's Fabric Bedrock Miner, modify them here has no effect§r",
+  "bedrockminer.config.server.note": "§a§lFollowing config options is managed by server side's Fabric Bedrock Miner, \nmodify them here has no effect§r",
   "bedrockminer.message.protocol_mismatch": "§c[Bedrock Miner]§r Protocol version mismatch! Server: %s, Client: %s. Using default config.",
   "bedrockminer.message.server_installed": "§a[Bedrock Miner]§r Server has Bedrock Miner installed!",
   "bedrockminer.message.server_block_list": "§7Block list:§r %s",
@@ -51,5 +51,9 @@
   "bedrockminer.config.area.hide_area_box_behind_blocks.comment": "Hide area restriction box lines behind blocks",
   "bedrockminer.config.area.area_box_line_width.comment": "Area restriction box line width",
   "bedrockminer.message.invalid_area": "Invalid area format: %s",
+  "bedrockminer.message.restricted.server_special_block": "%s is restricted because the server does not have Bedrock Miner installed.",
+  "bedrockminer.message.restricted.server_block_list": "%s is blocked by the server Bedrock Miner config.",
+  "bedrockminer.message.restricted.server_allow_list": "%s is not allowed by the server Bedrock Miner config.",
+  "bedrockminer.message.restricted.area": "Block at %s, %s, %s is outside the allowed mining area.",
   "bedrockminer.gui.button.config_gui.area": "Mining Area Restriction"
 }

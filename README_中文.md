@@ -7,6 +7,13 @@
 https://www.youtube.com/watch?v=b8Y86yxjr_Y  
 https://www.bilibili.com/video/BV1Fv411P7Vc
 
+# 依赖
+
+- Fabric API https://modrinth.com/mod/fabric-api
+- malilib https://modrinth.com/mod/malilib
+- Fabric Language Kotlin https://modrinth.com/mod/fabric-language-kotlin
+- （可选）Mod Menu https://modrinth.com/mod/modmenu
+
 # 使用
 准备好如下物品：
 1. 效率 Ⅴ 钻石镐（下界合金也行） 

@@ -7,6 +7,13 @@ A Fabric client mod to "mine" bedrock!
 https://www.youtube.com/watch?v=b8Y86yxjr_Y  
 https://www.bilibili.com/video/BV1Fv411P7Vc
 
+# Depends on
+
+- Fabric API https://modrinth.com/mod/fabric-api
+- malilib https://modrinth.com/mod/malilib
+- Fabric Language Kotlin https://modrinth.com/mod/fabric-language-kotlin
+- (Optional) Mod Menu https://modrinth.com/mod/modmenu
+
 # Usage
 Have the following items ready:
 1. Efficiency V diamond (or netherite) pickaxe

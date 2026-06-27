@@ -88,3 +88,21 @@ jobs:
           files: build/release/${{ matrix.project }}/build/libs/!(*-@(dev|sources|javadoc)).jar
           curseforge-id: 523864
           curseforge-token: ${{ secrets.CURSE_API_TOKEN }}
+
+  github-release:
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: download release files
+        uses: actions/download-artifact@v7
+        with:
+          name: release-files
+          path: build/release
+
+      - name: upload GitHub release assets
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          files: build/release/*/build/libs/!(*-@(dev|sources|javadoc)).jar
+          github-token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,6 +1,7 @@
 package com.github.lxyan2333.bedrockminer.client.event
 
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback
+import net.fabricmc.fabric.api.event.player.UseBlockCallback
 import net.minecraft.world.InteractionResult
 import com.github.lxyan2333.bedrockminer.client.area.AreaRestriction
 import com.github.lxyan2333.bedrockminer.client.breaking.BreakingFlowController
@@ -21,6 +22,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.ClientLevel
+import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.state.BlockState
 
 object ClientEventHandlers {
@@ -70,12 +72,28 @@ object ClientEventHandlers {
         }
     }
 
+    private fun showBedrockRightClickHint() {
+        //? if >=1.18 {
+        val toggleHotkey = Configs.Generic.BEDROCK_MINER_ENABLED.keybind.keysDisplayString
+        //?} else
+        //val toggleHotkey = Configs.Generic.BEDROCK_MINER_ENABLE_HOTKEY.keybind.keysDisplayString
+        val configHotkey = Configs.Generic.OPEN_CONFIG_GUI.keybind.keysDisplayString
+        Messager.actionBar(StringUtils.translate("bedrockminer.message.bedrock_right_click_hint", toggleHotkey, configHotkey))
+    }
+
     fun register() {
         ConfigManager.getInstance().registerConfigHandler("bedrock-miner", Configs)
         Configs.init()
         RenderEventHandler.getInstance().registerWorldLastRenderer(AreaRenderer)
         ModNetwork.registerPayloadTypes()
         ClientNetworkHandler.registerClientHandlers()
+
+        UseBlockCallback.EVENT.register { player, world, hand, hitResult ->
+            if (world.isClientSide && player.mainHandItem.isEmpty && world.getBlockState(hitResult.blockPos).block == Blocks.BEDROCK) {
+                showBedrockRightClickHint()
+            }
+            InteractionResult.PASS
+        }
 
         AttackBlockCallback.EVENT.register { player, world, hand, pos, direction ->
             if (!world.isClientSide) {

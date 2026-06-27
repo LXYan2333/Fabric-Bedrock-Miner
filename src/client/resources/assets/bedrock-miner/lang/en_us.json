@@ -55,5 +55,6 @@
   "bedrockminer.message.restricted.server_block_list": "%s is blocked by the server Bedrock Miner config.",
   "bedrockminer.message.restricted.server_allow_list": "%s is not allowed by the server Bedrock Miner config.",
   "bedrockminer.message.restricted.area": "Block at %s, %s, %s is outside the allowed mining area.",
+  "bedrockminer.message.bedrock_right_click_hint": "Toggle Fabric Bedrock Miner: %s | Open config: %s",
   "bedrockminer.gui.button.config_gui.area": "Mining Area Restriction"
 }

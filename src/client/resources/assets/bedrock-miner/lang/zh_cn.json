@@ -55,5 +55,6 @@
   "bedrockminer.message.restricted.server_block_list": "%s 已被服务端 Fabric Bedrock Miner 配置阻止。",
   "bedrockminer.message.restricted.server_allow_list": "%s 未被服务端 Fabric Bedrock Miner 配置允许。",
   "bedrockminer.message.restricted.area": "位于 %s, %s, %s 的方块不在允许挖掘区域内。",
+  "bedrockminer.message.bedrock_right_click_hint": "开关 Fabric Bedrock Miner：%s | 打开配置：%s",
   "bedrockminer.gui.button.config_gui.area": "可挖掘区域限制"
 }

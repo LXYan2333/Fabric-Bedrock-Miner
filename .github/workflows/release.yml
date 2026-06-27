@@ -5,9 +5,14 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      version:
+        description: Release version without the leading v, for example 1.0.1
+        required: true
+        type: string
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -30,20 +35,89 @@ jobs:
       - name: build
         run: ./gradlew build --no-parallel --max-workers=1
 
-      - name: collect curseforge files
+      - name: collect release files
         run: |
-          mkdir -p build/curseforge
-          find versions -path '*/build/libs/*.jar' ! -name '*-sources.jar' -exec cp {} build/curseforge/ \;
-
-      - name: publish
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          files: build/curseforge/*.jar
-          curseforge-id: 523864
-          curseforge-token: ${{ secrets.CURSE_API_TOKEN }}
+          set -euo pipefail
+          for version in 1.16.5 1.17.1 1.18.2 1.19.2 1.19.4 1.20.1 1.20.6 1.21.1 1.21.11 26.1.2; do
+            mkdir -p "build/release/${version}"
+            find "versions/${version}/build/libs" -maxdepth 1 -type f -name '*.jar' ! -name '*-sources.jar' -exec cp {} "build/release/${version}/" \;
+          done
 
       - name: capture build artifacts
         uses: actions/upload-artifact@v7
         with:
           name: Release Artifacts
           path: versions/*/build/libs/*.jar
+
+      - name: upload release files
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-files
+          path: build/release
+
+  publish:
+    needs: build
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        include:
+          - project: 1.16.5
+            name: Minecraft 1.16.5
+            game_versions: "1.16.5"
+          - project: 1.17.1
+            name: Minecraft 1.17.1
+            game_versions: "1.17.1"
+          - project: 1.18.2
+            name: Minecraft 1.18.2
+            game_versions: "1.18.2"
+          - project: 1.19.2
+            name: Minecraft 1.19.2
+            game_versions: "1.19.2"
+          - project: 1.19.4
+            name: Minecraft 1.19.4
+            game_versions: "1.19.4"
+          - project: 1.20.1
+            name: Minecraft 1.20.1
+            game_versions: "1.20.1"
+          - project: 1.20.6
+            name: Minecraft 1.20.6
+            game_versions: "1.20.6"
+          - project: 1.21.1
+            name: Minecraft 1.21.1
+            game_versions: "1.21.1"
+          - project: 1.21.11
+            name: Minecraft 1.21.11
+            game_versions: "1.21.11"
+          - project: 26.1.2
+            name: Minecraft 26.1.2
+            game_versions: "26.1.2"
+    steps:
+      - name: download release files
+        uses: actions/download-artifact@v7
+        with:
+          name: release-files
+          path: build/release
+
+      - name: get release version
+        id: release-version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            version="${{ inputs.version }}"
+          else
+            version="${GITHUB_REF_NAME#v}"
+          fi
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+
+      - name: publish ${{ matrix.name }}
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          name: ${{ steps.release-version.outputs.version }} - ${{ matrix.name }}
+          version: ${{ steps.release-version.outputs.version }}+${{ matrix.project }}
+          files-primary: build/release/${{ matrix.project }}/*.jar
+          files-secondary: ""
+          loaders: fabric
+          game-versions: ${{ matrix.game_versions }}
+          curseforge-id: 523864
+          curseforge-token: ${{ secrets.CURSE_API_TOKEN }}

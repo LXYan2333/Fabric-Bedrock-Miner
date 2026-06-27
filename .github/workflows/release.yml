@@ -5,11 +5,6 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
-    inputs:
-      version:
-        description: Release version without the leading v, for example 1.0.1
-        required: true
-        type: string
 
 jobs:
   build:
@@ -35,14 +30,6 @@ jobs:
       - name: build
         run: ./gradlew build --no-parallel --max-workers=1
 
-      - name: collect release files
-        run: |
-          set -euo pipefail
-          for version in 1.16.5 1.17.1 1.18.2 1.19.2 1.19.4 1.20.1 1.20.6 1.21.1 1.21.11 26.1.2; do
-            mkdir -p "build/release/${version}"
-            find "versions/${version}/build/libs" -maxdepth 1 -type f -name '*.jar' ! -name '*-sources.jar' -exec cp {} "build/release/${version}/" \;
-          done
-
       - name: capture build artifacts
         uses: actions/upload-artifact@v7
         with:
@@ -53,7 +40,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: release-files
-          path: build/release
+          path: versions/*/build/libs/*.jar
 
   publish:
     needs: build
@@ -64,35 +51,15 @@ jobs:
       matrix:
         include:
           - project: 1.16.5
-            name: Minecraft 1.16.5
-            game_versions: "1.16.5"
           - project: 1.17.1
-            name: Minecraft 1.17.1
-            game_versions: "1.17.1"
           - project: 1.18.2
-            name: Minecraft 1.18.2
-            game_versions: "1.18.2"
           - project: 1.19.2
-            name: Minecraft 1.19.2
-            game_versions: "1.19.2"
           - project: 1.19.4
-            name: Minecraft 1.19.4
-            game_versions: "1.19.4"
           - project: 1.20.1
-            name: Minecraft 1.20.1
-            game_versions: "1.20.1"
           - project: 1.20.6
-            name: Minecraft 1.20.6
-            game_versions: "1.20.6"
           - project: 1.21.1
-            name: Minecraft 1.21.1
-            game_versions: "1.21.1"
           - project: 1.21.11
-            name: Minecraft 1.21.11
-            game_versions: "1.21.11"
           - project: 26.1.2
-            name: Minecraft 26.1.2
-            game_versions: "26.1.2"
     steps:
       - name: download release files
         uses: actions/download-artifact@v7
@@ -100,24 +67,24 @@ jobs:
           name: release-files
           path: build/release
 
-      - name: get release version
-        id: release-version
+      - name: read jar metadata
+        id: jar
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            version="${{ inputs.version }}"
-          else
-            version="${GITHUB_REF_NAME#v}"
-          fi
+          set -euo pipefail
+          jar=$(find "build/release/${{ matrix.project }}/build/libs" -maxdepth 1 -type f -name '*.jar' ! -name '*-dev.jar' ! -name '*-sources.jar' ! -name '*-javadoc.jar' | sort | head -n 1)
+          test -n "${jar}"
+          version=$(unzip -p "${jar}" fabric.mod.json | jq -r '.version')
+          echo "jar=${jar}" >> "$GITHUB_OUTPUT"
           echo "version=${version}" >> "$GITHUB_OUTPUT"
 
-      - name: publish ${{ matrix.name }}
+      - name: list files for ${{ matrix.project }}
+        run: find "build/release/${{ matrix.project }}/build/libs" -maxdepth 1 -type f -print
+
+      - name: publish ${{ matrix.project }}
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          name: ${{ steps.release-version.outputs.version }} - ${{ matrix.name }}
-          version: ${{ steps.release-version.outputs.version }}+${{ matrix.project }}
-          files-primary: build/release/${{ matrix.project }}/*.jar
-          files-secondary: ""
-          loaders: fabric
-          game-versions: ${{ matrix.game_versions }}
+          name: Bedrock-Miner ${{ steps.jar.outputs.version }}
+          version: ${{ steps.jar.outputs.version }}
+          files: build/release/${{ matrix.project }}/build/libs/!(*-@(dev|sources|javadoc)).jar
           curseforge-id: 523864
           curseforge-token: ${{ secrets.CURSE_API_TOKEN }}

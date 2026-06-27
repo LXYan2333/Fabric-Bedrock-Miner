@@ -36,6 +36,10 @@
     {
       "config": "bedrock-miner.client.mixins.json",
       "environment": "client"
+    },
+    {
+      "config": "bedrock-miner.malilib_compat.mixins.json",
+      "environment": "client"
     }
   ],
   "accessWidener": "bedrock-miner.accesswidener",

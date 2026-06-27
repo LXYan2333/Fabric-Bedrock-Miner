@@ -14,7 +14,7 @@ public abstract class GuiTextFieldGenericMixin extends EditBox {
     }
 
     /**
-     * MaLiLib 0.12/0.13 calls EditBox#moveCursorTo here. In Mojang mappings that method
+     * Older MaLiLib versions call EditBox#moveCursorTo here. In Mojang mappings that method
      * virtual-dispatches back to setCursorPosition(), causing infinite recursion.
      */
     @Overwrite(remap = false)

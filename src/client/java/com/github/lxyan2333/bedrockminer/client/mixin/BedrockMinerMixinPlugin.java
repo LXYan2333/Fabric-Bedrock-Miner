@@ -36,7 +36,7 @@ public class BedrockMinerMixinPlugin implements IMixinConfigPlugin {
         }
 
         if (mixinClassName.endsWith(".legacy.GuiTextFieldGenericMixin")) {
-            //? if >=1.17 && <=1.19.2 {
+            //? if < 1.19.4 {
             /*return true;
             *///?} else {
             return false;

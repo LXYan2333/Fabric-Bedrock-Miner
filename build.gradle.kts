@@ -31,6 +31,14 @@ fun scProperty(key: String): String = sc.properties[key]
 val supportsSplitEnvironment = sc.current.parsed >= "1.18"
 val processedAccessWidener = sc.process(rootProject.file("src/client/resources/bedrock-miner.accesswidener"), "build/processed.accesswidener")
 
+fun resourceExpansionProps() = mapOf(
+	"version" to project.version,
+	"minecraft" to scProperty("mod.mc_compat"),
+	"java" to requiredJava.majorVersion,
+	"mixin_java" to "JAVA_${requiredJava.majorVersion}",
+	"fabric_api_mod_id" to if (sc.current.parsed >= "1.18") "fabric-api" else "fabric",
+)
+
 repositories {
 	// Add repositories to retrieve artifacts from in here.
 	// You should only use this when depending on other mods because
@@ -133,13 +141,7 @@ dependencies {
 }
 
 tasks.processResources {
-	val props = mapOf(
-		"version" to project.version,
-		"minecraft" to scProperty("mod.mc_compat"),
-		"java" to requiredJava.majorVersion,
-		"mixin_java" to "JAVA_${requiredJava.majorVersion}",
-		"fabric_api_mod_id" to if (sc.current.parsed >= "1.18") "fabric-api" else "fabric",
-	)
+	val props = resourceExpansionProps()
 	inputs.properties(props)
 
 	filesMatching("fabric.mod.json") {
@@ -165,13 +167,7 @@ tasks.processResources {
 }
 
 tasks.named<ProcessResources>("processClientResources") {
-	val props = mapOf(
-		"version" to project.version,
-		"minecraft" to scProperty("mod.mc_compat"),
-		"java" to requiredJava.majorVersion,
-		"mixin_java" to "JAVA_${requiredJava.majorVersion}",
-		"fabric_api_mod_id" to if (sc.current.parsed >= "1.18") "fabric-api" else "fabric",
-	)
+	val props = resourceExpansionProps()
 	inputs.properties(props)
 
 	if (!supportsSplitEnvironment) {
@@ -211,6 +207,18 @@ tasks.jar {
 
 	from("LICENSE") {
 		rename { "${it}_$projectName" }
+	}
+}
+
+tasks.named<Jar>("sourcesJar") {
+	val props = resourceExpansionProps()
+	inputs.properties(props)
+
+	filesMatching("fabric.mod.json") {
+		expand(props)
+	}
+	filesMatching("*.mixins.json") {
+		expand(props)
 	}
 }
 

@@ -30,10 +30,15 @@ jobs:
       - name: build
         run: ./gradlew build --no-parallel --max-workers=1
 
+      - name: collect curseforge files
+        run: |
+          mkdir -p build/curseforge
+          find versions -path '*/build/libs/*.jar' ! -name '*-sources.jar' -exec cp {} build/curseforge/ \;
+
       - name: publish
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          files: versions/*/build/libs/*.jar
+          files: build/curseforge/*.jar
           curseforge-id: 523864
           curseforge-token: ${{ secrets.CURSE_API_TOKEN }}
 

@@ -1,5 +1,4 @@
-//? if <1.17 {
-/*package com.github.lxyan2333.bedrockminer.client.mixin.legacy;
+package com.github.lxyan2333.bedrockminer.client.mixin.legacy;
 
 import com.github.lxyan2333.bedrockminer.client.breaking.approach.VanillaAllDirectionApproach;
 import net.minecraft.client.Minecraft;
@@ -10,8 +9,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerboundMovePlayerPacket.PosRot.class)
-public abstract class ServerboundMovePlayerPacketPosRotMixin extends ServerboundMovePlayerPacket {
-    @Inject(method = "<init>(DDDFFZ)V", at = @At("RETURN"))
+//? if <1.17 {
+/*public abstract class ServerboundMovePlayerPacketPosRotMixin extends ServerboundMovePlayerPacket {
+*///?} else
+public abstract class ServerboundMovePlayerPacketPosRotMixin {
+    //? if <1.17 {
+    /*@Inject(method = "<init>(DDDFFZ)V", at = @At("RETURN"))
     private void bedrockMiner$modifyRotation(double x, double y, double z, float originalYRot, float originalXRot, boolean onGround, CallbackInfo ci) {
         if (!Minecraft.getInstance().isSameThread()) {
             return;
@@ -22,5 +25,5 @@ public abstract class ServerboundMovePlayerPacketPosRotMixin extends Serverbound
             this.xRot = VanillaAllDirectionApproach.currentYawPitch.getSecond();
         }
     }
+    *///?}
 }
-*///?}

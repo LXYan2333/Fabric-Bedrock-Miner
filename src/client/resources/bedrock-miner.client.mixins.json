@@ -5,6 +5,7 @@
 	"compatibilityLevel": "${mixin_java}",
 	"client": [
 		"ServerboundMovePlayerPacketMixin",
+		"MinecraftMixin",
 		"legacy.ServerboundMovePlayerPacketPosRotMixin",
 		"legacy.ServerboundMovePlayerPacketRotMixin"
 	],

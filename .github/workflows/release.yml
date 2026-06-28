@@ -88,6 +88,8 @@ jobs:
           files: build/release/${{ matrix.project }}/build/libs/!(*-@(dev|sources|javadoc)).jar
           curseforge-id: 523864
           curseforge-token: ${{ secrets.CURSE_API_TOKEN }}
+          modrinth-id: BYMHqMXz
+          modrinth-token: ${{ secrets.MODRINTH_API_KEY }}
 
   github-release:
     needs: build

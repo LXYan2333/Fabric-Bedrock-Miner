@@ -38,8 +38,8 @@ object BlockBreaker {
         //? if <1.20.2 {
         /*try {
             val renderer = mc.levelRenderer
-            val viewArea = renderer.viewArea ?: return@execute
-            val dispatcher = renderer.chunkRenderDispatcher ?: return@execute
+            val viewArea = renderer.viewArea ?: return
+            val dispatcher = renderer.chunkRenderDispatcher ?: return
             //? if >=1.18 {
             val cache = RenderRegionCache()
             //?}
@@ -58,12 +58,12 @@ object BlockBreaker {
         *///?} else if < 26.2 {
         /*try {
             val renderer = mc.levelRenderer
-            val viewArea = renderer.viewArea ?: return@execute
-            val dispatcher = renderer.sectionRenderDispatcher ?: return@execute
+            val viewArea = renderer.viewArea ?: return
+            val dispatcher = renderer.sectionRenderDispatcher ?: return
             val cache = RenderRegionCache()
 
-            for (pos in pendingUpdates) {
-                val section = viewArea.getRenderSectionAt(pos) ?: continue
+            val sections = pendingUpdates.map { e -> viewArea.getRenderSectionAt(e) }.filterNotNull().distinct()
+            for (section in sections) {
                 dispatcher.rebuildSectionSync(section, cache)
                 section.setNotDirty()
             }

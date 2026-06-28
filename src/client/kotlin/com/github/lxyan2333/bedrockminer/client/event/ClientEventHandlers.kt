@@ -130,10 +130,6 @@ object ClientEventHandlers {
                 lastLevel = currentLevel
                 BreakingFlowController.cancelAllFlows()
             }
-            if (client.screen != null) {
-                return@register
-            }
-            ClientTickScheduler.onTick()
         }
 
         ClientPlayConnectionEvents.JOIN.register { _, _, client ->

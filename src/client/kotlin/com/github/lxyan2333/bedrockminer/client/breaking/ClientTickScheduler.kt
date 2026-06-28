@@ -11,6 +11,8 @@ object ClientTickScheduler {
         val pending = continuations.toList()
         continuations.clear()
         pending.forEach { it.resume(Unit) }
+
+        BlockBreaker.removeAllGhostBlock()
     }
 
     suspend fun awaitTicks(count: Int = 1) {

@@ -122,6 +122,12 @@ object Configs : IConfigHandler, IKeybindProvider {
             StringUtils.translate("bedrockminer.config.max_retries.comment"),
         )
 
+        val REMOVE_GHOST_BLOCKS: ConfigBoolean = ConfigBoolean(
+            "removeGhostBlocks",
+            true,
+            StringUtils.translate("bedrockminer.config.remove_ghost_blocks.comment"),
+        )
+
         val SKIP_INSTANT_MINE_CHECK: ConfigBoolean = ConfigBoolean(
             "skipInstantMineCheck",
             false,
@@ -182,6 +188,7 @@ object Configs : IConfigHandler, IKeybindProvider {
             MAX_RETRIES,
             WAIT_TICKS,
             SUPPORT_BLOCK,
+            REMOVE_GHOST_BLOCKS,
             SKIP_INSTANT_MINE_CHECK,
         )
     }

@@ -18,10 +18,9 @@ import com.github.lxyan2333.bedrockminer.network.ModNetwork
 import fi.dy.masa.malilib.config.ConfigManager
 import fi.dy.masa.malilib.event.RenderEventHandler
 import fi.dy.masa.malilib.util.StringUtils
-//? if >= 26.2 {
+//? if >= 26.2
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLevelEvents
-//?} else
-//import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.ClientLevel
@@ -141,6 +140,9 @@ object ClientEventHandlers {
 
         //? if >= 26.2 {
         ClientLevelEvents.AFTER_CLIENT_LEVEL_CHANGE.register { _, _ -> BreakingFlowController.cancelAllFlows() }
+        ClientTickEvents.START_LEVEL_TICK.register {
+            ClientTickScheduler.onTick()
+        }
         //? } else {
         /*ClientTickEvents.START_CLIENT_TICK.register { client ->
             val currentLevel = client.level ?: return@register
@@ -148,6 +150,7 @@ object ClientEventHandlers {
                 lastLevel = currentLevel
                 BreakingFlowController.cancelAllFlows()
             }
+            ClientTickScheduler.onTick()
         }
         *///?}
 

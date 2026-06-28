@@ -109,10 +109,14 @@ object AreaRenderer : IRenderer {
         val pipeline = if (Configs.Area.HIDE_AREA_BOX_BEHIND_BLOCKS.booleanValue) {
             MaLiLibPipelines.DEBUG_LINES_MASA_SIMPLE_LEQUAL_DEPTH
         } else {
-            MaLiLibPipelines.DEBUG_LINES_MASA_SIMPLE_NO_DEPTH_NO_CULL
+            MaLiLibPipelines.DEBUG_LINES_MASA_SIMPLE_NO_CULL
         }
 
-        val ctx = RenderContext({ "bedrock-miner:area_restriction_outline" }, pipeline)
+        //? if >=26.2 {
+        val ctx = RenderContext({ "bedrock-miner:area_restriction_outline" }, pipeline, 0)
+        //?} else {
+        /*val ctx = RenderContext({ "bedrock-miner:area_restriction_outline" }, pipeline)
+        *///?}
         try {
             val buffer = ctx.builder
             RenderUtils.drawBoxAllEdgesBatchedLines(

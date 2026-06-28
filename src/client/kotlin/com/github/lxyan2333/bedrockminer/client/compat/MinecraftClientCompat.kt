@@ -72,13 +72,12 @@ object MinecraftClientCompat {
         //inventory.selected = slot
     }
 
-    fun addChatMessage(message: Component) {
+    //? if < 26.2 {
+    /*fun addChatMessage(message: Component) {
         val chat = Minecraft.getInstance().gui.chat
-        //? if >=26.1 {
-        chat.addClientSystemMessage(message)
-        //?} else
-        //chat.addMessage(message)
+        chat.addMessage(message)
     }
+    *///?}
 
     fun literal(message: String): Component {
         //? if >=1.19

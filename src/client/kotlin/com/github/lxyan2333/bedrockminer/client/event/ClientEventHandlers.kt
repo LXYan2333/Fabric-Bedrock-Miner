@@ -18,7 +18,10 @@ import com.github.lxyan2333.bedrockminer.network.ModNetwork
 import fi.dy.masa.malilib.config.ConfigManager
 import fi.dy.masa.malilib.event.RenderEventHandler
 import fi.dy.masa.malilib.util.StringUtils
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+//? if >= 26.2 {
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLevelEvents
+//?} else
+//import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.ClientLevel
@@ -26,7 +29,8 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.state.BlockState
 
 object ClientEventHandlers {
-    private var lastLevel: ClientLevel? = null
+    //? if < 26.2
+    //private var lastLevel: ClientLevel? = null
 
     private fun isBlockAllowed(blockState: BlockState): Boolean {
         val blockId = IdentifierCompat.blockId(blockState.block).toString()
@@ -48,7 +52,12 @@ object ClientEventHandlers {
             // Server allow list
             if (!ServerConfigData.serverAllowList.contains(blockId)) {
                 if (ServerConfigData.serverBlockListMode == "BLOCKED") {
-                    Messager.actionBar(StringUtils.translate("bedrockminer.message.restricted.server_allow_list", blockId))
+                    Messager.actionBar(
+                        StringUtils.translate(
+                            "bedrockminer.message.restricted.server_allow_list",
+                            blockId
+                        )
+                    )
                     return false
                 }
             }
@@ -78,7 +87,13 @@ object ClientEventHandlers {
         //?} else
         //val toggleHotkey = Configs.Generic.BEDROCK_MINER_ENABLE_HOTKEY.keybind.keysDisplayString
         val configHotkey = Configs.Generic.OPEN_CONFIG_GUI.keybind.keysDisplayString
-        Messager.actionBar(StringUtils.translate("bedrockminer.message.bedrock_right_click_hint", toggleHotkey, configHotkey))
+        Messager.actionBar(
+            StringUtils.translate(
+                "bedrockminer.message.bedrock_right_click_hint",
+                toggleHotkey,
+                configHotkey
+            )
+        )
     }
 
     fun register() {
@@ -124,13 +139,17 @@ object ClientEventHandlers {
             return@register InteractionResult.FAIL
         }
 
-        ClientTickEvents.START_CLIENT_TICK.register { client ->
+        //? if >= 26.2 {
+        ClientLevelEvents.AFTER_CLIENT_LEVEL_CHANGE.register { _, _ -> BreakingFlowController.cancelAllFlows() }
+        //? } else {
+        /*ClientTickEvents.START_CLIENT_TICK.register { client ->
             val currentLevel = client.level ?: return@register
             if (currentLevel != lastLevel) {
                 lastLevel = currentLevel
                 BreakingFlowController.cancelAllFlows()
             }
         }
+        *///?}
 
         ClientPlayConnectionEvents.JOIN.register { _, _, client ->
             if (Configs.Generic.BEDROCK_MINER_ENABLED.booleanValue) {

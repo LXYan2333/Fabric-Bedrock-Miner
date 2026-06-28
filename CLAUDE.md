@@ -61,19 +61,19 @@ See `doc/related minecraft quirk.md` for detailed write-ups. Key quirk affecting
 $ ./gradlew build
 $ ./gradlew :1.21.1:build
 $ ./gradlew :1.21.11:build
-$ ./gradlew :26.1.2:build
+$ ./gradlew :26.2:build
 etc...
 ```
 
 The project uses **Stonecutter** plus **Fabric Loom**. Stonecutter creates one Gradle subproject per Minecraft version under `versions/`; Loom handles Minecraft dependency resolution, mappings, and mixin processing.
 
-**Active source target**: `26.1.2`. Keep `stonecutter.gradle.kts` on `stonecutter active "26.1.2"` unless the user explicitly asks to switch it. Java runtime for local builds should be `/home/lxyan/.local/jdk/26`; generated mod Java compatibility still varies by Minecraft version in `build.gradle.kts`.
+**Active source target**: `26.2`. Keep `stonecutter.gradle.kts` on `stonecutter active "26.2"` unless the user explicitly asks to switch it. Java runtime for local builds should be `/home/lxyan/.local/jdk/26`; generated mod Java compatibility still varies by Minecraft version in `build.gradle.kts`.
 
 ## Adding Minecraft Version Support With Stonecutter
 
 Follow this procedure when adding another Minecraft version:
 
-1. Add the version to `settings.gradle.kts` in the `stonecutter { create(rootProject) { versions(...) } }` list. Keep `vcsVersion` and `stonecutter active` deliberate; this repo currently treats `26.1.2` as the clean active source base.
+1. Add the version to `settings.gradle.kts` in the `stonecutter { create(rootProject) { versions(...) } }` list. Keep `vcsVersion` and `stonecutter active` deliberate; this repo currently treats `26.2` as the clean active source base.
 2. Add a matching table in `stonecutter.properties.toml`. Include:
    - `mod.mc_compat`
    - `mod.mc_releases`
@@ -111,7 +111,7 @@ Follow this procedure when adding another Minecraft version:
 
 Important notes:
 
-- Prefer keeping active source code in the newest `26.1.2` API shape and use inline conditions for older versions.
+- Prefer keeping active source code in the newest `26.2` API shape and use inline conditions for older versions.
 - Avoid changing active-source names just to satisfy an older version; older names belong in the `else` branch or a compat class.
 - For Minecraft resource IDs, use `IdentifierCompat` rather than directly importing `Identifier` or `ResourceLocation` in feature code.
 - For MaLiLib API drift, inspect `litematica`'s source can be helpful.

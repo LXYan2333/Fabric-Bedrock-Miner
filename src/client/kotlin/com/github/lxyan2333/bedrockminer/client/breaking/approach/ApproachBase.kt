@@ -40,7 +40,8 @@ abstract class ApproachBase internal constructor(
     val extendPos: BlockPos get() = pistonPos.relative(extendDir)
 
     fun occupies(pos: BlockPos): Boolean =
-        pos == pistonPos || pos == torchPos || pos == supportBlockPos || pos == extendPos
+        listOf(pistonPos, torchPos, supportBlockPos, extendPos, targetPos).contains(pos)
+
 
     // -- placement method --
 
@@ -143,8 +144,9 @@ abstract class ApproachBase internal constructor(
         ): T? {
             val player = Minecraft.getInstance().player ?: return null
             val playerEyePos = MinecraftClientCompat.eyePosition(player)
-            val faces = allowedFaces.sortedBy { playerEyePos.distanceTo(MinecraftClientCompat.blockCenter(targetPos.relative(it))) }.take(5)
-                .let { dirs -> if (dirs.size > 2) dirs.drop(1) + dirs.first() else dirs }
+            val faces =
+                allowedFaces.sortedBy { playerEyePos.distanceTo(MinecraftClientCompat.blockCenter(targetPos.relative(it))) }
+                    .take(5).let { dirs -> if (dirs.size > 2) dirs.drop(1) + dirs.first() else dirs }
 
             val candidate = arrayOfNulls<ApproachBase>(4)
 
@@ -152,12 +154,23 @@ abstract class ApproachBase internal constructor(
                 val pistonPos = targetPos.relative(face)
                 if (!MinecraftClientCompat.canBeReplaced(level, pistonPos)) continue
 
-                for (extendDir in allowedExtendDirs.sortedByDescending { playerEyePos.distanceTo(MinecraftClientCompat.blockCenter(pistonPos.relative(it))) }) {
+                for (extendDir in allowedExtendDirs.sortedByDescending {
+                    playerEyePos.distanceTo(
+                        MinecraftClientCompat.blockCenter(
+                            pistonPos.relative(it)
+                        )
+                    )
+                }) {
                     val extendPos = pistonPos.relative(extendDir)
                     if (!MinecraftClientCompat.canBeReplaced(level, extendPos)) continue
 
-                    val torchDirs =
-                        Direction.Plane.HORIZONTAL.sortedBy { playerEyePos.distanceTo(MinecraftClientCompat.blockCenter(pistonPos.relative(it))) }
+                    val torchDirs = Direction.Plane.HORIZONTAL.sortedBy {
+                        playerEyePos.distanceTo(
+                            MinecraftClientCompat.blockCenter(
+                                pistonPos.relative(it)
+                            )
+                        )
+                    }
                     for (torchDir in torchDirs) {
                         val torchPos = pistonPos.relative(torchDir)
                         if (torchPos == extendPos) continue

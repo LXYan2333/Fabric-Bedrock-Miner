@@ -87,11 +87,11 @@ deps.malilib_mc = "1.21.11"
 deps.malilib = "0.27.13"
 deps.mod_menu = "15.0.0-beta.3"
 
-["26.1.2"]
-mod.mc_compat = "26.1.2"
-mod.mc_releases = ["26.1.2"]
+["26.2"]
+mod.mc_compat = "26.2"
+mod.mc_releases = ["26.2"]
 
-deps.fabric_api = "0.150.0+26.1.2"
-deps.malilib_mc = "26.1.2"
-deps.malilib = "0.28.6"
-deps.mod_menu = "18.0.0-beta.1"
+deps.fabric_api = "0.153.0+26.2"
+deps.malilib_mc = "26.2"
+deps.malilib = "0.29.2"
+deps.mod_menu = "19.0.0-alpha.1"

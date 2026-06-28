@@ -53,7 +53,6 @@ object BreakingFlowController {
     fun tryEnqueueBlock(pos: BlockPos) {
         if (!enabled) return
         if (isPositionProtected(pos)) return
-        if (activeFlows.any { it.targetPos == pos }) return
         val level = Minecraft.getInstance().level ?: return
         val blockState = level.getBlockState(pos)
         val flow = BreakingFlow(pos, blockState)

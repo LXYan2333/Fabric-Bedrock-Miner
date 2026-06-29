@@ -140,7 +140,7 @@ object ClientEventHandlers {
 
         //? if >= 26.2 {
         ClientLevelEvents.AFTER_CLIENT_LEVEL_CHANGE.register { _, _ -> BreakingFlowController.cancelAllFlows() }
-        ClientTickEvents.START_LEVEL_TICK.register {
+        ClientTickEvents.END_LEVEL_TICK.register {
             ClientTickScheduler.onTick()
         }
         //? } else {

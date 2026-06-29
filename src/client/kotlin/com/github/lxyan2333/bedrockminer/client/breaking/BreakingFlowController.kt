@@ -18,7 +18,7 @@ object BreakingFlowController {
             field = value
         }
 
-    private var scope: CoroutineScope? = null
+    var scope: CoroutineScope? = null
     val activeFlows = mutableSetOf<BreakingFlow>()
     var isInternalBreak = false
         get() = field

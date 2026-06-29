@@ -115,12 +115,18 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
 
     private suspend fun cleanup(level: Level, approach: ApproachBase) {
         try {
-            BlockBreaker.breakBlock(approach.pistonPos)
+            if (!MinecraftClientCompat.canBeReplaced(level,approach.pistonPos)) {
+                BlockBreaker.breakBlock(approach.pistonPos)
+            }
 
-            BlockBreaker.breakBlock(approach.torchPos)
+            if (!MinecraftClientCompat.canBeReplaced(level,approach.torchPos)) {
+                BlockBreaker.breakBlock(approach.torchPos)
+            }
 
             approach.supportBlockPos?.let {
-                BlockBreaker.breakBlock(it)
+                if (!MinecraftClientCompat.canBeReplaced(level,it)) {
+                    BlockBreaker.breakBlock(it)
+                }
             }
         } catch (_: BlockInteractionRangeException) {
         }

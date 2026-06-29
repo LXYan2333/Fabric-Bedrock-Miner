@@ -1,4 +1,4 @@
-name: Release to CurseForge
+name: Release to CurseForge and Modrinth
 
 on:
   push:

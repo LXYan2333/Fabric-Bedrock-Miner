@@ -85,8 +85,6 @@ object BlockBreaker {
             BreakingFlowController.scope?.launch {
                 ClientTickScheduler.awaitTicks(2)
                 for (section in sections) {
-                    section.lastCompileTask?.cancel()
-                    println("before my call to compileSync")
                     section.compileAsync(cache.createRegion(level, section.sectionNode))
                 }
             }

@@ -161,6 +161,17 @@ abstract class ApproachBase internal constructor(
                         )
                     )
                 }) {
+                    if (!PistonBaseBlock.isPushable(
+                            Blocks.STONE.defaultBlockState(),
+                            level,
+                            pistonPos,
+                            extendDir,
+                            true,
+                            extendDir
+                        )
+                    ) {
+                        continue
+                    }
                     val extendPos = pistonPos.relative(extendDir)
                     if (!MinecraftClientCompat.canBeReplaced(level, extendPos)) continue
 
@@ -197,7 +208,7 @@ abstract class ApproachBase internal constructor(
             }
 
             for (result in candidate) {
-                if (result != null) return result as T
+                if (result != null) return result as? T
             }
 
             return null

@@ -39,9 +39,9 @@ abstract class ApproachBase internal constructor(
 
     val extendPos: BlockPos get() = pistonPos.relative(extendDir)
 
-    fun occupies(pos: BlockPos): Boolean =
-        listOf(pistonPos, torchPos, supportBlockPos, extendPos, targetPos).contains(pos)
-
+    fun occupies(pos: BlockPos): Boolean {
+        return listOf(pistonPos, torchPos, supportBlockPos, extendPos, targetPos).contains(pos)
+    }
 
     // -- placement method --
 

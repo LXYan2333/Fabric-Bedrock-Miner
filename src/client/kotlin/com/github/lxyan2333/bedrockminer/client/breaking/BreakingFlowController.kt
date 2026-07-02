@@ -1,5 +1,8 @@
 package com.github.lxyan2333.bedrockminer.client.breaking
 
+import com.github.lxyan2333.bedrockminer.client.area.AreaRestriction
+import com.github.lxyan2333.bedrockminer.client.config.AllowOrBlockMode
+import com.github.lxyan2333.bedrockminer.client.config.Configs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -8,8 +11,11 @@ import kotlinx.coroutines.launch
 import net.minecraft.client.Minecraft
 import net.minecraft.core.BlockPos
 import com.github.lxyan2333.bedrockminer.client.message.Messager
+import com.github.lxyan2333.bedrockminer.compat.IdentifierCompat
+import com.github.lxyan2333.bedrockminer.config.ServerConfigData
 import net.minecraft.world.level.block.state.BlockState
 import fi.dy.masa.malilib.util.StringUtils
+import net.minecraft.world.InteractionResult
 
 object BreakingFlowController {
     var enabled = false
@@ -26,8 +32,7 @@ object BreakingFlowController {
             field = value
         }
 
-    fun isPositionProtected(pos: BlockPos): Boolean =
-        activeFlows.any { it.currentApproach?.occupies(pos) == true }
+    fun isPositionProtected(pos: BlockPos): Boolean = activeFlows.any { it.currentApproach?.occupies(pos) == true }
 
     fun toggle() {
         if (enabled) disable() else enable()
@@ -50,11 +55,83 @@ object BreakingFlowController {
         activeFlows.clear()
     }
 
-    fun tryEnqueueBlock(pos: BlockPos) {
-        if (!enabled) return
-        if (isPositionProtected(pos)) return
-        val level = Minecraft.getInstance().level ?: return
+    private fun isBlockTypeAllowed(blockState: BlockState): Boolean {
+        val blockId = IdentifierCompat.blockId(blockState.block).toString()
+
+        // Always block special blocks unless server explicitly allows them
+        val isIntegratedServer = Minecraft.getInstance().singleplayerServer != null
+        if (!ServerConfigData.serverHasMod && !isIntegratedServer && ServerConfigData.SPECIAL_BLOCKS.contains(blockId)) {
+            Messager.actionBar(StringUtils.translate("bedrockminer.message.restricted.server_special_block", blockId))
+            return false
+        }
+
+        if (ServerConfigData.serverHasMod && !isIntegratedServer) {
+            // Server block list takes precedence
+            if (ServerConfigData.serverBlockList.contains(blockId)) {
+                Messager.actionBar(StringUtils.translate("bedrockminer.message.restricted.server_block_list", blockId))
+                return false
+            }
+
+            // Server allow list
+            if (!ServerConfigData.serverAllowList.contains(blockId)) {
+                if (ServerConfigData.serverBlockListMode == "BLOCKED") {
+                    Messager.actionBar(
+                        StringUtils.translate(
+                            "bedrockminer.message.restricted.server_allow_list", blockId
+                        )
+                    )
+                    return false
+                }
+            }
+        }
+
+        // Client allow list
+        if (Configs.Client.ALLOW_LIST.strings.contains(blockId)) {
+            return true
+        }
+
+        // Client block list
+        if (Configs.Client.BLOCK_LIST.strings.contains(blockId)) {
+            return false
+        }
+
+        // client mode
+        val clientMode = Configs.Client.AlloeOrBlockMode.optionListValue as AllowOrBlockMode
+        when (clientMode) {
+            AllowOrBlockMode.BLOCKED -> return false
+            AllowOrBlockMode.ALLOWED -> return true
+        }
+    }
+
+
+    fun tryEnqueueBlock(pos: BlockPos): InteractionResult {
+        val level = Minecraft.getInstance().level ?: return InteractionResult.PASS
+
+        if (!enabled) {
+            return InteractionResult.PASS
+        }
+        if (isInternalBreak) {
+            return InteractionResult.PASS
+        }
+        if (isPositionProtected(pos)) {
+            return InteractionResult.FAIL
+        }
         val blockState = level.getBlockState(pos)
+        if (!isBlockTypeAllowed(blockState)) {
+            return InteractionResult.PASS
+        }
+        if (!AreaRestriction.isPositionAllowed(pos)) {
+            Messager.actionBar(
+                StringUtils.translate(
+                    "bedrockminer.message.restricted.area",
+                    pos.x,
+                    pos.y,
+                    pos.z,
+                )
+            )
+            return InteractionResult.PASS
+        }
+
         val flow = BreakingFlow(pos, blockState)
         activeFlows.add(flow)
         scope?.launch {
@@ -64,6 +141,7 @@ object BreakingFlowController {
                 activeFlows.remove(flow)
             }
         }
+        return InteractionResult.FAIL
     }
 
     fun cancelAllFlows() {

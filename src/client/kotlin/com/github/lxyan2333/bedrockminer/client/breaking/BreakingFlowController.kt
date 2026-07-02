@@ -55,6 +55,14 @@ object BreakingFlowController {
         activeFlows.clear()
     }
 
+    private fun listContains(list: List<String>, blockState: BlockState): Boolean {
+        val blockId = IdentifierCompat.blockId(blockState.block).toString()
+        if (list.contains(blockId)) {
+            return true
+        }
+        return list.any { it.equals(blockId, ignoreCase = true) }
+    }
+
     private fun isBlockTypeAllowed(blockState: BlockState): Boolean {
         val blockId = IdentifierCompat.blockId(blockState.block).toString()
 
@@ -86,12 +94,12 @@ object BreakingFlowController {
         }
 
         // Client allow list
-        if (Configs.Client.ALLOW_LIST.strings.contains(blockId)) {
+        if (Configs.Client.ALLOW_LIST.strings.let { listContains(it, blockState) }) {
             return true
         }
 
         // Client block list
-        if (Configs.Client.BLOCK_LIST.strings.contains(blockId)) {
+        if (Configs.Client.BLOCK_LIST.strings.let { listContains(it, blockState) }) {
             return false
         }
 

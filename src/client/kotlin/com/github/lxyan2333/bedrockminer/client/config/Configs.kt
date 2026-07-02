@@ -2,6 +2,7 @@ package com.github.lxyan2333.bedrockminer.client.config
 
 import com.github.lxyan2333.bedrockminer.client.area.AreaRestriction
 import com.github.lxyan2333.bedrockminer.client.breaking.BreakingFlowController
+import com.github.lxyan2333.bedrockminer.client.compat.BlocksCompat.isValidBlockName
 import com.github.lxyan2333.bedrockminer.client.compat.modmenu.GuiConfigs
 import com.github.lxyan2333.bedrockminer.client.message.Messager
 import com.github.lxyan2333.bedrockminer.compat.GsonCompat
@@ -211,9 +212,17 @@ object Configs : IConfigHandler, IKeybindProvider {
             }
         }
 
+        private fun defaultBedrockName(): String {
+            val localBedrockName = StringUtils.translate("bedrockminer.config.client.bedrockname")
+            if (isValidBlockName(localBedrockName)) {
+                return localBedrockName
+            }
+            return "minecraft:bedrock"
+        }
+
         val ALLOW_LIST: ConfigStringList = ConfigStringList(
             "allowList",
-            ImmutableList.of("minecraft:bedrock"),
+            ImmutableList.of(defaultBedrockName()),
             StringUtils.translate("bedrockminer.config.allowList.comment"),
         ).apply {
             setValueChangeCallback { config ->
@@ -413,10 +422,6 @@ object Configs : IConfigHandler, IKeybindProvider {
 
     fun init() {
         InputEventHandler.getKeybindManager().registerKeybindProvider(this)
-    }
-
-    private fun isValidBlockName(name: String): Boolean {
-        return IdentifierCompat.isKnownBlock(name)
     }
 
     private fun blockFromName(name: String): Block? {

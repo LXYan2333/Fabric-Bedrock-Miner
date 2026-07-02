@@ -60,7 +60,7 @@ object BreakingFlowController {
         if (list.contains(blockId)) {
             return true
         }
-        return list.any { it.equals(blockId, ignoreCase = true) }
+        return list.any { it.equals(blockState.block.name.string, ignoreCase = true) }
     }
 
     private fun isBlockTypeAllowed(blockState: BlockState): Boolean {

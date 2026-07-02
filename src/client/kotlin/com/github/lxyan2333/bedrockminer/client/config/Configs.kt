@@ -277,6 +277,7 @@ object Configs : IConfigHandler, IKeybindProvider {
         val ALL_OPTIONS_WRAPPER: List<ConfigOptionWrapper> = listOf(
             ConfigOptionWrapper(WAIT_SERVER_TICK_PLAYER_ENTITY_TICKS),
             ConfigOptionWrapper("bedrockminer.config.server.note"),
+            ConfigOptionWrapper("bedrockminer.config.server.note2"),
             ConfigOptionWrapper(BLOCK_LIST),
             ConfigOptionWrapper(ALLOW_LIST),
             ConfigOptionWrapper(AllowBlockMode),

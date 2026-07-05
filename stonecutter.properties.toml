@@ -1,7 +1,7 @@
 mod.id = "bedrock-miner"
 mod.name = "Bedrock-Miner"
 mod.group = "com.github.lxyan2333.bedrockminer"
-mod.version = "2.0.6"
+mod.version = "2.0.7"
 
 deps.fabric_loader = "0.19.3"
 deps.fabric_kotlin = "1.13.12+kotlin.2.4.0"

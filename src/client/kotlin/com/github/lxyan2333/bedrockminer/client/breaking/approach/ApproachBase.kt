@@ -49,7 +49,7 @@ abstract class ApproachBase internal constructor(
         placePistonAfter(direction, {})
     }
 
-    abstract suspend fun placePistonAfter(direction: Direction, pre: () -> Unit)
+    abstract suspend fun placePistonAfter(direction: Direction, pre: suspend () -> Unit)
 
     // -- validation --
 
@@ -162,12 +162,7 @@ abstract class ApproachBase internal constructor(
                     )
                 }) {
                     if (!PistonBaseBlock.isPushable(
-                            Blocks.STONE.defaultBlockState(),
-                            level,
-                            pistonPos,
-                            extendDir,
-                            true,
-                            extendDir
+                            Blocks.STONE.defaultBlockState(), level, pistonPos, extendDir, true, extendDir,
                         )
                     ) {
                         continue

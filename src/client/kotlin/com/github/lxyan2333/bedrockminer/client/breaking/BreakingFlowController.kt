@@ -69,14 +69,14 @@ object BreakingFlowController {
         // Always block special blocks unless server explicitly allows them
         val isIntegratedServer = Minecraft.getInstance().singleplayerServer != null
         if (!ServerConfigData.serverHasMod && !isIntegratedServer && ServerConfigData.SPECIAL_BLOCKS.contains(blockId)) {
-            Messager.actionBar(StringUtils.translate("bedrockminer.message.restricted.server_special_block", blockId))
+            Messager.actionBar(StringUtils.translate("bedrockminer.message.restricted.server_special_block", blockState.block.name.string))
             return false
         }
 
         if (ServerConfigData.serverHasMod && !isIntegratedServer) {
             // Server block list takes precedence
             if (ServerConfigData.serverBlockList.contains(blockId)) {
-                Messager.actionBar(StringUtils.translate("bedrockminer.message.restricted.server_block_list", blockId))
+                Messager.actionBar(StringUtils.translate("bedrockminer.message.restricted.server_block_list", blockState.block.name.string))
                 return false
             }
 
@@ -85,7 +85,7 @@ object BreakingFlowController {
                 if (ServerConfigData.serverBlockListMode == "BLOCKED") {
                     Messager.actionBar(
                         StringUtils.translate(
-                            "bedrockminer.message.restricted.server_allow_list", blockId
+                            "bedrockminer.message.restricted.server_allow_list", blockState.block.name.string
                         )
                     )
                     return false

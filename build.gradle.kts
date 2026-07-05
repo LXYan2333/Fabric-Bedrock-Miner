@@ -29,7 +29,7 @@ val requiredJvmTarget = when (requiredJava) {
 
 fun scProperty(key: String): String = sc.properties[key]
 val supportsSplitEnvironment = sc.current.parsed >= "1.18"
-val processedAccessWidener = sc.process(rootProject.file("src/client/resources/bedrock-miner.accesswidener"), "build/processed.accesswidener")
+val processedAccessWidener = sc.process(rootProject.file("src/main/resources/bedrock-miner.accesswidener"), "build/processed.accesswidener")
 
 fun resourceExpansionProps() = mapOf(
 	"version" to project.version,

@@ -17,8 +17,10 @@ import net.minecraft.world.inventory.ContainerInput
 //?} else
 //import net.minecraft.world.inventory.ClickType
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
+
 //? if <1.20
 //import net.minecraft.world.level.material.Fluids
 
@@ -56,6 +58,13 @@ object MinecraftClientCompat {
         gameMode.handleContainerInput(containerId, slot, hotbarSlot, ContainerInput.SWAP, player)
         //?} else
         //gameMode.handleInventoryMouseClick(containerId, slot, hotbarSlot, ClickType.SWAP, player)
+    }
+
+    fun getSelectedItem(inventory: Inventory): ItemStack {
+        //? if > 1.21.1 {
+        return inventory.selectedItem
+        //?} else
+        //return inventory.getSelected()
     }
 
     fun selectedSlot(inventory: Inventory): Int {

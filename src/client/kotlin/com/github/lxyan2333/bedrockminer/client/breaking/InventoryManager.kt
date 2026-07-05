@@ -19,18 +19,59 @@ import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket
 import net.minecraft.world.entity.ai.attributes.Attributes
 import fi.dy.masa.malilib.util.StringUtils
 import com.github.lxyan2333.bedrockminer.client.config.Configs
+//? if >= 1.21.1 {
+import net.minecraft.client.gui.screens.inventory.InventoryScreen
+//?}
 
 object InventoryManager {
     private const val INSTANT_MINE_THRESHOLD = 45f
+
+    //? if >= 1.21.1 {
+    fun switchItemToOffHand(item: Item): Boolean {
+        val client = Minecraft.getInstance()
+        val player = client.player ?: return false
+        val inventoryScreen = InventoryScreen(player)
+        for (i in player.inventoryMenu.slots) {
+            if (i.item.`is`(item)) {
+                MinecraftClientCompat.swapInventorySlot(
+                    inventoryScreen.menu.containerId, i.index, 40, player
+                )
+                return true
+            }
+        }
+        return false
+    }
+
+    suspend fun ensureMainHandHold(item: Item) {
+        val client = Minecraft.getInstance()
+        val player = client.player ?: return
+        val inventory = player.inventory
+        if (getBlockBreakingSpeed(
+                Blocks.PISTON.defaultBlockState(), MinecraftClientCompat.getSelectedItem(inventory)
+            ) > INSTANT_MINE_THRESHOLD
+        ) {
+            return
+        }
+        ClientTickScheduler.awaitTicks(Configs.Server.WAIT_SERVER_TICK_PLAYER_ENTITY_TICKS.integerValue)
+    }
+    //?}
 
     fun switchToItem(item: Item): Boolean {
         val client = Minecraft.getInstance()
         val player = client.player ?: return false
         val inventory = player.inventory
 
-        var slot = findSlotWithItem(inventory, item)
-        if (item == Items.DIAMOND_PICKAXE) {
-            slot = getEfficientToolSlot(inventory)
+        var slot = if (item == Items.DIAMOND_PICKAXE) {
+            if (getBlockBreakingSpeed(
+                    Blocks.PISTON.defaultBlockState(), MinecraftClientCompat.getSelectedItem(inventory)
+                ) > INSTANT_MINE_THRESHOLD
+            ) {
+                return true
+            }
+            getEfficientToolSlot(inventory)
+        } else {
+            if (MinecraftClientCompat.getSelectedItem(inventory).item.equals(item)) return true
+            findSlotWithItem(inventory, item)
         }
 
         if (slot == -1) return false
@@ -76,8 +117,7 @@ object InventoryManager {
         }
         for (i in 0 until inventory.containerSize) {
             if (getBlockBreakingSpeed(
-                    Blocks.PISTON.defaultBlockState(),
-                    inventory.getItem(i)
+                    Blocks.PISTON.defaultBlockState(), inventory.getItem(i)
                 ) > INSTANT_MINE_THRESHOLD
             ) {
                 return i
@@ -141,9 +181,9 @@ object InventoryManager {
         //? if >=1.21 {
         speed *= player.getAttributeValue(Attributes.BLOCK_BREAK_SPEED).toFloat()
 
-		if (player.isEyeInFluid(FluidTags.WATER)) {
-			speed *= player.getAttributeValue(Attributes.SUBMERGED_MINING_SPEED).toFloat()
-		}
+        if (player.isEyeInFluid(FluidTags.WATER)) {
+            speed *= player.getAttributeValue(Attributes.SUBMERGED_MINING_SPEED).toFloat()
+        }
         //?} else {
         /*if (player.isEyeInFluid(FluidTags.WATER) && !EnchantmentHelper.hasAquaAffinity(player)) {
             speed /= 5.0f

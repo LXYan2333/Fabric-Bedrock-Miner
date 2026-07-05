@@ -16,9 +16,14 @@ object BlockPlacer {
         InteractionRangeChecker.checkRange(pos)
         val client = Minecraft.getInstance()
         val player = client.player ?: return
-        if (!InventoryManager.switchToItem(item)) return
         val hitResult = BlockHitResult(Vec3.atBottomCenterOf(pos), Direction.DOWN, pos, false)
+        //? if >= 1.21.1 {
+        if (!InventoryManager.switchItemToOffHand(item)) return
+        MinecraftClientCompat.useItemOn(player, InteractionHand.OFF_HAND, hitResult)
+        //?} else {
+        /*if (!InventoryManager.switchToItem(item)) return
         MinecraftClientCompat.useItemOn(player, InteractionHand.MAIN_HAND, hitResult)
+        *///?}
     }
 
     fun getYawPitch(direction: Direction): Pair<Float, Float> {
@@ -55,7 +60,10 @@ object BlockPlacer {
         val client = Minecraft.getInstance()
         val player = client.player ?: return
 
-        if (!InventoryManager.switchToItem(Blocks.PISTON.asItem())) return
+        //? if >= 1.21.1 {
+        if (!InventoryManager.switchItemToOffHand(Blocks.PISTON.asItem())) return
+        //?} else
+        //if (!InventoryManager.switchToItem(Blocks.PISTON.asItem())) return
 
         val hitPos = pos.relative(direction.opposite)
         val hitVec = MinecraftClientCompat.offset(Vec3.atCenterOf(hitPos), direction, 0.5)
@@ -73,7 +81,10 @@ object BlockPlacer {
             player.yRot = yaw
             player.yHeadRot = yaw
             client.connection?.send(MinecraftClientCompat.rotationPacket(yaw, pitch, MinecraftClientCompat.isOnGround(player)))
-            MinecraftClientCompat.useItemOn(player, InteractionHand.MAIN_HAND, hitResult)
+            //? if >= 1.21.1 {
+            MinecraftClientCompat.useItemOn(player, InteractionHand.OFF_HAND, hitResult)
+            //?} else
+            //MinecraftClientCompat.useItemOn(player, InteractionHand.MAIN_HAND, hitResult)
         } finally {
             player.xRot = oldXRot
             player.yRot = oldYRot
@@ -96,7 +107,10 @@ object BlockPlacer {
         val client = Minecraft.getInstance()
         val player = client.player ?: return
 
-        if (!InventoryManager.switchToItem(Blocks.PISTON.asItem())) return
+        //? if >= 1.21.1 {
+        if (!InventoryManager.switchItemToOffHand(Blocks.PISTON.asItem())) return
+        //?} else
+        //if (!InventoryManager.switchToItem(Blocks.PISTON.asItem())) return
         val hitVec = Vec3(pos.x + 2 + direction.ordinal * 2.0, pos.y.toDouble(), pos.z.toDouble())
         val hitResult = BlockHitResult(hitVec, direction, pos, false)
 
@@ -109,7 +123,10 @@ object BlockPlacer {
             player.xRot = pitch
             player.yRot = yaw
             player.yHeadRot = yaw
-            MinecraftClientCompat.useItemOn(player, InteractionHand.MAIN_HAND, hitResult)
+            //? if >= 1.21.1 {
+            MinecraftClientCompat.useItemOn(player, InteractionHand.OFF_HAND, hitResult)
+            //?} else
+            //MinecraftClientCompat.useItemOn(player, InteractionHand.MAIN_HAND, hitResult)
         } finally {
             player.xRot = oldXRot
             player.yRot = oldYRot

@@ -38,10 +38,11 @@ jobs:
         with:
           java-version: '26'
           distribution: 'oracle'
+          cache: 'maven'
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
         with:
-          cache-provider: basic
+          cache-provider: enhanced
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
       - name: prepare stonecutter for ${{ matrix.version }}

@@ -19,7 +19,7 @@ jobs:
       - name: parse versions from settings.gradle.kts
         id: parse
         run: |
-          VERSIONS=$(grep -oP '"\d+\.\d+(\.\d+)?"' settings.gradle.kts \
+          VERSIONS=$(awk '/versions\(/,/\)/' settings.gradle.kts | grep -oP '"\d+\.\d+(\.\d+)?"' \
             | jq -R -s 'split("\n") | map(select(length > 0))' -c)
           echo "versions=$VERSIONS" >> "$GITHUB_OUTPUT"
 

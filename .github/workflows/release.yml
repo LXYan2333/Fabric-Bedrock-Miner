@@ -63,11 +63,15 @@ jobs:
         run: ./gradlew :"Refresh active project"
       - name: build
         run: ./gradlew :${{ matrix.version }}:build
+      - name: prepare release artifact
+        run: |
+          mkdir -p build/release
+          cp versions/${{ matrix.version }}/build/libs/*.jar build/release/
       - name: upload release files
         uses: actions/upload-artifact@v7
         with:
           name: release-files-${{ matrix.version }}
-          path: versions/${{ matrix.version }}/build/libs/*.jar
+          path: build/release/*.jar
 
   publish:
     needs: [get-versions, build]
@@ -88,7 +92,7 @@ jobs:
         id: jar
         run: |
           set -euo pipefail
-          jar=$(find "build/release/versions/${{ matrix.project }}/build/libs" -maxdepth 1 -type f -name '*.jar' ! -name '*-dev.jar' ! -name '*-sources.jar' ! -name '*-javadoc.jar' | sort | head -n 1)
+          jar=$(find build/release -maxdepth 1 -type f -name '*.jar' ! -name '*-dev.jar' ! -name '*-sources.jar' ! -name '*-javadoc.jar' | sort | head -n 1)
           test -n "${jar}"
           version=$(unzip -p "${jar}" fabric.mod.json | jq -r '.version')
           echo "jar=${jar}" >> "$GITHUB_OUTPUT"
@@ -99,7 +103,7 @@ jobs:
         with:
           name: Bedrock-Miner ${{ steps.jar.outputs.version }}
           version: ${{ steps.jar.outputs.version }}
-          files: build/release/versions/${{ matrix.project }}/build/libs/!(*-@(dev|sources|javadoc)).jar
+          files: build/release/!(*-@(dev|sources|javadoc)).jar
           curseforge-id: 523864
           curseforge-token: ${{ secrets.CURSE_API_TOKEN }}
           modrinth-id: BYMHqMXz
@@ -121,5 +125,5 @@ jobs:
       - name: upload GitHub release assets
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          files: build/release/versions/*/build/libs/!(*-@(dev|sources|javadoc)).jar
+          files: build/release/!(*-@(dev|sources|javadoc)).jar
           github-token: ${{ secrets.GITHUB_TOKEN }}

@@ -43,6 +43,15 @@ jobs:
           cache-provider: enhanced
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
+      - name: prepare stonecutter for ${{ matrix.version }}
+        run: |
+          VERSION="${{ matrix.version }}"
+          sed -i '/vcsVersion/d' settings.gradle.kts
+          sed -i '/versions(/,/)/{/versions(/!{/)/!d}}' settings.gradle.kts
+          sed -i '/versions(/a\            "'"$VERSION"'",' settings.gradle.kts
+          sed -i 's/stonecutter active ".*"/stonecutter active "'"$VERSION"'"/' stonecutter.gradle.kts
+      - name: refresh active project
+        run: ./gradlew :"Refresh active project"
       - name: build
         run: ./gradlew :${{ matrix.version }}:build --no-parallel --max-workers=1
       - name: capture build artifacts

@@ -26,13 +26,15 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ${{ fromJson(needs.get-versions.outputs.versions) }}
     steps:
       - name: checkout repository
         uses: actions/checkout@v6
-
       - name: validate gradle wrapper
         uses: gradle/actions/wrapper-validation@v6
-
       - name: setup jdk
         uses: actions/setup-java@v5
         with:
@@ -42,24 +44,24 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
         with:
           cache-provider: enhanced
-
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
-
+      - name: prepare stonecutter for ${{ matrix.version }}
+        run: |
+          VERSION="${{ matrix.version }}"
+          sed -i '/vcsVersion/d' settings.gradle.kts
+          sed -i '/versions(/,/)/{/versions(/!{/)/!d}}' settings.gradle.kts
+          sed -i '/versions(/a\            "'"$VERSION"'",' settings.gradle.kts
+          sed -i 's/stonecutter active ".*"/stonecutter active "'"$VERSION"'"/' stonecutter.gradle.kts
+      - name: refresh active project
+        run: ./gradlew :"Refresh active project"
       - name: build
-        run: ./gradlew build
-
-      - name: capture build artifacts
-        uses: actions/upload-artifact@v7
-        with:
-          name: Release Artifacts
-          path: versions/*/build/libs/*.jar
-
+        run: ./gradlew :${{ matrix.version }}:build
       - name: upload release files
         uses: actions/upload-artifact@v7
         with:
-          name: release-files
-          path: versions/*/build/libs/*.jar
+          name: release-files-${{ matrix.version }}
+          path: versions/${{ matrix.version }}/build/libs/*.jar
 
   publish:
     needs: [get-versions, build]
@@ -73,28 +75,25 @@ jobs:
       - name: download release files
         uses: actions/download-artifact@v7
         with:
-          name: release-files
+          name: release-files-${{ matrix.project }}
           path: build/release
 
       - name: read jar metadata
         id: jar
         run: |
           set -euo pipefail
-          jar=$(find "build/release/${{ matrix.project }}/build/libs" -maxdepth 1 -type f -name '*.jar' ! -name '*-dev.jar' ! -name '*-sources.jar' ! -name '*-javadoc.jar' | sort | head -n 1)
+          jar=$(find "build/release/versions/${{ matrix.project }}/build/libs" -maxdepth 1 -type f -name '*.jar' ! -name '*-dev.jar' ! -name '*-sources.jar' ! -name '*-javadoc.jar' | sort | head -n 1)
           test -n "${jar}"
           version=$(unzip -p "${jar}" fabric.mod.json | jq -r '.version')
           echo "jar=${jar}" >> "$GITHUB_OUTPUT"
           echo "version=${version}" >> "$GITHUB_OUTPUT"
-
-      - name: list files for ${{ matrix.project }}
-        run: find "build/release/${{ matrix.project }}/build/libs" -maxdepth 1 -type f -print
 
       - name: publish ${{ matrix.project }}
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           name: Bedrock-Miner ${{ steps.jar.outputs.version }}
           version: ${{ steps.jar.outputs.version }}
-          files: build/release/${{ matrix.project }}/build/libs/!(*-@(dev|sources|javadoc)).jar
+          files: build/release/versions/${{ matrix.project }}/build/libs/!(*-@(dev|sources|javadoc)).jar
           curseforge-id: 523864
           curseforge-token: ${{ secrets.CURSE_API_TOKEN }}
           modrinth-id: BYMHqMXz
@@ -106,14 +105,15 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: download release files
+      - name: download all release files
         uses: actions/download-artifact@v7
         with:
-          name: release-files
+          pattern: release-files-*
+          merge-multiple: true
           path: build/release
 
       - name: upload GitHub release assets
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          files: build/release/*/build/libs/!(*-@(dev|sources|javadoc)).jar
+          files: build/release/versions/*/build/libs/!(*-@(dev|sources|javadoc)).jar
           github-token: ${{ secrets.GITHUB_TOKEN }}

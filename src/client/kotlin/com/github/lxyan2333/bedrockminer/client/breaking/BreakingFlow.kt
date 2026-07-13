@@ -60,16 +60,11 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
                 // Step 2: wait for piston to fully extend
                 waitFor(Configs.Generic.WAIT_TICKS.integerValue) {
                     try {
-                        level.getBlockState(approach.extendPos)
-                            .`is`(Blocks.PISTON_HEAD) && level.getBlockState(approach.pistonPos)
-                            .getValue(PistonBaseBlock.EXTENDED)
+                        level.getBlockState(approach.pistonPos).getValue(PistonBaseBlock.EXTENDED)
                     } catch (_: IllegalArgumentException) {
                         false
                     }
                 }
-
-
-
 
                 // Step 3: one-tick — break torch, break piston, place piston facing target
                 approach.placePistonAfter(approach.pushDir) {
@@ -121,18 +116,18 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
 
     private suspend fun cleanup(level: Level, approach: ApproachBase) {
         try {
-            if (!MinecraftClientCompat.canBeReplaced(level,approach.pistonPos)) {
+            if (!MinecraftClientCompat.canBeReplaced(level, approach.pistonPos)) {
                 //? if >= 1.21.1
                 InventoryManager.ensureMainHandHold(Items.DIAMOND_PICKAXE)
                 BlockBreaker.breakBlock(approach.pistonPos)
             }
 
-            if (!MinecraftClientCompat.canBeReplaced(level,approach.torchPos)) {
+            if (!MinecraftClientCompat.canBeReplaced(level, approach.torchPos)) {
                 BlockBreaker.breakBlock(approach.torchPos)
             }
 
             approach.supportBlockPos?.let {
-                if (!MinecraftClientCompat.canBeReplaced(level,it)) {
+                if (!MinecraftClientCompat.canBeReplaced(level, it)) {
                     BlockBreaker.breakBlock(it)
                 }
             }
@@ -140,8 +135,11 @@ class BreakingFlow(val targetPos: BlockPos, val targetBlockState: BlockState) {
         }
 
         waitFor(Configs.Generic.WAIT_TICKS.integerValue) {
-            val ok = MinecraftClientCompat.canBeReplaced(level, approach.pistonPos) &&
-                MinecraftClientCompat.canBeReplaced(level, approach.torchPos)
+            val ok =
+                MinecraftClientCompat.canBeReplaced(level, approach.pistonPos) && MinecraftClientCompat.canBeReplaced(
+                    level,
+                    approach.torchPos
+                )
 
             ok && approach.supportBlockPos?.let { MinecraftClientCompat.canBeReplaced(level, it) } ?: true
         }

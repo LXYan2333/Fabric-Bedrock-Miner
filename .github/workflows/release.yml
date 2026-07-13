@@ -53,6 +53,12 @@ jobs:
           sed -i '/versions(/,/)/{/versions(/!{/)/!d}}' settings.gradle.kts
           sed -i '/versions(/a\            "'"$VERSION"'",' settings.gradle.kts
           sed -i 's/stonecutter active ".*"/stonecutter active "'"$VERSION"'"/' stonecutter.gradle.kts
+      - name: Download dependencies (with retry)
+        run: |
+          for i in {1..15}; do
+            echo "Attempt $i to download dependencies..."
+            ./gradlew dependencies --no-daemon && break || sleep 15
+          done
       - name: refresh active project
         run: ./gradlew :"Refresh active project"
       - name: build

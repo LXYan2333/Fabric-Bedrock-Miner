@@ -38,6 +38,7 @@ jobs:
         with:
           java-version: '26'
           distribution: 'oracle'
+          cache: gradle
 
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew

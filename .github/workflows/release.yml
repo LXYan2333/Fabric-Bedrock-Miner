@@ -7,7 +7,22 @@ on:
   workflow_dispatch:
 
 jobs:
+  get-versions:
+    runs-on: ubuntu-24.04
+    outputs:
+      versions: ${{ steps.parse.outputs.versions }}
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v6
+      - name: parse versions from settings.gradle.kts
+        id: parse
+        run: |
+          VERSIONS=$(grep -oP '"\d+\.\d+(\.\d+)?"' settings.gradle.kts \
+            | jq -R -s 'split("\n") | map(select(length > 0))' -c)
+          echo "versions=$VERSIONS" >> "$GITHUB_OUTPUT"
+
   build:
+    needs: get-versions
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -43,23 +58,13 @@ jobs:
           path: versions/*/build/libs/*.jar
 
   publish:
-    needs: build
+    needs: [get-versions, build]
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       max-parallel: 1
       matrix:
-        include:
-          - project: 1.16.5
-          - project: 1.17.1
-          - project: 1.18.2
-          - project: 1.19.2
-          - project: 1.19.4
-          - project: 1.20.1
-          - project: 1.20.6
-          - project: 1.21.1
-          - project: 1.21.11
-          - project: 26.2
+        project: ${{ fromJson(needs.get-versions.outputs.versions) }}
     steps:
       - name: download release files
         uses: actions/download-artifact@v7

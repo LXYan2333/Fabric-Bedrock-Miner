@@ -7,13 +7,31 @@ name: build
 on: [pull_request, push]
 
 jobs:
-  build:
+  get-versions:
     runs-on: ubuntu-24.04
+    outputs:
+      versions: ${{ steps.parse.outputs.versions }}
     steps:
       - name: checkout repository
         uses: actions/checkout@v6
       - name: validate gradle wrapper
         uses: gradle/actions/wrapper-validation@v6
+      - name: parse versions from settings.gradle.kts
+        id: parse
+        run: |
+          VERSIONS=$(grep -oP '"\d+\.\d+(\.\d+)?"' settings.gradle.kts \
+            | jq -R -s 'split("\n") | map(select(length > 0))' -c)
+          echo "versions=$VERSIONS" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: get-versions
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        version: ${{ fromJson(needs.get-versions.outputs.versions) }}
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v6
       - name: setup jdk
         uses: actions/setup-java@v5
         with:
@@ -22,9 +40,9 @@ jobs:
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
       - name: build
-        run: ./gradlew build --no-parallel --max-workers=1
+        run: ./gradlew :${{ matrix.version }}:build --no-parallel --max-workers=1
       - name: capture build artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: Artifacts
-          path: versions/*/build/libs/*.jar
+          name: Artifacts-${{ matrix.version }}
+          path: versions/${{ matrix.version }}/build/libs/*.jar

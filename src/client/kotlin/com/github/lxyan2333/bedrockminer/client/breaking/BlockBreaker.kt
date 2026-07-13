@@ -56,7 +56,7 @@ object BlockBreaker {
         } finally {
             pendingUpdates.clear()
         }
-        *///?} else if < 26.2 {
+        *///?} else if <= 26.1.2 {
         /*try {
             val renderer = mc.levelRenderer
             val viewArea = renderer.viewArea ?: return

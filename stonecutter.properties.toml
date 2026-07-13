@@ -13,7 +13,7 @@ mod.mc_releases = ["1.16.5"]
 deps.fabric_api = "0.42.0+1.16"
 deps.malilib_mc = "1.16.5"
 deps.malilib = "0.10.0-dev.21+arne.9"
-deps.mod_menu = "2.0.2"
+deps.mod_menu = "1.16.23"
 
 ["1.17.1"]
 mod.mc_compat = "1.17.1"
@@ -22,7 +22,7 @@ mod.mc_releases = ["1.17.1"]
 deps.fabric_api = "0.46.1+1.17"
 deps.malilib_mc = "1.17.1"
 deps.malilib = "0.10.0-dev.23"
-deps.mod_menu = "2.0.2"
+deps.mod_menu = "2.0.17"
 
 ["1.18.2"]
 mod.mc_compat = "1.18.2"
@@ -31,7 +31,7 @@ mod.mc_releases = ["1.18.2"]
 deps.fabric_api = "0.77.0+1.18.2"
 deps.malilib_mc = "1.18.2"
 deps.malilib = "0.12.0"
-deps.mod_menu = "3.1.0"
+deps.mod_menu = "3.2.5"
 
 ["1.19.2"]
 mod.mc_compat = "1.19.2"
@@ -40,7 +40,7 @@ mod.mc_releases = ["1.19.2"]
 deps.fabric_api = "0.77.0+1.19.2"
 deps.malilib_mc = "1.19.2"
 deps.malilib = "0.13.0"
-deps.mod_menu = "4.0.6"
+deps.mod_menu = "4.1.2"
 
 ["1.19.4"]
 mod.mc_compat = "1.19.4"
@@ -76,7 +76,7 @@ mod.mc_releases = ["1.21.1"]
 deps.fabric_api = "0.116.13+1.21.1"
 deps.malilib_mc = "1.21"
 deps.malilib = "0.21.10"
-deps.mod_menu = "11.0.1"
+deps.mod_menu = "11.0.4"
 
 ["1.21.11"]
 mod.mc_compat = "1.21.11"
@@ -85,7 +85,16 @@ mod.mc_releases = ["1.21.11"]
 deps.fabric_api = "0.141.4+1.21.11"
 deps.malilib_mc = "1.21.11"
 deps.malilib = "0.27.13"
-deps.mod_menu = "15.0.0-beta.3"
+deps.mod_menu = "17.0.0"
+
+["26.1.2"]
+mod.mc_compat = "26.1.2"
+mod.mc_releases = ["26.1.2"]
+
+deps.fabric_api = "0.154.2+26.1.2"
+deps.malilib_mc = "26.1.2"
+deps.malilib = "0.28.9"
+deps.mod_menu = "18.0.0"
 
 ["26.2"]
 mod.mc_compat = "26.2"
@@ -94,4 +103,4 @@ mod.mc_releases = ["26.2"]
 deps.fabric_api = "0.154.0+26.2"
 deps.malilib_mc = "26.2"
 deps.malilib = "0.29.2"
-deps.mod_menu = "19.0.0-alpha.1"
+deps.mod_menu = "20.0.1"

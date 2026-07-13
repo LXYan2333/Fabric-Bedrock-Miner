@@ -27,6 +27,7 @@ jobs:
     needs: get-versions
     runs-on: ubuntu-24.04
     strategy:
+      fail-fast: false
       matrix:
         version: ${{ fromJson(needs.get-versions.outputs.versions) }}
     steps:

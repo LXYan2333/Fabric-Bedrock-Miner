@@ -17,7 +17,7 @@ jobs:
       - name: parse versions from settings.gradle.kts
         id: parse
         run: |
-          VERSIONS=$(awk '/versions\(/,/\)/' settings.gradle.kts | grep -oP '"\d+\.\d+(\.\d+)?"' \
+          VERSIONS=$(awk '/versions\(/,/\)/' settings.gradle.kts | grep -oP '\d+\.\d+(\.\d+)?' \
             | jq -R -s 'split("\n") | map(select(length > 0))' -c)
           echo "versions=$VERSIONS" >> "$GITHUB_OUTPUT"
 
@@ -47,7 +47,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: build
-        run: ./gradlew build --no-parallel --max-workers=1
+        run: ./gradlew build
 
       - name: capture build artifacts
         uses: actions/upload-artifact@v7

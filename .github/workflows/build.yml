@@ -16,11 +16,10 @@ jobs:
         uses: actions/checkout@v6
       - name: validate gradle wrapper
         uses: gradle/actions/wrapper-validation@v6
-      - name: parse versions from settings.gradle.kts
+      - name: parse versions from versions.json
         id: parse
         run: |
-          VERSIONS=$(awk '/versions\(/,/\)/' settings.gradle.kts | grep -oP '\d+\.\d+(\.\d+)?' \
-            | jq -R -s 'split("\n") | map(select(length > 0))' -c)
+          VERSIONS=$(jq -c '.versions' versions.json)
           echo "versions=$VERSIONS" >> "$GITHUB_OUTPUT"
 
   build:
@@ -30,6 +29,8 @@ jobs:
       fail-fast: false
       matrix:
         version: ${{ fromJson(needs.get-versions.outputs.versions) }}
+    env:
+      CI_VERSION: ${{ matrix.version }}
     steps:
       - name: checkout repository
         uses: actions/checkout@v6
@@ -44,21 +45,12 @@ jobs:
           cache-provider: basic
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
-      - name: prepare stonecutter for ${{ matrix.version }}
-        run: |
-          VERSION="${{ matrix.version }}"
-          sed -i '/vcsVersion/d' settings.gradle.kts
-          sed -i '/versions(/,/)/{/versions(/!{/)/!d}}' settings.gradle.kts
-          sed -i '/versions(/a\            "'"$VERSION"'",' settings.gradle.kts
-          sed -i 's/stonecutter active ".*"/stonecutter active "'"$VERSION"'"/' stonecutter.gradle.kts
       - name: Download dependencies (with retry)
         run: |
           for i in {1..15}; do
             echo "Attempt $i to download dependencies..."
             ./gradlew dependencies --no-daemon && break || sleep 15
           done
-      - name: refresh active project
-        run: ./gradlew :"Refresh active project"
       - name: build
         run: ./gradlew :${{ matrix.version }}:build
       - name: capture build artifacts

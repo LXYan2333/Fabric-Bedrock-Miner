@@ -44,21 +44,14 @@ loomx {
 }
 
 stonecutter {
+    val ciVersion = System.getenv("CI_VERSION")
+
     create(rootProject) {
-        versions(
-            "1.16.5",
-            "1.17.1",
-            "1.18.2",
-            "1.19.2",
-            "1.19.4",
-            "1.20.1",
-            "1.20.6",
-            "1.21.1",
-            "1.21.11",
-            "26.1.2",
-            "26.2",
-        )
-        vcsVersion = "26.2"
+        if (ciVersion != null) {
+            version(ciVersion, ciVersion)
+        } else {
+            load(file("versions.json"))
+        }
     }
 }
 

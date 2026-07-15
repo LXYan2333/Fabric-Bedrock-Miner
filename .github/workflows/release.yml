@@ -14,11 +14,10 @@ jobs:
     steps:
       - name: checkout repository
         uses: actions/checkout@v6
-      - name: parse versions from settings.gradle.kts
+      - name: parse versions from versions.json
         id: parse
         run: |
-          VERSIONS=$(awk '/versions\(/,/\)/' settings.gradle.kts | grep -oP '\d+\.\d+(\.\d+)?' \
-            | jq -R -s 'split("\n") | map(select(length > 0))' -c)
+          VERSIONS=$(jq -c '.versions' versions.json)
           echo "versions=$VERSIONS" >> "$GITHUB_OUTPUT"
 
   build:

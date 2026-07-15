@@ -2,7 +2,8 @@ plugins {
 	id("dev.kikugie.stonecutter")
 }
 
-stonecutter active "26.2"
+val ciVersion: String? = System.getenv("CI_VERSION")
+if (ciVersion != null) sc active null else stonecutter active "26.2"
 
 stonecutter parameters {
 	swaps["mod_version"] = "\"${property("mod.version")}\";"
